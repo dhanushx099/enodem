@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event Management — Enovexa Solutions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+  <style>
+    /* ── ROOT VARIABLES ── */
+    :root {
+      --red: #C8102E;
+      --red-mid: #A50D25;
+      --red-light: #E8314D;
+      --accent: #E8314D;
+      --lime: #F7C5CC;
+      --white: #FFFFFF;
+      --off-white: #F9F9F9;
+      --light-gray: #F2F2F2;
+      --dark: #1A1A1A;
+      --muted: #6B6B6B;
+      --border: rgba(200,16,46,0.13);
+      --heading: Arial, sans-serif;
+      --body: Arial, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--off-white); color: var(--dark); font-family: var(--body); font-size: 16px; line-height: 1.65; overflow-x: hidden; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 900;
+      padding: 0 5vw; display: flex; align-items: center; justify-content: space-between;
+      background: #fff; height: 72px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+      border-bottom: 1.5px solid rgba(200,16,46,0.12);
+    }
+    .logo img { height: 52px; width: auto; object-fit: contain; display: block; }
+    .nav-actions { display: flex; gap: 10px; align-items: center; }
+    .nav-portal {
+      background: transparent; color: var(--dark);
+      border: 1px solid rgba(0,0,0,0.18); padding: 9px 16px;
+      font-family: var(--body); font-size: .84rem; font-weight: 500;
+      border-radius: 6px; cursor: pointer; transition: all .2s; text-decoration: none;
+    }
+    .nav-portal:hover { background: rgba(0,0,0,0.05); }
+    .nav-cta {
+      background: var(--red); color: #fff; border: none;
+      padding: 9px 22px; font-family: var(--body); font-size: .84rem;
+      font-weight: 700; border-radius: 6px; cursor: pointer;
+      transition: all .2s; letter-spacing: .2px; text-decoration: none;
+    }
+    .nav-cta:hover { background: var(--red-mid); transform: translateY(-1px); }
+
+    
+    /* scroll indicator */
+    .scroll-hint {
+      position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+    }
+    .scroll-hint span { font-size: .68rem; color: rgba(255,255,255,.45); letter-spacing: 2px; text-transform: uppercase; font-weight: 600; }
+    .scroll-dot {
+      width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+      animation: scrollBounce 1.6s ease-in-out infinite;
+    }
+    @keyframes scrollBounce {
+      0%, 100% { transform: translateY(0); opacity: 1; }
+      50% { transform: translateY(8px); opacity: .4; }
+    }
+
+    /* ── HERO ── */
+    .service-hero {
+      background: var(--dark);
+      padding: 72px 5vw 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .service-hero::before {
+      content: '';
+      position: absolute; top: 0; right: 0; bottom: 0;
+      width: 45%;
+      background: linear-gradient(135deg, rgba(200,16,46,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .breadcrumb {
+      display: flex; align-items: center; gap: 8px;
+      font-size: .78rem; color: rgba(255,255,255,.4);
+      margin-bottom: 24px; font-weight: 500;
+    }
+    .breadcrumb a { color: rgba(255,255,255,.4); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--accent); }
+    .breadcrumb span { color: rgba(255,255,255,.25); }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(200,16,46,0.18); border: 1px solid rgba(200,16,46,0.4);
+      padding: 6px 16px; border-radius: 100px;
+      font-size: .75rem; font-weight: 700; color: var(--accent);
+      letter-spacing: 2px; text-transform: uppercase; margin-bottom: 28px;
+    }
+    .service-hero h1 {
+      font-family: var(--heading);
+      font-size: clamp(2.6rem, 6vw, 4.8rem);
+      font-weight: 800; line-height: 1.05;
+      letter-spacing: -2px; margin-bottom: 22px; color: #fff;
+      max-width: 700px;
+    }
+    .service-hero h1 em {
+      color: var(--accent); font-style: normal; position: relative;
+    }
+    .service-hero h1 em::after {
+      content: ''; position: absolute; left: 0; bottom: -4px;
+      width: 100%; height: 3px; background: var(--accent); border-radius: 2px;
+    }
+    .hero-desc {
+      font-size: 1.05rem; color: rgba(255,255,255,.7);
+      max-width: 620px; margin-bottom: 32px; line-height: 1.85;
+    }
+    .hero-chips { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 36px; }
+    .chip {
+      background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.14);
+      border-radius: 8px; padding: 8px 14px;
+      font-size: .79rem; font-weight: 600; color: rgba(255,255,255,.85);
+    }
+    .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--red); color: #fff;
+      padding: 14px 32px; font-family: var(--body); font-size: .93rem;
+      font-weight: 700; border: none; border-radius: 8px; cursor: pointer;
+      transition: all .2s; text-decoration: none; letter-spacing: .2px;
+    }
+    .btn-primary:hover { background: var(--red-mid); transform: translateY(-2px); box-shadow: 0 10px 30px rgba(200,16,46,.3); }
+    .btn-outline-light {
+      background: transparent; color: #fff;
+      padding: 14px 32px; font-family: var(--body); font-size: .93rem;
+      font-weight: 600; border: 1px solid rgba(255,255,255,.3);
+      border-radius: 8px; cursor: pointer; transition: all .2s; text-decoration: none;
+    }
+    .btn-outline-light:hover { border-color: #fff; background: rgba(255,255,255,.08); }
+
+    /* ── STATS ROW ── */
+    .stats-row {
+      background: var(--red);
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      padding: 0;
+    }
+    .stat-box {
+      padding: 36px 28px; text-align: center;
+      border-right: 1px solid rgba(255,255,255,.2);
+    }
+    .stat-box:last-child { border-right: none; }
+    .stat-box .num {
+      font-family: var(--heading); font-size: 2.6rem;
+      font-weight: 800; color: #fff; letter-spacing: -1px; line-height: 1;
+    }
+    .stat-box .num span { color: rgba(255,255,255,.65); }
+    .stat-box .lbl {
+      font-size: .75rem; color: rgba(255,255,255,.65);
+      font-weight: 600; text-transform: uppercase;
+      letter-spacing: 1px; margin-top: 6px;
+    }
+
+    /* ── COMMON SECTION ── */
+    section { padding: 96px 5vw; }
+    .sec-label {
+      font-size: .7rem; font-weight: 700; letter-spacing: 3px;
+      text-transform: uppercase; color: var(--red);
+      margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+    }
+    .sec-label::before { content: ''; width: 24px; height: 2px; background: var(--red); border-radius: 2px; }
+    .sec-title {
+      font-family: var(--heading); font-size: clamp(1.9rem, 3.8vw, 3rem);
+      font-weight: 800; line-height: 1.1; letter-spacing: -1px; color: var(--dark);
+    }
+    .sec-title em { color: var(--red); font-style: normal; }
+    .sec-sub {
+      color: var(--muted); font-size: .98rem;
+      max-width: 560px; margin-top: 14px; line-height: 1.8;
+    }
+    .fade-up { opacity: 0; transform: translateY(28px); transition: opacity .65s ease, transform .65s ease; }
+    .fade-up.visible { opacity: 1; transform: none; }
+
+    /* ── WHY SECTION ── */
+    .why-section { background: #fff; }
+    .why-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 72px; align-items: center;
+    }
+    .why-text p {
+      color: var(--muted); font-size: .96rem; line-height: 1.85;
+      margin-top: 18px;
+    }
+    .why-list { list-style: none; margin-top: 26px; }
+    .why-list li {
+      padding: 11px 0; border-bottom: 1px solid var(--border);
+      font-size: .94rem; color: var(--dark);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .why-list li::before {
+      content: ''; width: 6px; height: 6px;
+      border-radius: 50%; background: var(--red); flex-shrink: 0;
+    }
+    .why-img-wrap { position: relative; border-radius: 20px; overflow: hidden; }
+    .why-img-wrap img {
+      width: 100%; height: 520px; object-fit: cover;
+      display: block; border-radius: 20px;
+    }
+    .why-badge {
+      position: absolute; top: 28px; right: 28px;
+      background: var(--red); border-radius: 12px;
+      padding: 14px 18px; text-align: center;
+    }
+    .why-badge .big {
+      font-family: var(--heading); font-size: 1.8rem;
+      font-weight: 800; color: #fff; line-height: 1;
+    }
+    .why-badge small {
+      font-size: .7rem; font-weight: 700;
+      color: rgba(255,255,255,0.8); display: block; letter-spacing: .5px;
+    }
+    .why-floating {
+      position: absolute; bottom: 28px; left: 28px; right: 28px;
+      background: rgba(255,255,255,.95); backdrop-filter: blur(12px);
+      border-radius: 14px; padding: 18px 20px;
+      display: flex; align-items: center; gap: 14px;
+      box-shadow: 0 8px 32px rgba(0,0,0,.12);
+    }
+    .why-floating-icon {
+      width: 44px; height: 44px; background: var(--red);
+      border-radius: 10px; display: flex; align-items: center;
+      justify-content: center; font-size: 1.3rem; flex-shrink: 0;
+    }
+    .why-floating div strong { display: block; font-size: .95rem; font-weight: 700; color: var(--dark); }
+    .why-floating div span { font-size: .78rem; color: var(--muted); }
+
+    /* ── OFFER ── */
+    .offer-section { background: var(--light-gray); }
+    .offer-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 20px; margin-top: 52px;
+    }
+    .offer-card {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: 16px; padding: 36px 28px;
+      transition: all .3s; position: relative; overflow: hidden;
+    }
+    .offer-card::before {
+      content: ''; position: absolute; top: 0; left: 0;
+      width: 4px; height: 0; background: var(--red);
+      transition: height .35s; border-radius: 0 2px 2px 0;
+    }
+    .offer-card:hover { border-color: rgba(200,16,46,.35); transform: translateY(-4px); box-shadow: 0 12px 36px rgba(200,16,46,.1); }
+    .offer-card:hover::before { height: 100%; }
+    .offer-icon { font-size: 2rem; margin-bottom: 16px; }
+    .offer-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; color: var(--dark); font-family: var(--heading); }
+    .offer-card p { color: var(--muted); font-size: .87rem; line-height: 1.75; margin-bottom: 18px; }
+    .offer-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .offer-tag {
+      background: rgba(200,16,46,.07); color: var(--red);
+      border: 1px solid rgba(200,16,46,.18);
+      border-radius: 20px; padding: 3px 12px;
+      font-size: .72rem; font-weight: 700; letter-spacing: .3px;
+    }
+
+    /* ── PROCESS ── */
+    .process-section { background: var(--dark); }
+    .process-section .sec-label { color: var(--accent); }
+    .process-section .sec-label::before { background: rgba(255,255,255,.3); }
+    .process-section .sec-title { color: #fff; }
+    .process-section .sec-title em { color: var(--accent); }
+    .process-section .sec-sub { color: rgba(255,255,255,.55); }
+    .process-steps {
+      display: grid; grid-template-columns: repeat(5, 1fr);
+      gap: 20px; margin-top: 52px;
+    }
+    .step {
+      background: rgba(255,255,255,.05); border: 1px solid rgba(200,16,46,.2);
+      border-radius: 16px; padding: 32px 22px;
+      text-align: center; transition: all .3s;
+    }
+    .step:hover { background: rgba(200,16,46,.08); transform: translateY(-4px); }
+    .step-num {
+      width: 48px; height: 48px; background: var(--red);
+      border-radius: 50%; display: flex; align-items: center;
+      justify-content: center; font-family: var(--heading);
+      font-size: 1.2rem; font-weight: 800; color: #fff;
+      margin: 0 auto 16px;
+    }
+    .step h4 { font-family: var(--heading); font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 10px; }
+    .step p { font-size: .82rem; color: rgba(255,255,255,.55); line-height: 1.7; }
+
+    /* ── TECH STACK ── */
+    .tech-section { background: var(--light-gray); }
+    .tech-logos { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 32px; }
+    .tech-badge {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: 8px; padding: 8px 16px;
+      font-size: .81rem; font-weight: 600; letter-spacing: .3px;
+      color: var(--dark); transition: all .2s; cursor: default;
+    }
+    .tech-badge:hover { border-color: var(--red); color: var(--red); }
+
+    /* ── SHOWCASE ── */
+    .showcase-section { background: #fff; }
+    .showcase-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 18px; margin-top: 48px;
+    }
+    .showcase-card {
+      position: relative; border-radius: 14px;
+      overflow: hidden; cursor: pointer; background: #eee;
+    }
+    .showcase-card img {
+      width: 100%; height: 280px; object-fit: cover;
+      display: block; transition: transform .5s ease;
+    }
+    .showcase-card:hover img { transform: scale(1.04); }
+    .showcase-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(26,26,26,.9) 0%, transparent 55%);
+      padding: 22px; display: flex; flex-direction: column;
+      justify-content: flex-end; opacity: 0; transition: opacity .3s;
+    }
+    .showcase-card:hover .showcase-overlay { opacity: 1; }
+    .showcase-overlay span {
+      font-size: .72rem; font-weight: 700; color: var(--accent);
+      letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 6px;
+    }
+    .showcase-overlay h4 { font-size: 1rem; font-weight: 700; color: #fff; }
+
+    /* ── TESTIMONIALS ── */
+    .testi-strip { background: var(--off-white); }
+    .testi-strip-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 22px; margin-top: 48px;
+    }
+    .testi-card {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px 26px; transition: box-shadow .3s;
+    }
+    .testi-card:hover { box-shadow: 0 8px 32px rgba(200,16,46,.08); }
+    .stars { color: var(--red); font-size: .95rem; letter-spacing: 2px; margin-bottom: 16px; }
+    .testi-card p { color: var(--muted); font-size: .88rem; line-height: 1.8; font-style: italic; margin-bottom: 22px; }
+    .testi-author { display: flex; align-items: center; gap: 12px; }
+    .testi-avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2px solid var(--lime); }
+    .testi-info strong { display: block; font-size: .88rem; font-weight: 700; color: var(--dark); }
+    .testi-info span { font-size: .76rem; color: var(--muted); }
+
+    /* ── FAQ ── */
+    .faq-section { background: var(--light-gray); }
+    .faq-wrap { max-width: 760px; margin: 48px auto 0; }
+    .faq-item {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: 12px; margin-bottom: 12px; overflow: hidden;
+    }
+    .faq-q {
+      padding: 20px 24px; font-size: .95rem; font-weight: 700;
+      color: var(--dark); cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center;
+      transition: color .2s;
+    }
+    .faq-q:hover { color: var(--red); }
+    .faq-q .arrow { font-style: normal; font-size: 1.3rem; color: var(--red); font-weight: 400; transition: transform .3s; }
+    .faq-q.open .arrow { transform: rotate(45deg); }
+    .faq-a {
+      max-height: 0; overflow: hidden;
+      font-size: .88rem; color: var(--muted); line-height: 1.8;
+      padding: 0 24px; transition: max-height .4s ease, padding .3s ease;
+    }
+    .faq-a.open { max-height: 300px; padding: 0 24px 20px; }
+
+    /* ── VISION FORM ── */
+    .vision-section { background: var(--dark); }
+    .vision-section .sec-label { color: var(--accent); }
+    .vision-section .sec-label::before { background: rgba(255,255,255,.3); }
+    .vision-section .sec-title { color: #fff; }
+    .vision-section .sec-title em { color: var(--accent); }
+    .vision-section .sec-sub { color: rgba(255,255,255,.55); }
+    .vision-form-wrap {
+      background: rgba(255,255,255,.05); border: 1px solid rgba(200,16,46,.2);
+      border-radius: 20px; padding: 44px; max-width: 860px;
+      margin: 48px auto 0;
+    }
+    .vision-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+    .vision-field { display: flex; flex-direction: column; gap: 6px; }
+    .vision-field.full { grid-column: 1 / -1; }
+    .vision-field label {
+      font-size: .75rem; font-weight: 700; letter-spacing: .5px;
+      color: rgba(255,255,255,.5); text-transform: uppercase;
+    }
+    .vision-field input,
+    .vision-field select,
+    .vision-field textarea {
+      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12);
+      color: #fff; padding: 11px 14px; border-radius: 10px;
+      font-family: var(--body); font-size: .9rem; outline: none;
+      transition: border-color .2s;
+    }
+    .vision-field input:focus,
+    .vision-field select:focus,
+    .vision-field textarea:focus { border-color: var(--accent); }
+    .vision-field select option { background: #1a0a0d; }
+    .vision-field textarea { min-height: 110px; resize: vertical; }
+    .suggest-label {
+      display: block; font-size: .75rem; font-weight: 700;
+      letter-spacing: .5px; color: rgba(255,255,255,.5);
+      text-transform: uppercase; margin-bottom: 10px; margin-top: 8px;
+    }
+    .suggest-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+    .suggest-chip {
+      background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.14);
+      color: rgba(255,255,255,.65); border-radius: 20px;
+      padding: 6px 14px; font-size: .78rem; font-weight: 600;
+      cursor: pointer; transition: all .2s; font-family: var(--body);
+    }
+    .suggest-chip:hover { border-color: var(--accent); color: var(--accent); }
+    .suggest-chip.active { background: var(--red); border-color: var(--red); color: #fff; }
+    .vision-submit {
+      width: 100%; background: var(--red); color: #fff;
+      border: none; padding: 16px; border-radius: 10px;
+      font-family: var(--body); font-size: 1rem; font-weight: 700;
+      cursor: pointer; transition: all .2s; margin-top: 8px;
+      letter-spacing: .3px;
+    }
+    .vision-submit:hover { background: var(--red-mid); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(200,16,46,.35); }
+    .vision-note { font-size: .78rem; color: rgba(255,255,255,.35); text-align: center; margin-top: 14px; }
+    .vision-success { display: none; text-align: center; padding: 40px 20px; }
+    .vision-success.show { display: block; }
+    .vision-success .big-check { font-size: 3rem; margin-bottom: 16px; }
+    .vision-success h3 { font-family: var(--heading); font-size: 1.8rem; color: #fff; margin-bottom: 12px; }
+    .vision-success p { color: rgba(255,255,255,.6); line-height: 1.8; font-size: .93rem; }
+
+    /* ── PAYMENT ── */
+    .payment-section { background: var(--off-white); padding: 96px 5vw; }
+    .payment-wrap { max-width: 580px; margin: 0 auto; text-align: center; }
+    .payment-card {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: 20px; padding: 40px;
+      text-align: left; margin-top: 40px;
+      box-shadow: 0 8px 40px rgba(0,0,0,.06);
+    }
+    .payment-card h3 { font-family: var(--heading); font-size: 1.3rem; font-weight: 700; color: var(--dark); margin-bottom: 8px; }
+    .payment-card > p { font-size: .88rem; color: var(--muted); margin-bottom: 24px; }
+    .pay-field { margin-bottom: 16px; }
+    .pay-field label { display: block; font-size: .75rem; font-weight: 700; letter-spacing: .5px; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; }
+    .pay-field input {
+      width: 100%; background: var(--off-white); border: 1px solid var(--border);
+      color: var(--dark); padding: 11px 14px; border-radius: 10px;
+      font-family: var(--body); font-size: .9rem; outline: none; transition: border-color .2s;
+    }
+    .pay-field input:focus { border-color: var(--red); }
+    .pay-methods { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 22px; }
+    .pm {
+      background: var(--light-gray); border: 1px solid var(--border);
+      border-radius: 8px; padding: 7px 14px;
+      font-size: .78rem; font-weight: 600; color: var(--dark);
+    }
+    .razorpay-btn {
+      width: 100%; background: #da1e1e; color: #fff;
+      border: none; padding: 14px; border-radius: 10px;
+      font-family: var(--body); font-size: .95rem; font-weight: 700;
+      cursor: pointer; transition: all .2s;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .razorpay-btn svg { width: 18px; height: 18px; stroke: #fff; fill: none; stroke-width: 2; }
+    .razorpay-btn:hover { background: #bd0c0c; transform: translateY(-1px); }
+    .secure-note { font-size: .74rem; color: var(--muted); text-align: center; margin-top: 12px; }
+
+    /* ── FOOTER MINI ── */
+    .footer-mini {
+      background: #0F0F0F; padding: 24px 5vw;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 12px;
+    }
+    .footer-mini p { font-size: .8rem; color: rgba(255,255,255,.28); }
+    .footer-mini a { font-size: .8rem; color: rgba(255,255,255,.45); text-decoration: none; transition: color .2s; }
+    .footer-mini a:hover { color: var(--accent); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .why-grid, .offer-grid, .testi-strip-grid, .showcase-grid { grid-template-columns: 1fr !important; }
+      .process-steps { grid-template-columns: repeat(2, 1fr); }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .stats-row .stat-box { border-bottom: 1px solid rgba(255,255,255,.15); }
+      .vision-row { grid-template-columns: 1fr; }
+      .vision-form-wrap { padding: 26px; }
+      .hero-image-banner { height: 280px; }
+      .hero-image-banner-overlay h2 { font-size: 1.7rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── NAV ── -->
+  <nav id="navbar">
+    <a href="eventmanagement.html" class="logo">
+      <img src="logo.png" alt="Enovexa Solutions" />
+    </a>
+    <div class="nav-actions">
+      <a href="index.html" class="nav-portal">← Back to Home</a>
+      <a href="#vision" class="nav-cta">Plan Your Event →</a>
+    </div>
+  </nav>
+
+
+
+  <!-- ── HERO ── -->
+  <section class="service-hero">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a>
+      <span>›</span>
+      <a href="index.html#services">Services</a>
+      <span>›</span>
+      Event Management
+    </div>
+    <div class="hero-tag">🎪 Service · Event Management</div>
+    <h1>Events Engineered<br><em>To Be Unforgettable</em></h1>
+    <p class="hero-desc">
+      A great event doesn't happen by accident — it's engineered. Enovexa's event management
+      team combines meticulous planning, creative production, and flawless on-ground execution
+      to deliver events that leave lasting impressions. From concept to curtain call, we own
+      every detail so you stay focused on your guests and your goals.
+    </p>
+    <div class="hero-chips">
+      <div class="chip">🏟️ Any Scale</div>
+      <div class="chip">🎨 Bespoke Concepts</div>
+      <div class="chip">⚙️ End-to-End Managed</div>
+      <div class="chip">📍 Pan-India &amp; Global</div>
+      <div class="chip">🤝 Dedicated Team</div>
+      <div class="chip">✅ Zero-Stress Delivery</div>
+    </div>
+    <div class="hero-btns">
+      <a href="#vision" class="btn-primary">Tell Us About Your Event →</a>
+      <a href="#payment" class="btn-outline-light">Pay Invoice</a>
+    </div>
+  </section>
+
+  <!-- ── STATS ROW ── -->
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="num">500<span>+</span></div>
+      <div class="lbl">Events Delivered</div>
+    </div>
+    <div class="stat-box">
+      <div class="num">12<span>+</span></div>
+      <div class="lbl">Years Experience</div>
+    </div>
+    <div class="stat-box">
+      <div class="num">98<span>%</span></div>
+      <div class="lbl">Client Satisfaction</div>
+    </div>
+    <div class="stat-box">
+      <div class="num">5<span>★</span></div>
+      <div class="lbl">Client Rating</div>
+    </div>
+  </div>
+
+  <!-- ── WHY ENOVEXA ── -->
+  <section class="why-section">
+    <div class="why-grid">
+      <div class="why-text fade-up">
+        <span class="sec-label">Why Choose Us</span>
+        <h2 class="sec-title">Not Just an Event —<br><em>An Experience That Lasts</em></h2>
+        <p>
+          Generic event agencies check boxes. We build experiences. Whether it's a 50-person
+          board retreat, a 5,000-attendee product launch, or a destination wedding that spans
+          multiple continents, Enovexa brings the same obsessive attention to detail, creative
+          ambition, and operational precision to every single brief.
+        </p>
+        <p>
+          Our event producers, creative directors, logistics specialists, and on-ground coordinators
+          function as one seamless team — never siloed vendors throwing a quote over a wall.
+          From the first brainstorm to the final guest departure, one dedicated account lead
+          owns your event from end to end.
+        </p>
+        <p>
+          Our clients regularly tell us their events were the best their audiences had ever
+          attended. That's not coincidence — it's what happens when creative vision meets
+          military-grade logistics and a team that genuinely cares about your outcome.
+        </p>
+        <ul class="why-list">
+          <li>Single dedicated event producer as your one point of contact throughout</li>
+          <li>Creative concept presentations within 72 hours of your brief</li>
+          <li>Full vendor network — AV, décor, catering, security, logistics — managed by us</li>
+          <li>Real-time event day command centre with live issue resolution</li>
+          <li>Post-event analytics report — attendance, engagement, ROI measurement</li>
+          <li>Pan-India presence with international execution capability</li>
+        </ul>
+      </div>
+      <div class="why-img-wrap fade-up" style="transition-delay:.15s">
+        <img
+          src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=90"
+          alt="Enovexa Event Management — Grand Conference Setup"
+          loading="lazy"
+        />
+        <div class="why-badge">
+          <div class="big">500+</div>
+          <small>Events<br>Delivered</small>
+        </div>
+        <div class="why-floating">
+          <div class="why-floating-icon">🏆</div>
+          <div>
+            <strong>Award-Winning Event Studio</strong>
+            <span>Trusted across India, USA, AU &amp; UAE</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── WHAT WE DO ── -->
+  <section class="offer-section">
+    <div style="text-align:center">
+      <span class="sec-label fade-up" style="justify-content:center">What We Do</span>
+      <h2 class="sec-title fade-up" style="text-align:center">Every Type of Event,<br><em>Perfectly Executed</em></h2>
+      <p class="sec-sub fade-up" style="margin:14px auto 0;text-align:center">
+        From intimate private celebrations to massive corporate spectacles — we have the
+        expertise, vendor relationships, and creative firepower to make it extraordinary.
+      </p>
+    </div>
+    <div class="offer-grid">
+      <div class="offer-card fade-up">
+        <div class="offer-icon">🏢</div>
+        <h3>Corporate Events &amp; Conferences</h3>
+        <p>Annual general meetings, leadership summits, industry conferences, product launches, and town halls. We handle venue sourcing, AV production, speaker management, delegate registration, live streaming, and on-ground logistics — so your brand shows up flawlessly in front of the people who matter most.</p>
+        <div class="offer-tags">
+          <span class="offer-tag">Conferences</span>
+          <span class="offer-tag">Product Launches</span>
+          <span class="offer-tag">Town Halls</span>
+        </div>
+      </div>
+      <div class="offer-card fade-up" style="transition-delay:.08s">
+        <div class="offer-icon">💍</div>
+        <h3>Weddings &amp; Celebrations</h3>
+        <p>Destination weddings, multi-day celebrations, anniversary galas, and milestone parties designed and executed to reflect your unique story. From venue scouting and décor concept to catering, entertainment, and guest logistics — we orchestrate every chapter of your celebration with precision and heart.</p>
+        <div class="offer-tags">
+          <span class="offer-tag">Destination Weddings</span>
+          <span class="offer-tag">Galas</span>
+          <span class="offer-tag">Bespoke Décor</span>
+        </div>
+      </div>
+      <div class="offer-card fade-up" style="transition-delay:.16s">
+        <div class="offer-icon">🎤</div>
+        <h3>Exhibitions &amp; Trade Shows</h3>
+        <p>End-to-end exhibition management including booth design and fabrication, floor plan coordination, delegate management, live demonstrations, and post-show reporting. We've managed stalls and pavilions at India's largest trade fairs and international expos across Dubai, Singapore, and London.</p>
+        <div class="offer-tags">
+          <span class="offer-tag">Booth Design</span>
+          <span class="offer-tag">Trade Fairs</span>
+          <span class="offer-tag">International Expos</span>
+        </div>
+      </div>
+      <div class="offer-card fade-up" style="transition-delay:.04s">
+        <div class="offer-icon">🎓</div>
+        <h3>Seminars, Workshops &amp; Trainings</h3>
+        <p>Full-service seminar and training event management — from venue selection and registration systems to attendee communication, AV setup, material production, and post-event survey analytics. We make learning events engaging, smooth, and measurably effective for every participant in the room.</p>
+        <div class="offer-tags">
+          <span class="offer-tag">Workshops</span>
+          <span class="offer-tag">Seminars</span>
+          <span class="offer-tag">Training Days</span>
+        </div>
+      </div>
+      <div class="offer-card fade-up" style="transition-delay:.12s">
+        <div class="offer-icon">🎉</div>
+        <h3>Brand Activations &amp; Experiential</h3>
+        <p>Pop-up activations, product sampling campaigns, immersive brand experience zones, and consumer engagement events designed to generate authentic excitement, social sharing, and measurable brand uplift. We combine creative production with data capture so every activation generates tangible business results.</p>
+        <div class="offer-tags">
+          <span class="offer-tag">Brand Activation</span>
+          <span class="offer-tag">Pop-Ups</span>
+          <span class="offer-tag">Experiential</span>
+        </div>
+      </div>
+      <div class="offer-card fade-up" style="transition-delay:.20s">
+        <div class="offer-icon">🖥️</div>
+        <h3>Virtual &amp; Hybrid Events</h3>
+        <p>Broadcast-quality virtual events and hybrid experiences that connect in-person and remote audiences seamlessly. We handle streaming platform setup, virtual networking rooms, interactive Q&amp;A, live polls, on-demand content libraries, and global attendee management across time zones.</p>
+        <div class="offer-tags">
+          <span class="offer-tag">Live Streaming</span>
+          <span class="offer-tag">Hybrid</span>
+          <span class="offer-tag">Global Audiences</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PROCESS ── -->
+  <section class="process-section">
+    <div style="text-align:center">
+      <span class="sec-label fade-up" style="justify-content:center">How We Work</span>
+      <h2 class="sec-title fade-up" style="text-align:center">Our Proven <em>5-Step</em> Event Process</h2>
+      <p class="sec-sub fade-up" style="margin:14px auto 0;text-align:center">
+        A battle-tested methodology refined across 500+ events. Creative-first, logistics-obsessed,
+        and laser-focused on your experience — not just the checklist.
+      </p>
+    </div>
+    <div class="process-steps" style="margin-top:52px">
+      <div class="step fade-up">
+        <div class="step-num">1</div>
+        <h4>Discovery &amp; Brief</h4>
+        <p>We learn your objectives, audience, brand, and vision in depth. Nothing is assumed — every goal, constraint, and aspiration is captured before a single concept is sketched.</p>
+      </div>
+      <div class="step fade-up" style="transition-delay:.1s">
+        <div class="step-num">2</div>
+        <h4>Concept &amp; Design</h4>
+        <p>Our creative team presents full event concepts — theme, décor, flow, entertainment, and guest journey — within 72 hours. You approve every element before production begins.</p>
+      </div>
+      <div class="step fade-up" style="transition-delay:.2s">
+        <div class="step-num">3</div>
+        <h4>Planning &amp; Procurement</h4>
+        <p>Venue contracts, vendor briefings, timeline builds, budget tracking, and attendee communication systems — all managed centrally by your dedicated producer. Zero dropped balls.</p>
+      </div>
+      <div class="step fade-up" style="transition-delay:.3s">
+        <div class="step-num">4</div>
+        <h4>Rehearsal &amp; Setup</h4>
+        <p>Full site inspection, technical rehearsals, run-of-show finalisation, and staff briefings. Every scenario — including contingencies — is rehearsed before your first guest arrives.</p>
+      </div>
+      <div class="step fade-up" style="transition-delay:.4s">
+        <div class="step-num">5</div>
+        <h4>Event Day &amp; Debrief</h4>
+        <p>On-ground command centre, real-time coordination, and live issue resolution. Post-event we deliver a full analytics report and debrief — so every event is better than the last.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CAPABILITIES ── -->
+  <section class="tech-section">
+    <span class="sec-label fade-up">Capabilities &amp; Resources</span>
+    <h2 class="sec-title fade-up">Built With <em>Industry-Leading</em> Expertise &amp; Vendors</h2>
+    <p class="sec-sub fade-up">
+      We bring together the best creative talent, technical production teams, and vendor
+      networks in the industry — so you get world-class execution without the complexity
+      of managing dozens of relationships yourself.
+    </p>
+    <div class="tech-logos fade-up" style="margin-top:32px">
+      <span class="tech-badge">Stage &amp; Set Design</span>
+      <span class="tech-badge">AV &amp; Lighting Production</span>
+      <span class="tech-badge">Live Streaming</span>
+      <span class="tech-badge">Event App &amp; Registration Tech</span>
+      <span class="tech-badge">Catering &amp; F&amp;B</span>
+      <span class="tech-badge">Artist &amp; Speaker Management</span>
+      <span class="tech-badge">Décor &amp; Floral</span>
+      <span class="tech-badge">Photography &amp; Videography</span>
+      <span class="tech-badge">Security &amp; Crowd Management</span>
+      <span class="tech-badge">Transport &amp; Logistics</span>
+      <span class="tech-badge">Guest Communication</span>
+      <span class="tech-badge">Virtual Event Platforms</span>
+      <span class="tech-badge">Brand Fabrication</span>
+      <span class="tech-badge">Drone Coverage</span>
+      <span class="tech-badge">Simultaneous Translation</span>
+      <span class="tech-badge">Post-Event Analytics</span>
+    </div>
+  </section>
+
+  <!-- ── SHOWCASE ── -->
+  <section class="showcase-section">
+    <div style="text-align:center">
+      <span class="sec-label fade-up" style="justify-content:center">Our Work</span>
+      <h2 class="sec-title fade-up" style="text-align:center">Recent Events We've <em>Delivered</em></h2>
+      <p class="sec-sub fade-up" style="margin:14px auto 0;text-align:center">
+        A glimpse from our portfolio of 500+ events across corporate, social, and experiential categories.
+      </p>
+    </div>
+    <div class="showcase-grid">
+      <div class="showcase-card fade-up">
+        <img src="https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=800&q=90" alt="Concert Event" loading="lazy" />
+        <div class="showcase-overlay">
+          <span>Music · Live Concert</span>
+          <h4>10,000-Crowd Live Concert — Full Stage & Sound Production</h4>
+        </div>
+      </div>
+      <div class="showcase-card fade-up">
+        <img src="https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=800&q=90" alt="Concert Event" loading="lazy" />
+        <div class="showcase-overlay">
+          <span>Music · Concert </span>
+          <h4>10,000-Crowd Live Concert — Full Stage & Sound Production</h4>
+        </div>
+      </div>
+      <div class="showcase-card fade-up" style="transition-delay:.2s">
+        <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&q=90" alt="Concert Event" loading="lazy" />
+        <div class="showcase-overlay">
+          <span>Music · Concert </span>
+          <h4>10,000-Crowd Live Concert — Full Stage & Sound Production</h4>
+        </div>
+    </div>
+  </section>
+
+  <!-- ── TESTIMONIALS ── -->
+  <section class="testi-strip">
+    <div style="text-align:center">
+      <span class="sec-label fade-up" style="justify-content:center">Client Words</span>
+      <h2 class="sec-title fade-up" style="text-align:center">What Our Event Clients <em>Say</em></h2>
+    </div>
+    <div class="testi-strip-grid">
+      <div class="testi-card fade-up">
+        <div class="stars">★★★★★</div>
+        <p>"We handed Enovexa a brief on a Tuesday for a 3,000-delegate conference six weeks away. They delivered the most professionally run event our organisation has ever hosted. Not a single hiccup. Extraordinary."</p>
+        <div class="testi-author">
+          <img class="testi-avatar" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80" alt="Rajan Pillai" loading="lazy" />
+          <div class="testi-info">
+            <strong>Rajan Pillai</strong>
+            <span>CEO, Apex Industries Ltd.</span>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card fade-up" style="transition-delay:.1s">
+        <div class="stars">★★★★★</div>
+        <p>"Our destination wedding was managed by Enovexa across three venues in Udaipur over five days for 800 guests. Every single moment was perfect. They thought of things we didn't even know we needed. Truly magical."</p>
+        <div class="testi-author">
+          <img class="testi-avatar" src="https://images.unsplash.com/photo-1494790108755-2616b612b5bc?w=100&q=80" alt="Ananya &amp; Rohan" loading="lazy" />
+          <div class="testi-info">
+            <strong>Ananya &amp; Rohan Nair</strong>
+            <span>Clients, Destination Wedding 2024</span>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card fade-up" style="transition-delay:.2s">
+        <div class="stars">★★★★★</div>
+        <p>"Enovexa ran our national product launch across 12 cities simultaneously. The brand consistency, energy, and flawless execution at every location was something we genuinely didn't think was possible at that scale."</p>
+        <div class="testi-author">
+          <img class="testi-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80" alt="Karthik Menon" loading="lazy" />
+          <div class="testi-info">
+            <strong>Karthik Menon</strong>
+            <span>VP Marketing, FreshLeaf Consumer Brands</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FAQ ── -->
+  <section class="faq-section">
+    <div style="text-align:center">
+      <span class="sec-label fade-up" style="justify-content:center">FAQ</span>
+      <h2 class="sec-title fade-up" style="text-align:center">Common <em>Questions</em></h2>
+    </div>
+    <div class="faq-wrap">
+      <div class="faq-item fade-up">
+        <div class="faq-q" onclick="toggleFaq(this)">How far in advance should I book Enovexa for my event? <em class="arrow">+</em></div>
+        <div class="faq-a">For large-scale conferences, destination weddings, and multi-city activations, we recommend engaging us at least 3–6 months in advance to secure the best venues and vendors. For mid-scale corporate events and private celebrations, 6–12 weeks is workable. That said, we've delivered exceptional events in as little as 3 weeks when the brief arrived urgently — reach out and we'll tell you honestly what's achievable.</div>
+      </div>
+      <div class="faq-item fade-up" style="transition-delay:.07s">
+        <div class="faq-q" onclick="toggleFaq(this)">What is your minimum budget for event management? <em class="arrow">+</em></div>
+        <div class="faq-a">Our event management engagements start from ₹3,00,000 for smaller corporate events and seminars. Mid-scale conferences and celebrations typically range from ₹8,00,000 to ₹50,00,000. Large-scale conferences, destination weddings, and multi-city activations are quoted individually based on scope. We offer transparent, milestone-based payment structures — you always know exactly what you're getting and when payments are due.</div>
+      </div>
+      <div class="faq-item fade-up" style="transition-delay:.14s">
+        <div class="faq-q" onclick="toggleFaq(this)">Do you manage all vendors, or do we need to coordinate them? <em class="arrow">+</em></div>
+        <div class="faq-a">We take full vendor responsibility — briefing, contracting, quality control, and on-the-day coordination. You deal with one person: your dedicated event producer. We have long-term relationships with trusted AV teams, caterers, decorators, photographers, security agencies, and transport providers across India, which means better pricing, higher reliability, and zero coordination chaos on your end.</div>
+      </div>
+      <div class="faq-item fade-up" style="transition-delay:.21s">
+        <div class="faq-q" onclick="toggleFaq(this)">Can you manage events outside India? <em class="arrow">+</em></div>
+        <div class="faq-a">Yes. We have delivered events in the UAE, Singapore, UK, and Sri Lanka, and have established vendor partnerships in 15+ international destinations. For destination events, we conduct a site visit, engage trusted local partners, and maintain full remote oversight with an Enovexa producer on-ground throughout. International events require earlier engagement — typically 4–8 months in advance.</div>
+      </div>
+      <div class="faq-item fade-up" style="transition-delay:.28s">
+        <div class="faq-q" onclick="toggleFaq(this)">How do you handle unexpected issues on the event day? <em class="arrow">+</em></div>
+        <div class="faq-a">Every event we run includes a dedicated command centre and a documented contingency plan covering the most common failure scenarios — AV failure, weather changes, speaker no-shows, catering delays, and security incidents. Our on-ground team operates on a live communication channel and every lead has decision-making authority to resolve issues on the spot without escalating to you. You should never find out about a problem that has already been solved.</div>
+      </div>
+      <div class="faq-item fade-up" style="transition-delay:.35s">
+        <div class="faq-q" onclick="toggleFaq(this)">Do you provide post-event reporting and analytics? <em class="arrow">+</em></div>
+        <div class="faq-a">Every engagement includes a post-event debrief report covering attendance data, guest feedback scores, budget reconciliation, timeline adherence, vendor performance ratings, and recommendations for the next event. For corporate and brand events, we can also integrate with your CRM to track lead generation outcomes, social media amplification, and brand sentiment — turning your event spend into measurable business ROI.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CLIENT VISION FORM ── -->
+  <section class="vision-section" id="vision">
+    <div style="text-align:center">
+      <span class="sec-label fade-up" style="justify-content:center">Plan Your Event</span>
+      <h2 class="sec-title fade-up" style="text-align:center">Tell Us About Your <em>Event</em></h2>
+      <p class="sec-sub fade-up" style="margin:14px auto 0;text-align:center">
+        The more detail you share, the more accurately we can scope, plan, and price your event.
+        Select from the options below or describe your vision in your own words.
+      </p>
+    </div>
+
+    <div class="vision-form-wrap fade-up">
+      <div id="vision-form-inner">
+
+        <div class="vision-row">
+          <div class="vision-field">
+            <label>Your Full Name *</label>
+            <input type="text" id="vf-name" placeholder="e.g. Arjun Menon" />
+          </div>
+          <div class="vision-field">
+            <label>Email Address *</label>
+            <input type="email" id="vf-email" placeholder="your@email.com" />
+          </div>
+        </div>
+
+        <div class="vision-row">
+          <div class="vision-field">
+            <label>Phone / WhatsApp</label>
+            <input type="text" id="vf-phone" placeholder="+91 98765 43210" />
+          </div>
+          <div class="vision-field">
+            <label>Company / Organisation</label>
+            <input type="text" id="vf-company" placeholder="Your business or family name" />
+          </div>
+        </div>
+
+        <div class="vision-field full" style="margin-bottom:20px">
+          <label>What type of event are you planning? *</label>
+          <select id="vf-type">
+            <option value="">Select an event type...</option>
+            <option>Corporate Conference or Summit</option>
+            <option>Product Launch</option>
+            <option>Annual Day / Town Hall / Awards Night</option>
+            <option>Trade Show or Exhibition</option>
+            <option>Wedding or Engagement</option>
+            <option>Birthday or Anniversary Celebration</option>
+            <option>Brand Activation or Experiential Campaign</option>
+            <option>Seminar, Workshop or Training</option>
+            <option>Virtual or Hybrid Event</option>
+            <option>Multi-City or Roadshow Event</option>
+            <option>Not sure — need a consultation</option>
+          </select>
+        </div>
+
+        <span class="suggest-label">Services you need (tap all that apply)</span>
+        <div class="suggest-chips" id="feature-chips">
+          <button class="suggest-chip" onclick="toggleChip(this)">🏟️ Venue Sourcing &amp; Booking</button>
+          <button class="suggest-chip" onclick="toggleChip(this)">🎨 Creative Concept &amp; Theme Design</button>
+          <button class="suggest-chip" onclick="toggleChip(this)">🔊 AV, Stage &amp; Lighting Production</button>
+          <button class="suggest-chip" onclick="toggleChip(this)">🍽️ Catering &amp; F&amp;B Management</button>
+          <button class="suggest-chip" onclick="toggleChip(this)">📸 Photography &amp; Videography</button>
+          <button class="suggest-chip" onclick="toggleChip(this)">💐 Décor &amp; Floral Design</button>
+          <button class="suggest-chip" onclick="toggleChip(this)">📋 Guest Registration &amp; Management</button>
+          <button class="suggest-chip" onclick="toggleChip(this)">🎤 Artist &amp; Speaker Booking</button>
+          <button class="suggest-chip" onclick="toggleChip(this)">🖥️ Live Streaming &amp; Virtual Event</button>
+          <button class="suggest-chip" onclick="toggleChip(this)">🚌 Transport &amp; Logistics</button>
+          <button class="suggest-chip" onclick="toggleChip(this)">🔒 Security &amp; Crowd Management</button>
+          <button class="suggest-chip" onclick="toggleChip(this)">📊 Post-Event Analytics &amp; Reporting</button>
+          <button class="suggest-chip" onclick="toggleChip(this)">🌐 International / Destination Event</button>
+          <button class="suggest-chip" onclick="toggleChip(this)">🎁 Gift &amp; Hamper Curation</button>
+        </div>
+
+        <span class="suggest-label">Expected number of attendees</span>
+        <div class="suggest-chips" id="style-chips">
+          <button class="suggest-chip" onclick="toggleStyle(this)">Under 50</button>
+          <button class="suggest-chip" onclick="toggleStyle(this)">50 – 200</button>
+          <button class="suggest-chip" onclick="toggleStyle(this)">200 – 500</button>
+          <button class="suggest-chip" onclick="toggleStyle(this)">500 – 2,000</button>
+          <button class="suggest-chip" onclick="toggleStyle(this)">2,000 – 10,000</button>
+          <button class="suggest-chip" onclick="toggleStyle(this)">10,000+ / Multi-City</button>
+        </div>
+
+        <div class="vision-row">
+          <div class="vision-field">
+            <label>Estimated Budget (₹)</label>
+            <select id="vf-budget">
+              <option value="">Select a range...</option>
+              <option>Under ₹3,00,000</option>
+              <option>₹3,00,000 – ₹10,00,000</option>
+              <option>₹10,00,000 – ₹30,00,000</option>
+              <option>₹30,00,000 – ₹1,00,00,000</option>
+              <option>Above ₹1,00,00,000</option>
+              <option>Not decided yet</option>
+            </select>
+          </div>
+          <div class="vision-field">
+            <label>Preferred Event Date / Timeline</label>
+            <select id="vf-timeline">
+              <option value="">Select timeline...</option>
+              <option>Within 3 weeks (urgent)</option>
+              <option>1–2 months</option>
+              <option>2–4 months</option>
+              <option>4–6 months</option>
+              <option>6+ months away</option>
+              <option>Date not fixed yet</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="vision-field full" style="margin-bottom:24px">
+          <label>Describe your event vision in your own words</label>
+          <textarea
+            id="vf-desc"
+            placeholder="Tell us about your event — the occasion, your audience, the mood or theme you have in mind, any venues or locations you're considering, must-have elements, any events you've attended that inspired you, and anything specific that is critical to the success of this event. The more you share, the better our creative brief will be..."
+          ></textarea>
+        </div>
+
+        <button class="vision-submit" onclick="submitVision()">
+          🚀 Send My Event Brief to Enovexa
+        </button>
+        <p class="vision-note">📧 We'll respond within 24 hours with a tailored concept proposal · No spam, ever</p>
+
+      </div>
+
+      <div class="vision-success" id="vision-success">
+        <div class="big-check">✅</div>
+        <h3>Event Brief Received!</h3>
+        <p>
+          Thank you! Our event production team has your brief and will prepare a
+          detailed concept proposal within 24 hours.<br><br>
+          Want to talk sooner? Reach us directly:<br>
+          📞 +91 84689 00600 &nbsp;|&nbsp; 📧 info@enovexa.com
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PAYMENT PORTAL ── -->
+  <div class="payment-section" id="payment">
+    <div class="payment-wrap">
+      <div style="text-align:center">
+        <span class="sec-label fade-up" style="justify-content:center">Secure Payments</span>
+        <h2 class="sec-title fade-up">Pay Your <em>Invoice</em></h2>
+        <p class="sec-sub fade-up" style="margin:14px auto 0;max-width:400px;text-align:center">
+          Securely pay your Enovexa invoice online using UPI, cards, net banking, or wallets via Razorpay.
+        </p>
+      </div>
+      <div class="payment-card fade-up">
+        <h3>💳 Invoice Payment</h3>
+        <p>Enter your invoice details below to proceed with secure payment.</p>
+        <div class="pay-field">
+          <label>Invoice Number</label>
+          <input type="text" id="inv-id" placeholder="e.g. ENV-2025-001" />
+        </div>
+        <div class="pay-field">
+          <label>Your Name</label>
+          <input type="text" id="pay-name" placeholder="Full name on invoice" />
+        </div>
+        <div class="pay-field">
+          <label>Email Address</label>
+          <input type="email" id="pay-email" placeholder="your@email.com" />
+        </div>
+        <div class="pay-field">
+          <label>Amount (₹)</label>
+          <input type="number" id="pay-amount" placeholder="Enter amount from invoice" min="1" />
+        </div>
+        <div class="pay-methods">
+          <div class="pm">💳 Cards</div>
+          <div class="pm">📱 UPI</div>
+          <div class="pm">🏦 Net Banking</div>
+          <div class="pm">👛 Wallets</div>
+        </div>
+        <button class="razorpay-btn" onclick="initiatePayment()">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          Pay Securely via Razorpay
+        </button>
+        <div class="secure-note">🔒 256-bit SSL encrypted · PCI-DSS compliant · Powered by Razorpay</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FOOTER MINI ── -->
+  <div class="footer-mini">
+    <p>© 2025 Enovexa Solutions Pvt. Ltd. All rights reserved.</p>
+    <a href="index.html">← Back to Main Site</a>
+  </div>
+
+  <!-- ── INLINE JAVASCRIPT ── -->
+  <script>
+    // ── FADE-UP ON SCROLL ──
+    const fadeEls = document.querySelectorAll('.fade-up');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+    }, { threshold: 0.12 });
+    fadeEls.forEach(el => observer.observe(el));
+
+    // ── FAQ ACCORDION ──
+    function toggleFaq(el) {
+      const answer = el.nextElementSibling;
+      const isOpen = answer.classList.contains('open');
+      document.querySelectorAll('.faq-a').forEach(a => a.classList.remove('open'));
+      document.querySelectorAll('.faq-q').forEach(q => q.classList.remove('open'));
+      if (!isOpen) {
+        answer.classList.add('open');
+        el.classList.add('open');
+      }
+    }
+
+    // ── CHIP TOGGLE (multi-select services) ──
+    function toggleChip(btn) {
+      btn.classList.toggle('active');
+    }
+
+    // ── STYLE CHIP (single-select attendee count) ──
+    function toggleStyle(btn) {
+      const siblings = btn.closest('.suggest-chips').querySelectorAll('.suggest-chip');
+      siblings.forEach(s => s.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    // ── VISION FORM SUBMIT ──
+    function submitVision() {
+      const name = document.getElementById('vf-name').value.trim();
+      const email = document.getElementById('vf-email').value.trim();
+      const type = document.getElementById('vf-type').value;
+
+      if (!name) { alert('Please enter your full name.'); return; }
+      if (!email || !email.includes('@')) { alert('Please enter a valid email address.'); return; }
+      if (!type) { alert('Please select an event type.'); return; }
+
+      const services = [...document.querySelectorAll('#feature-chips .suggest-chip.active')]
+        .map(c => c.textContent.trim()).join(', ');
+
+      const attendees = document.querySelector('#style-chips .suggest-chip.active');
+      const attendeesLabel = attendees ? attendees.textContent.trim() : 'Not specified';
+
+      const budget = document.getElementById('vf-budget').value;
+      const timeline = document.getElementById('vf-timeline').value;
+      const desc = document.getElementById('vf-desc').value.trim();
+
+      const subject = encodeURIComponent(`Event Management Enquiry — ${name}`);
+      const body = encodeURIComponent(
+        `Name: ${name}\nEmail: ${email}\nPhone: ${document.getElementById('vf-phone').value}\nCompany: ${document.getElementById('vf-company').value}\n\nEvent Type: ${type}\nServices Needed: ${services || 'Not selected'}\nExpected Attendees: ${attendeesLabel}\nBudget: ${budget || 'Not specified'}\nTimeline: ${timeline || 'Not specified'}\n\nEvent Vision:\n${desc || 'Not provided'}`
+      );
+      window.location.href = `mailto:info@enovexa.com?subject=${subject}&body=${body}`;
+
+      document.getElementById('vision-form-inner').style.display = 'none';
+      const success = document.getElementById('vision-success');
+      success.classList.add('show');
+    }
+
+    // ── RAZORPAY PAYMENT ──
+    function initiatePayment() {
+      const name = document.getElementById('pay-name').value.trim();
+      const email = document.getElementById('pay-email').value.trim();
+      const amount = parseFloat(document.getElementById('pay-amount').value);
+      const invoice = document.getElementById('inv-id').value.trim();
+
+      if (!name) { alert('Please enter your name.'); return; }
+      if (!email || !email.includes('@')) { alert('Please enter a valid email.'); return; }
+      if (!amount || amount < 1) { alert('Please enter a valid amount.'); return; }
+      if (!invoice) { alert('Please enter your invoice number.'); return; }
+
+      const options = {
+        key: 'rzp_live_XXXXXXXXXXXXXXXX', // Replace with your Razorpay live key
+        amount: Math.round(amount * 100),
+        currency: 'INR',
+        name: 'Enovexa Solutions',
+        description: `Invoice Payment — ${invoice}`,
+        image: 'logo.png',
+        prefill: { name, email },
+        notes: { invoice_number: invoice },
+        theme: { color: '#C8102E' },
+        handler: function(response) {
+          alert(`✅ Payment successful!\n\nPayment ID: ${response.razorpay_payment_id}\nInvoice: ${invoice}\n\nA receipt has been sent to ${email}.`);
+        },
+        modal: {
+          ondismiss: function() { console.log('Payment modal closed.'); }
+        }
+      };
+
+      try {
+        const rzp = new Razorpay(options);
+        rzp.open();
+      } catch(e) {
+        alert('Payment gateway unavailable. Please contact us at info@enovexa.com');
+      }
+    }
+  </script>
+
+</body>
+</html>

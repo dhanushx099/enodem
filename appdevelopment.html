@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mobile App Development — Enovexa Solutions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+
+  <style>
+/* ─── RESET & BASE ─────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: Arial, sans-serif;
+  color: #1a1a1a;
+  background: #f5f5f5;
+  overflow-x: hidden;
+}
+a { text-decoration: none; color: inherit; }
+img { display: block; max-width: 100%; }
+em { font-style: normal; color:  #A50D25; }
+
+/* ─── CSS VARIABLES ────────────────────────────────────── */
+:root {
+  --red:       #C8102E;
+  --red-dark:   #A50D25;
+  --red-light: #C8102E;
+  --black:      #1a1a1a;
+  --grey-bg:    #f5f5f5;
+  --grey-card:  #ffffff;
+  --grey-border:#e0e0e0;
+  --text-muted: #666;
+  --nav-h:      72px;
+  --radius:     14px;
+  --shadow:     0 4px 24px rgba(0,0,0,.08);
+  --shadow-lg:  0 12px 48px rgba(0,0,0,.12);
+}
+
+/* ─── NAVBAR ───────────────────────────────────────────── */
+#navbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 999;
+  height: var(--nav-h);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 48px;
+  background: rgba(255,255,255,.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--grey-border);
+  transition: box-shadow .3s;
+}
+#navbar.scrolled { box-shadow: var(--shadow); }
+.logo img { height: 44px; width: auto; }
+.logo-text {
+  font-family: Arial, sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--black);
+  letter-spacing: -.5px;
+}
+.logo-text span { color: var(--red); }
+.nav-actions { display: flex; gap: 12px; align-items: center; }
+.nav-portal {
+  padding: 9px 18px;
+  border: 1.5px solid var(--grey-border);
+  border-radius: 8px;
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--black);
+  transition: border-color .2s, background .2s;
+}
+.nav-portal:hover { border-color: var(--red); background: #fff5f5; }
+.nav-cta {
+  padding: 9px 20px;
+  background: var(--red);
+  color: #fff;
+  border-radius: 8px;
+  font-size: .85rem;
+  font-weight: 700;
+  transition: background .2s, transform .15s;
+}
+.nav-cta:hover { background: var(--red-dark); transform: translateY(-1px); }
+
+/* ─── HERO ─────────────────────────────────────────────── */
+.service-hero {
+  min-height: 92vh;
+  padding: calc(var(--nav-h) + 80px) 48px 80px;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 60%, #3a1a17 100%);
+  color: #fff;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.service-hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 80%, rgba(192,57,43,.35) 0%, transparent 70%);
+  pointer-events: none;
+}
+.service-hero::after {
+  content: '';
+  position: absolute; top: -120px; right: -120px;
+  width: 500px; height: 500px;
+  border-radius: 50%;
+  border: 1px solid rgba(192,57,43,.15);
+  pointer-events: none;
+}
+.breadcrumb {
+  display: flex; align-items: center; gap: 8px;
+  font-size: .8rem; color: rgba(255,255,255,.55);
+  margin-bottom: 24px;
+  position: relative; z-index: 1;
+}
+.breadcrumb a { color: rgba(255,255,255,.55); transition: color .2s; }
+.breadcrumb a:hover { color: #fff; }
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(192,57,43,.25);
+  border: 1px solid rgba(192,57,43,.4);
+  color: #f5a49c;
+  padding: 7px 18px;
+  border-radius: 999px;
+  font-size: .82rem;
+  font-weight: 600;
+  margin-bottom: 28px;
+  position: relative; z-index: 1;
+}
+.service-hero h1 {
+  font-family: Arial, sans-serif;
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 24px;
+  position: relative; z-index: 1;
+}
+.service-hero h1 em { color: var(--red-light); }
+.hero-desc {
+  max-width: 680px;
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: rgba(255,255,255,.75);
+  margin-bottom: 36px;
+  position: relative; z-index: 1;
+}
+.hero-chips {
+  display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+  margin-bottom: 40px;
+  position: relative; z-index: 1;
+}
+.chip {
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.15);
+  color: rgba(255,255,255,.85);
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: .82rem;
+  font-weight: 500;
+  transition: background .2s, border-color .2s;
+}
+.chip:hover { background: rgba(192,57,43,.3); border-color: rgba(192,57,43,.5); }
+.hero-btns {
+  display: flex; gap: 14px; flex-wrap: wrap; justify-content: center;
+  position: relative; z-index: 1;
+}
+.btn-primary {
+  padding: 14px 32px;
+  background: var(--red);
+  color: #fff;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: .95rem;
+  transition: background .2s, transform .15s, box-shadow .2s;
+  box-shadow: 0 4px 20px rgba(192,57,43,.4);
+}
+.btn-primary:hover { background: var(--red-dark); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(192,57,43,.5); }
+.btn-outline-light {
+  padding: 14px 32px;
+  border: 1.5px solid rgba(255,255,255,.3);
+  color: #fff;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: .95rem;
+  transition: background .2s, border-color .2s;
+}
+.btn-outline-light:hover { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.6); }
+
+/* ─── STATS ROW ────────────────────────────────────────── */
+.stats-row {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  background: var(--red);
+  color: #fff;
+}
+.stat-box {
+  padding: 36px 24px;
+  text-align: center;
+  border-right: 1px solid rgba(255,255,255,.15);
+}
+.stat-box:last-child { border-right: none; }
+.stat-box .num {
+  font-family: Arial, sans-serif;
+  font-size: 2.6rem;
+  font-weight: 800;
+  line-height: 1;
+}
+.stat-box .num span { font-size: 1.6rem; }
+.stat-box .lbl { font-size: .82rem; font-weight: 500; opacity: .8; margin-top: 6px; }
+
+/* ─── SECTIONS SHARED ──────────────────────────────────── */
+section, .why-section, .offer-section, .process-section,
+.tech-section, .showcase-section, .testi-strip, .faq-section,
+.vision-section { padding: 90px 48px; }
+
+.sec-label {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: .78rem; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--red);
+  margin-bottom: 14px;
+}
+.sec-label::before {
+  content: '';
+  width: 24px; height: 2px; background: var(--red);
+}
+.sec-title {
+  font-family: Arial, sans-serif;
+  font-size: clamp(1.9rem, 3.5vw, 2.8rem);
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--black);
+}
+.sec-sub {
+  max-width: 600px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  font-size: .97rem;
+}
+
+/* ─── WHY SECTION ──────────────────────────────────────── */
+.why-section { background: #fff; }
+.why-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 72px;
+  align-items: center; max-width: 1200px; margin: 0 auto;
+}
+.why-text p { color: var(--text-muted); line-height: 1.8; margin-top: 14px; font-size: .97rem; }
+.why-list { list-style: none; margin-top: 22px; display: flex; flex-direction: column; gap: 10px; }
+.why-list li {
+  padding-left: 22px;
+  position: relative;
+  color: var(--text-muted);
+  font-size: .93rem;
+  line-height: 1.6;
+}
+.why-list li::before {
+  content: '✓';
+  position: absolute; left: 0;
+  color: var(--red); font-weight: 700;
+}
+.why-img-wrap {
+  position: relative; border-radius: 20px; overflow: visible;
+}
+.why-img-wrap img {
+  width: 100%; border-radius: 20px;
+  box-shadow: var(--shadow-lg);
+  aspect-ratio: 4/3; object-fit: cover;
+}
+.why-badge {
+  position: absolute; bottom: -20px; left: -20px;
+  background: var(--red); color: #fff;
+  padding: 18px 22px;
+  border-radius: 14px;
+  text-align: center;
+  box-shadow: 0 8px 28px rgba(192,57,43,.4);
+}
+.why-badge .big { font-family: Arial, Helvetica, sans-serif; font-size: 1.9rem; font-weight: 800; line-height: 1; }
+.why-badge small { font-size: .72rem; opacity: .85; }
+.why-floating {
+  position: absolute; top: -20px; right: -20px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 14px 18px;
+  display: flex; align-items: center; gap: 12px;
+  box-shadow: var(--shadow-lg);
+  max-width: 220px;
+}
+.why-floating-icon { font-size: 1.6rem; }
+.why-floating strong { display: block; font-size: .82rem; font-weight: 700; }
+.why-floating span { font-size: .74rem; color: var(--text-muted); }
+
+/* ─── OFFER / WHAT WE BUILD ────────────────────────────── */
+.offer-section { background: var(--grey-bg); }
+.offer-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 24px; margin-top: 52px; max-width: 1200px; margin-left: auto; margin-right: auto;
+}
+.offer-card {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 32px 28px;
+  border: 1px solid var(--grey-border);
+  transition: transform .25s, box-shadow .25s, border-color .25s;
+}
+.offer-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+  border-color: rgba(192,57,43,.2);
+}
+.offer-icon { font-size: 2rem; margin-bottom: 18px; }
+.offer-card h3 { font-family: Arial, Helvetica, sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; }
+.offer-card p { font-size: .88rem; color: var(--text-muted); line-height: 1.75; }
+.offer-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.offer-tag {
+  background: #f5f5f5; color: var(--black);
+  padding: 4px 12px; border-radius: 999px;
+  font-size: .73rem; font-weight: 600;
+}
+
+/* ─── PROCESS ──────────────────────────────────────────── */
+.process-section { background: #fff; }
+.process-steps {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  gap: 24px; max-width: 1200px; margin: 52px auto 0;
+}
+.step {
+  text-align: center; padding: 32px 20px;
+  background: var(--grey-bg);
+  border-radius: var(--radius);
+  border: 1px solid var(--grey-border);
+  transition: transform .25s, box-shadow .25s;
+}
+.step:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+.step-num {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--red); color: #fff;
+  font-family: Arial, Helvetica, sans-serif; font-weight: 800; font-size: 1.1rem;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 16px;
+}
+.step h4 { font-family: Arial, Helvetica, sans-serif; font-size: .95rem; font-weight: 700; margin-bottom: 10px; }
+.step p { font-size: .82rem; color: var(--text-muted); line-height: 1.65; }
+
+/* ─── TECH STACK ───────────────────────────────────────── */
+.tech-section { background: var(--grey-bg); max-width: 100%; }
+.tech-section > * { max-width: 900px; }
+.tech-logos {
+  display: flex; flex-wrap: wrap; gap: 12px;
+}
+.tech-badge {
+  background: #fff;
+  border: 1.5px solid var(--grey-border);
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: .83rem; font-weight: 600;
+  transition: border-color .2s, color .2s, background .2s;
+}
+.tech-badge:hover { border-color: var(--red); color: var(--red); background: #fff5f5; }
+
+/* ─── SHOWCASE ─────────────────────────────────────────── */
+.showcase-section { background: #fff; }
+.showcase-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 24px; margin-top: 52px; max-width: 1200px; margin-left: auto; margin-right: auto;
+}
+.showcase-card {
+  position: relative; border-radius: var(--radius); overflow: hidden;
+  aspect-ratio: 4/3;
+  cursor: pointer;
+}
+.showcase-card img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform .5s;
+}
+.showcase-card:hover img { transform: scale(1.06); }
+.showcase-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,.75) 0%, transparent 55%);
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 24px;
+  color: #fff;
+}
+.showcase-overlay span { font-size: .75rem; font-weight: 600; opacity: .7; margin-bottom: 6px; }
+.showcase-overlay h4 { font-family: Arial, Helvetica, sans-serif; font-size: .97rem; font-weight: 700; line-height: 1.4; }
+
+/* ─── TESTIMONIALS ─────────────────────────────────────── */
+.testi-strip { background: var(--grey-bg); }
+.testi-strip-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 24px; margin-top: 48px; max-width: 1200px; margin-left: auto; margin-right: auto;
+}
+.testi-card {
+  background: #fff; border-radius: var(--radius); padding: 32px 28px;
+  border: 1px solid var(--grey-border);
+  transition: transform .25s, box-shadow .25s;
+}
+.testi-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+.stars { color: var(--red); font-size: 1rem; margin-bottom: 14px; letter-spacing: 2px; }
+.testi-card p { font-size: .88rem; color: var(--text-muted); line-height: 1.75; font-style: italic; }
+.testi-author { display: flex; align-items: center; gap: 12px; margin-top: 20px; }
+.testi-avatar { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; }
+.testi-info strong { display: block; font-size: .88rem; font-weight: 700; }
+.testi-info span { font-size: .77rem; color: var(--text-muted); }
+
+/* ─── FAQ ──────────────────────────────────────────────── */
+.faq-section { background: #fff; }
+.faq-wrap { max-width: 760px; margin: 48px auto 0; display: flex; flex-direction: column; gap: 0; }
+.faq-item { border-bottom: 1px solid var(--grey-border); }
+.faq-q {
+  padding: 20px 4px;
+  font-weight: 600; font-size: .97rem;
+  cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center;
+  transition: color .2s;
+  user-select: none;
+}
+.faq-q:hover { color: var(--red); }
+.faq-q .arrow { font-size: 1.3rem; font-weight: 400; color: var(--red); transition: transform .3s; }
+.faq-q.open .arrow { transform: rotate(45deg); }
+.faq-a {
+  max-height: 0; overflow: hidden;
+  font-size: .9rem; color: var(--text-muted); line-height: 1.75;
+  transition: max-height .4s ease, padding .3s;
+}
+.faq-a.open { max-height: 300px; padding-bottom: 18px; }
+
+/* ─── VISION FORM ──────────────────────────────────────── */
+.vision-section { background: var(--grey-bg); }
+.vision-form-wrap {
+  max-width: 860px; margin: 48px auto 0;
+  background: #fff; border-radius: 20px; padding: 48px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--grey-border);
+}
+.vision-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+.vision-field { display: flex; flex-direction: column; gap: 7px; }
+.vision-field.full { grid-column: 1/-1; }
+.vision-field label { font-size: .82rem; font-weight: 700; color: var(--black); }
+.vision-field input,
+.vision-field select,
+.vision-field textarea {
+  padding: 11px 14px;
+  border: 1.5px solid var(--grey-border);
+  border-radius: 9px;
+  font-family: inherit;
+  font-size: .88rem;
+  color: var(--black);
+  background: #fafafa;
+  outline: none;
+  transition: border-color .2s, background .2s;
+}
+.vision-field input:focus,
+.vision-field select:focus,
+.vision-field textarea:focus {
+  border-color: var(--red);
+  background: #fff;
+}
+.vision-field textarea { min-height: 130px; resize: vertical; }
+.suggest-label { font-size: .8rem; font-weight: 700; color: var(--black); display: block; margin: 18px 0 10px; }
+.suggest-chips { display: flex; flex-wrap: wrap; gap: 9px; margin-bottom: 6px; }
+.suggest-chip {
+  background: #f5f5f5; border: 1.5px solid var(--grey-border);
+  padding: 7px 14px; border-radius: 999px;
+  font-size: .79rem; font-weight: 600;
+  cursor: pointer; transition: background .2s, border-color .2s, color .2s;
+}
+.suggest-chip:hover { border-color: var(--red); color: var(--red); }
+.suggest-chip.active { background: var(--red); border-color: var(--red); color: #fff; }
+.vision-submit {
+  width: 100%; padding: 16px;
+  background: var(--red); color: #fff;
+  border: none; border-radius: 10px;
+  font-family: inherit; font-size: 1rem; font-weight: 700;
+  cursor: pointer;
+  transition: background .2s, transform .15s, box-shadow .2s;
+  margin-top: 8px;
+  box-shadow: 0 4px 20px rgba(192,57,43,.35);
+}
+.vision-submit:hover { background: var(--red-dark); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(192,57,43,.45); }
+.vision-note { text-align: center; font-size: .78rem; color: var(--text-muted); margin-top: 14px; }
+.vision-success { display: none; text-align: center; padding: 48px 24px; }
+.vision-success .big-check { font-size: 3rem; margin-bottom: 18px; }
+.vision-success h3 { font-family: Arial, Helvetica, sans-serif; font-size: 1.6rem; font-weight: 800; margin-bottom: 14px; }
+.vision-success p { color: var(--text-muted); line-height: 1.8; }
+
+/* ─── PAYMENT SECTION ──────────────────────────────────── */
+.payment-section { background: #fff; padding: 90px 48px; }
+.payment-wrap { max-width: 900px; margin: 0 auto; }
+.payment-card {
+  max-width: 500px; margin: 40px auto 0;
+  background: var(--grey-bg); border-radius: 20px; padding: 40px;
+  border: 1px solid var(--grey-border);
+  box-shadow: var(--shadow);
+}
+.payment-card h3 { font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 800; margin-bottom: 8px; }
+.payment-card > p { font-size: .88rem; color: var(--text-muted); margin-bottom: 24px; }
+.pay-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+.pay-field label { font-size: .8rem; font-weight: 700; }
+.pay-field input {
+  padding: 11px 14px;
+  border: 1.5px solid var(--grey-border); border-radius: 9px;
+  font-family: inherit; font-size: .88rem; background: #fff; outline: none;
+  transition: border-color .2s;
+}
+.pay-field input:focus { border-color: var(--red); }
+.pay-methods { display: flex; gap: 10px; flex-wrap: wrap; margin: 18px 0; }
+.pm {
+  background: #fff; border: 1.5px solid var(--grey-border);
+  padding: 8px 14px; border-radius: 8px;
+  font-size: .78rem; font-weight: 600;
+}
+.razorpay-btn {
+  width: 100%; padding: 15px;
+  background: #A50D25; color: #fff;
+  border: none; border-radius: 10px;
+  font-family: inherit; font-size: .95rem; font-weight: 700;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
+  transition: background .2s;
+}
+.razorpay-btn svg { width: 20px; height: 20px; fill: none; stroke: #fff; stroke-width: 2; }
+.razorpay-btn:hover { background: #0a3575; }
+.secure-note { text-align: center; font-size: .74rem; color: var(--text-muted); margin-top: 12px; }
+
+/* ─── FOOTER MINI ──────────────────────────────────────── */
+.footer-mini {
+  background: var(--black); color: rgba(255,255,255,.55);
+  padding: 28px 48px;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: .82rem;
+}
+.footer-mini a { color: rgba(255,255,255,.55); transition: color .2s; }
+.footer-mini a:hover { color: #fff; }
+
+/* ─── FADE-UP ANIMATION ────────────────────────────────── */
+.fade-up {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity .65s ease, transform .65s ease;
+}
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── RESPONSIVE ───────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .offer-grid, .process-steps { grid-template-columns: repeat(2, 1fr); }
+  .why-grid { gap: 40px; }
+}
+@media (max-width: 768px) {
+  #navbar { padding: 0 20px; }
+  .service-hero, section, .why-section, .offer-section, .process-section,
+  .tech-section, .showcase-section, .testi-strip, .faq-section,
+  .vision-section, .payment-section { padding-left: 20px; padding-right: 20px; }
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .why-grid, .offer-grid, .showcase-grid, .testi-strip-grid,
+  .process-steps { grid-template-columns: 1fr; }
+  .vision-row { grid-template-columns: 1fr; }
+  .vision-form-wrap { padding: 28px 20px; }
+  .footer-mini { flex-direction: column; gap: 12px; text-align: center; }
+  .why-badge, .why-floating { display: none; }
+}
+
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav id="navbar">
+  <a href="appdevelopment.html" class="logo">
+    <img src="logo.png" alt="Enovexa Solutions" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" />
+    <span class="logo-text" style="display:none"><span>E</span>NOVEXA</span>
+  </a>
+  <div class="nav-actions">
+    <a href="index.html" class="nav-portal">← Back to Home</a>
+    <a href="#vision" class="nav-cta">Start Your Project →</a>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="service-hero">
+  <div class="breadcrumb">
+    <a href="index.html">Home</a>
+    <span>›</span>
+    <a href="index.html#services">Services</a>
+    <span>›</span>
+    Mobile App Development
+  </div>
+  <div class="hero-tag">📱 Service · Mobile App Development</div>
+  <h1>Powerful, Scalable<br><em>Mobile Apps</em></h1>
+  <p class="hero-desc">
+    We don't just build apps — we craft mobile experiences that users love and businesses rely on.
+    From sleek consumer apps to enterprise-grade platforms, Enovexa delivers iOS and Android
+    solutions built to perform, designed to delight, and engineered to scale. Every screen is
+    intentional, every interaction is smooth, and every app ships on time.
+  </p>
+  <div class="hero-chips">
+    <div class="chip">⚡ Lightning Fast</div>
+    <div class="chip">🍎 iOS &amp; Android</div>
+    <div class="chip">🔒 Secure &amp; Scalable</div>
+    <div class="chip">🎯 Conversion Optimised</div>
+    <div class="chip">🤖 AI-Integrated</div>
+    <div class="chip">🕐 72-hr Kickoff</div>
+  </div>
+  <div class="hero-btns">
+    <a href="#vision" class="btn-primary">Tell Us Your Vision →</a>
+    <a href="#payment" class="btn-outline-light">Pay Invoice</a>
+  </div>
+</section>
+
+<!-- ── STATS ROW ── -->
+<div class="stats-row">
+  <div class="stat-box">
+    <div class="num">60<span>+</span></div>
+    <div class="lbl">Apps Launched</div>
+  </div>
+  <div class="stat-box">
+    <div class="num">4×</div>
+    <div class="lbl">Avg. User Growth</div>
+  </div>
+  <div class="stat-box">
+    <div class="num">99<span>%</span></div>
+    <div class="lbl">Crash-Free Rate</div>
+  </div>
+  <div class="stat-box">
+    <div class="num">5<span>★</span></div>
+    <div class="lbl">Client Rating</div>
+  </div>
+</div>
+
+<!-- ── WHY ENOVEXA ── -->
+<section class="why-section">
+  <div class="why-grid">
+    <div class="why-text fade-up">
+      <span class="sec-label">Why Choose Us</span>
+      <h2 class="sec-title">More Than an App —<br><em>A Mobile Growth Engine</em></h2>
+      <p>
+        In today's mobile-first world, your app is your most powerful business tool — available
+        in every pocket, across every time zone. At Enovexa, we understand that a great mobile app
+        isn't just about looking good; it's about driving measurable engagement, retention, and
+        revenue. Every project begins with understanding your users, your market, and your goals.
+      </p>
+      <p>
+        Our team of designers, developers, and product strategists work together in one seamless
+        workflow. From the first wireframe to post-launch analytics, we own every stage of the
+        mobile product lifecycle — so you never juggle multiple vendors again.
+      </p>
+      <p>
+        We've helped 60+ businesses — from early-stage startups to global enterprises — launch
+        apps that generate real engagement and revenue. Our clients see an average 4× increase
+        in user retention within 3 months of launch.
+      </p>
+      <ul class="why-list">
+        <li>Dedicated product manager assigned from day one</li>
+        <li>Weekly progress demos — no black-box development</li>
+        <li>Performance-first architecture built into every project</li>
+        <li>Post-launch support included for 30 days, no extra charge</li>
+        <li>Source code ownership — it's yours, always</li>
+        <li>Multi-language &amp; multi-region ready for global expansion</li>
+      </ul>
+    </div>
+    <div class="why-img-wrap fade-up" style="transition-delay:.15s">
+      <img
+        src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&q=90"
+        alt="Enovexa App Team"
+        loading="lazy"
+      />
+      <div class="why-badge">
+        <div class="big">30+</div>
+        <small>Combined<br>Yrs Exp.</small>
+      </div>
+      <div class="why-floating">
+        <div class="why-floating-icon">🏆</div>
+        <div>
+          <strong>Award-Winning App Studio</strong>
+          <span>Top-rated across India, USA &amp; UAE</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── WHAT WE BUILD ── -->
+<section class="offer-section">
+  <div style="text-align:center">
+    <span class="sec-label fade-up" style="justify-content:center">What We Build</span>
+    <h2 class="sec-title fade-up" style="text-align:center">Every Type of Mobile<br><em>App, Delivered</em></h2>
+    <p class="sec-sub fade-up" style="margin:14px auto 0;text-align:center">
+      Whether you need a consumer lifestyle app or a mission-critical enterprise platform, our team
+      delivers pixel-perfect results with business impact at the core.
+    </p>
+  </div>
+  <div class="offer-grid">
+    <div class="offer-card fade-up">
+      <div class="offer-icon">🍎</div>
+      <h3>Native iOS Apps</h3>
+      <p>Purpose-built Swift and SwiftUI apps for iPhone and iPad that meet Apple's highest standards. Optimised for performance, battery life, and a fluid UX that earns five-star App Store reviews. We handle submission, review, and ongoing updates end to end.</p>
+      <div class="offer-tags">
+        <span class="offer-tag">Swift</span>
+        <span class="offer-tag">SwiftUI</span>
+        <span class="offer-tag">App Store</span>
+      </div>
+    </div>
+    <div class="offer-card fade-up" style="transition-delay:.08s">
+      <div class="offer-icon">🤖</div>
+      <h3>Native Android Apps</h3>
+      <p>Kotlin and Jetpack Compose apps engineered for the full Android ecosystem — phones, tablets, foldables. Material Design 3 aesthetics, deep Google service integration, and optimisation across hundreds of device profiles so every user gets a premium experience.</p>
+      <div class="offer-tags">
+        <span class="offer-tag">Kotlin</span>
+        <span class="offer-tag">Jetpack</span>
+        <span class="offer-tag">Play Store</span>
+      </div>
+    </div>
+    <div class="offer-card fade-up" style="transition-delay:.16s">
+      <div class="offer-icon">⚛️</div>
+      <h3>Cross-Platform Apps</h3>
+      <p>Single codebase, two-platform reach — built with React Native or Flutter. Near-native performance, shared business logic, and 40% faster delivery timelines. Ideal for startups wanting iOS + Android without doubling their budget.</p>
+      <div class="offer-tags">
+        <span class="offer-tag">React Native</span>
+        <span class="offer-tag">Flutter</span>
+        <span class="offer-tag">Expo</span>
+      </div>
+    </div>
+    <div class="offer-card fade-up" style="transition-delay:.04s">
+      <div class="offer-icon">🏢</div>
+      <h3>Enterprise Mobile Apps</h3>
+      <p>Secure, scalable internal tools, field-force apps, and B2B platforms with SSO, MDM support, role-based access, and offline-first architecture. Built for 10,000+ concurrent users across global teams — on time and within compliance.</p>
+      <div class="offer-tags">
+        <span class="offer-tag">SSO / MDM</span>
+        <span class="offer-tag">Offline Mode</span>
+        <span class="offer-tag">Enterprise</span>
+      </div>
+    </div>
+    <div class="offer-card fade-up" style="transition-delay:.12s">
+      <div class="offer-icon">🛒</div>
+      <h3>E-Commerce &amp; Marketplace Apps</h3>
+      <p>Mobile commerce apps with seamless Razorpay, Stripe, and PayPal integration, smart product discovery, push-notification-driven re-engagement, and real-time order tracking. Clients see an average 3× increase in mobile revenue within 90 days of launch.</p>
+      <div class="offer-tags">
+        <span class="offer-tag">Payments</span>
+        <span class="offer-tag">Push Notifications</span>
+        <span class="offer-tag">Analytics</span>
+      </div>
+    </div>
+    <div class="offer-card fade-up" style="transition-delay:.20s">
+      <div class="offer-icon">🔌</div>
+      <h3>API &amp; Backend Integration</h3>
+      <p>Robust REST and GraphQL APIs, real-time WebSocket feeds, and third-party integrations with Salesforce, Firebase, Twilio, and Razorpay. We connect your app to your entire tech ecosystem so data flows seamlessly across every touchpoint.</p>
+      <div class="offer-tags">
+        <span class="offer-tag">REST / GraphQL</span>
+        <span class="offer-tag">Firebase</span>
+        <span class="offer-tag">AWS / GCP</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PROCESS ── -->
+<section class="process-section">
+  <div style="text-align:center">
+    <span class="sec-label fade-up" style="justify-content:center">How We Work</span>
+    <h2 class="sec-title fade-up" style="text-align:center">Our Proven <em>5-Step</em> Process</h2>
+    <p class="sec-sub fade-up" style="margin:14px auto 0;text-align:center">
+      A battle-tested methodology refined across 60+ app projects. Transparent at every step,
+      delivered on time, every time.
+    </p>
+  </div>
+  <div class="process-steps">
+    <div class="step fade-up">
+      <div class="step-num">1</div>
+      <h4>Discovery Call</h4>
+      <p>We deep-dive into your users, goals, platform requirements, and competitors. Nothing assumed — everything documented.</p>
+    </div>
+    <div class="step fade-up" style="transition-delay:.1s">
+      <div class="step-num">2</div>
+      <h4>UI/UX Design</h4>
+      <p>Wireframes → hi-fi mockups → interactive prototype. You approve every screen before a single line of code is written.</p>
+    </div>
+    <div class="step fade-up" style="transition-delay:.2s">
+      <div class="step-num">3</div>
+      <h4>Development</h4>
+      <p>Agile 2-week sprints. Weekly build demos via TestFlight / Firebase. Full Git version control. No surprises.</p>
+    </div>
+    <div class="step fade-up" style="transition-delay:.3s">
+      <div class="step-num">4</div>
+      <h4>QA &amp; Testing</h4>
+      <p>Device lab testing across 50+ phones and tablets, security audits, and accessibility checks. Zero-defect launch policy.</p>
+    </div>
+    <div class="step fade-up" style="transition-delay:.4s">
+      <div class="step-num">5</div>
+      <h4>Launch &amp; Support</h4>
+      <p>Smooth App Store &amp; Play Store submission. Zero-rejection guarantee. 30 days post-launch support included.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── TECH STACK ── -->
+<section class="tech-section">
+  <span class="sec-label fade-up">Technologies We Use</span>
+  <h2 class="sec-title fade-up">Built With <em>Industry-Leading</em> Technology</h2>
+  <p class="sec-sub fade-up">
+    We don't lock you into proprietary stacks. We use the best open-source, battle-tested
+    mobile technologies so your app is maintainable, scalable, and future-proof.
+  </p>
+  <div class="tech-logos fade-up" style="margin-top:32px">
+    <span class="tech-badge">React Native</span>
+    <span class="tech-badge">Flutter</span>
+    <span class="tech-badge">Swift</span>
+    <span class="tech-badge">Kotlin</span>
+    <span class="tech-badge">SwiftUI</span>
+    <span class="tech-badge">Jetpack Compose</span>
+    <span class="tech-badge">Expo</span>
+    <span class="tech-badge">Firebase</span>
+    <span class="tech-badge">AWS Amplify</span>
+    <span class="tech-badge">GraphQL</span>
+    <span class="tech-badge">Node.js</span>
+    <span class="tech-badge">PostgreSQL</span>
+    <span class="tech-badge">MongoDB</span>
+    <span class="tech-badge">Redis</span>
+    <span class="tech-badge">Stripe</span>
+    <span class="tech-badge">Razorpay</span>
+  </div>
+</section>
+
+<!-- ── SHOWCASE ── -->
+<section class="showcase-section">
+  <div style="text-align:center">
+    <span class="sec-label fade-up" style="justify-content:center">Our Work</span>
+    <h2 class="sec-title fade-up" style="text-align:center">Recent App <em>Projects</em></h2>
+    <p class="sec-sub fade-up" style="margin:14px auto 0;text-align:center">
+      A small selection from our portfolio of 60+ delivered iOS and Android applications.
+    </p>
+  </div>
+  <div class="showcase-grid">
+    <div class="showcase-card fade-up">
+      <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?w=800&q=90" alt="FinTech App" loading="lazy" />
+      <div class="showcase-overlay">
+        <span>FinTech · India</span>
+        <h4>Digital Payments App — 500K+ Active Users</h4>
+      </div>
+    </div>
+    <div class="showcase-card fade-up" style="transition-delay:.1s">
+      <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&q=90" alt="Healthcare App" loading="lazy" />
+      <div class="showcase-overlay">
+        <span>HealthTech · USA</span>
+        <h4>Telemedicine Platform — 12,000+ Daily Consultations</h4>
+      </div>
+    </div>
+    <div class="showcase-card fade-up" style="transition-delay:.2s">
+      <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=90" alt="Logistics App" loading="lazy" />
+      <div class="showcase-overlay">
+        <span>Logistics · UAE</span>
+        <h4>Fleet Tracking App — Real-Time for 3,000 Vehicles</h4>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TESTIMONIALS ── -->
+<section class="testi-strip">
+  <div style="text-align:center">
+    <span class="sec-label fade-up" style="justify-content:center">Client Words</span>
+    <h2 class="sec-title fade-up" style="text-align:center">What Our App Clients <em>Say</em></h2>
+  </div>
+  <div class="testi-strip-grid">
+    <div class="testi-card fade-up">
+      <div class="stars">★★★★★</div>
+      <p>"Enovexa built our cross-platform app in 8 weeks and it hit the App Store with a 4.9-star rating from day one. User retention improved 4× compared to our old web app. Exceptional team."</p>
+      <div class="testi-author">
+        <img class="testi-avatar" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80" alt="James Holloway" loading="lazy" />
+        <div class="testi-info">
+          <strong>James Holloway</strong>
+          <span>CEO, FitPulse USA</span>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card fade-up" style="transition-delay:.1s">
+      <div class="stars">★★★★★</div>
+      <p>"We needed a complex doctor-patient booking app in under 6 weeks. Enovexa delivered in 5, with zero critical bugs at launch. Their QA process is incredibly rigorous and transparent."</p>
+      <div class="testi-author">
+        <img class="testi-avatar" src="https://images.unsplash.com/photo-1494790108755-2616b612b5bc?w=100&q=80" alt="Dr. Ananya Krishnan" loading="lazy" />
+        <div class="testi-info">
+          <strong>Dr. Ananya Krishnan</strong>
+          <span>Founder, CareConnect India</span>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card fade-up" style="transition-delay:.2s">
+      <div class="stars">★★★★★</div>
+      <p>"Our logistics app now tracks 3,000 vehicles in real time with no latency issues — something two previous agencies failed to achieve. Enovexa just built it right, the first time."</p>
+      <div class="testi-author">
+        <img class="testi-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80" alt="Khalid Al-Mansouri" loading="lazy" />
+        <div class="testi-info">
+          <strong>Khalid Al-Mansouri</strong>
+          <span>Director, SwiftFleet UAE</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FAQ ── -->
+<section class="faq-section">
+  <div style="text-align:center">
+    <span class="sec-label fade-up" style="justify-content:center">FAQ</span>
+    <h2 class="sec-title fade-up" style="text-align:center">Common <em>Questions</em></h2>
+  </div>
+  <div class="faq-wrap">
+    <div class="faq-item fade-up">
+      <div class="faq-q" onclick="toggleFaq(this)">How long does a mobile app project take?<em class="arrow">+</em></div>
+      <div class="faq-a">A typical MVP app takes 6–10 weeks. Feature-rich consumer apps and enterprise platforms can take 12–24 weeks depending on scope. We always agree on a timeline before starting, with milestones tracked weekly so you always know where things stand.</div>
+    </div>
+    <div class="faq-item fade-up" style="transition-delay:.07s">
+      <div class="faq-q" onclick="toggleFaq(this)">What does a mobile app cost?<em class="arrow">+</em></div>
+      <div class="faq-a">Pricing depends on complexity. Simple single-platform apps start from ₹80,000. Cross-platform MVPs from ₹1,50,000. Full-featured consumer or enterprise apps are quoted after a discovery call. We offer flexible milestone-based payment plans for larger projects.</div>
+    </div>
+    <div class="faq-item fade-up" style="transition-delay:.14s">
+      <div class="faq-q" onclick="toggleFaq(this)">Do you provide ongoing app maintenance?<em class="arrow">+</em></div>
+      <div class="faq-a">Yes. We offer monthly maintenance plans covering OS update compatibility, performance monitoring, bug fixes, and feature additions. Plans start from ₹8,000/month. The first 30 days post-launch are always covered at no extra charge.</div>
+    </div>
+    <div class="faq-item fade-up" style="transition-delay:.21s">
+      <div class="faq-q" onclick="toggleFaq(this)">Do you build for both iOS and Android?<em class="arrow">+</em></div>
+      <div class="faq-a">Absolutely — we offer native iOS (Swift), native Android (Kotlin), and cross-platform (React Native / Flutter) development. We'll recommend the best approach based on your budget, timeline, and performance requirements during the discovery call.</div>
+    </div>
+    <div class="faq-item fade-up" style="transition-delay:.28s">
+      <div class="faq-q" onclick="toggleFaq(this)">Do I own the app and its source code?<em class="arrow">+</em></div>
+      <div class="faq-a">Yes, 100%. All source code, design files, and assets are transferred to you upon final payment. We don't hold your product hostage with proprietary tools or licensing restrictions. Your app, your business, your code.</div>
+    </div>
+    <div class="faq-item fade-up" style="transition-delay:.35s">
+      <div class="faq-q" onclick="toggleFaq(this)">Will you handle App Store and Play Store submission?<em class="arrow">+</em></div>
+      <div class="faq-a">Yes, we manage the entire submission process — App Store Connect, Google Play Console, compliance checks, screenshots, descriptions, and review responses. We offer a zero-rejection guarantee; if Apple or Google rejects the build, we fix and resubmit at no additional cost.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CLIENT VISION FORM ── -->
+<section class="vision-section" id="vision">
+  <div style="text-align:center">
+    <span class="sec-label fade-up" style="justify-content:center">Start Your Project</span>
+    <h2 class="sec-title fade-up" style="text-align:center">Tell Us Your <em>Vision</em></h2>
+    <p class="sec-sub fade-up" style="margin:14px auto 0;text-align:center">
+      Describe how you want your app built — the more detail you share, the better we can
+      tailor our proposal. Pick from suggestions or type your own ideas.
+    </p>
+  </div>
+
+  <div class="vision-form-wrap fade-up">
+    <div id="vision-form-inner">
+      <div class="vision-row">
+        <div class="vision-field">
+          <label>Your Full Name *</label>
+          <input type="text" id="vf-name" placeholder="e.g. Rahul Menon" />
+        </div>
+        <div class="vision-field">
+          <label>Email Address *</label>
+          <input type="email" id="vf-email" placeholder="your@email.com" />
+        </div>
+      </div>
+      <div class="vision-row">
+        <div class="vision-field">
+          <label>Phone / WhatsApp</label>
+          <input type="text" id="vf-phone" placeholder="+91 98765 43210" />
+        </div>
+        <div class="vision-field">
+          <label>Company / Brand Name</label>
+          <input type="text" id="vf-company" placeholder="Your business name" />
+        </div>
+      </div>
+      <div class="vision-field full" style="margin-bottom:20px">
+        <label>What type of app do you need?</label>
+        <select id="vf-type">
+          <option value="">Select an app type...</option>
+          <option>Consumer iOS App</option>
+          <option>Consumer Android App</option>
+          <option>Cross-Platform (iOS + Android)</option>
+          <option>Enterprise / Internal App</option>
+          <option>E-Commerce / Shopping App</option>
+          <option>On-Demand / Marketplace App</option>
+          <option>HealthTech / MedTech App</option>
+          <option>FinTech / Payments App</option>
+          <option>Social / Community App</option>
+          <option>Not sure — need guidance</option>
+        </select>
+      </div>
+
+      <span class="suggest-label">What features do you want? (tap to select all that apply)</span>
+      <div class="suggest-chips" id="feature-chips">
+        <button class="suggest-chip" onclick="toggleChip(this)">💳 In-App Payments</button>
+        <button class="suggest-chip" onclick="toggleChip(this)">🔐 User Login / Profiles</button>
+        <button class="suggest-chip" onclick="toggleChip(this)">🔔 Push Notifications</button>
+        <button class="suggest-chip" onclick="toggleChip(this)">🌐 Multi-language Support</button>
+        <button class="suggest-chip" onclick="toggleChip(this)">📊 Admin Dashboard</button>
+        <button class="suggest-chip" onclick="toggleChip(this)">💬 In-App Chat / Support</button>
+        <button class="suggest-chip" onclick="toggleChip(this)">📍 Maps / GPS Tracking</button>
+        <button class="suggest-chip" onclick="toggleChip(this)">🤖 AI / ML Features</button>
+        <button class="suggest-chip" onclick="toggleChip(this)">🗓️ Booking / Scheduling</button>
+        <button class="suggest-chip" onclick="toggleChip(this)">📦 Inventory / Orders</button>
+        <button class="suggest-chip" onclick="toggleChip(this)">📸 Camera / Media Upload</button>
+        <button class="suggest-chip" onclick="toggleChip(this)">🔗 Social Media Login</button>
+        <button class="suggest-chip" onclick="toggleChip(this)">📝 Offline Mode</button>
+        <button class="suggest-chip" onclick="toggleChip(this)">🎮 Gamification / Rewards</button>
+        <button class="suggest-chip" onclick="toggleChip(this)">🔊 Audio / Video Streaming</button>
+      </div>
+
+      <span class="suggest-label">Design style preference (pick one)</span>
+      <div class="suggest-chips" id="style-chips">
+        <button class="suggest-chip" onclick="toggleStyle(this)">🎨 Bold &amp; Colourful</button>
+        <button class="suggest-chip" onclick="toggleStyle(this)">⚪ Clean &amp; Minimal</button>
+        <button class="suggest-chip" onclick="toggleStyle(this)">🌑 Dark &amp; Premium</button>
+        <button class="suggest-chip" onclick="toggleStyle(this)">🏢 Corporate &amp; Professional</button>
+        <button class="suggest-chip" onclick="toggleStyle(this)">🎮 Playful &amp; Creative</button>
+        <button class="suggest-chip" onclick="toggleStyle(this)">🌿 Natural &amp; Organic</button>
+        <button class="suggest-chip" onclick="toggleStyle(this)">💎 Luxury &amp; High-End</button>
+        <button class="suggest-chip" onclick="toggleStyle(this)">📰 Editorial / Magazine</button>
+      </div>
+
+      <div class="vision-row" style="margin-top:20px">
+        <div class="vision-field">
+          <label>Estimated Budget (₹)</label>
+          <select id="vf-budget">
+            <option value="">Select a range...</option>
+            <option>Under ₹80,000</option>
+            <option>₹80,000 – ₹2,00,000</option>
+            <option>₹2,00,000 – ₹5,00,000</option>
+            <option>₹5,00,000 – ₹15,00,000</option>
+            <option>Above ₹15,00,000</option>
+            <option>Not decided yet</option>
+          </select>
+        </div>
+        <div class="vision-field">
+          <label>Desired Launch Timeline</label>
+          <select id="vf-timeline">
+            <option value="">Select timeline...</option>
+            <option>ASAP (within 6 weeks)</option>
+            <option>2–3 months</option>
+            <option>3–6 months</option>
+            <option>6–12 months</option>
+            <option>Flexible</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="vision-field full" style="margin-bottom:24px;margin-top:20px">
+        <label>Describe your vision in your own words</label>
+        <textarea id="vf-desc" placeholder="Tell us anything — your target users, competitor apps you admire, key screens you envision, technical requirements, integrations needed, or anything that helps us understand your dream app..."></textarea>
+      </div>
+
+      <button class="vision-submit" onclick="submitVision()">🚀 Send My Vision to Enovexa</button>
+      <p class="vision-note">📧 We'll reply within 24 hours with a tailored proposal · No spam, ever</p>
+    </div>
+
+    <div class="vision-success" id="vision-success">
+      <div class="big-check">✅</div>
+      <h3>Vision Received!</h3>
+      <p>
+        Thank you! Our team has received your app brief and will prepare a personalised
+        proposal within 24 hours.<br><br>
+        In the meantime, feel free to reach us directly:<br>
+        📞 +91 84689 00600 &nbsp;|&nbsp; 📧 info@enovexa.com
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ── PAYMENT PORTAL ── -->
+<div class="payment-section" id="payment">
+  <div class="payment-wrap">
+    <div style="text-align:center">
+      <span class="sec-label fade-up" style="justify-content:center">Secure Payments</span>
+      <h2 class="sec-title fade-up">Pay Your <em>Invoice</em></h2>
+      <p class="sec-sub fade-up" style="margin:14px auto 0;max-width:400px;text-align:center">
+        Securely pay your Enovexa invoice online using UPI, cards, net banking, or wallets via Razorpay.
+      </p>
+    </div>
+    <div class="payment-card fade-up">
+      <h3>💳 Invoice Payment</h3>
+      <p>Enter your invoice details below to proceed with secure payment.</p>
+      <div class="pay-field">
+        <label>Invoice Number</label>
+        <input type="text" id="inv-id" placeholder="e.g. ENV-2025-001" />
+      </div>
+      <div class="pay-field">
+        <label>Your Name</label>
+        <input type="text" id="pay-name" placeholder="Full name on invoice" />
+      </div>
+      <div class="pay-field">
+        <label>Email Address</label>
+        <input type="email" id="pay-email" placeholder="your@email.com" />
+      </div>
+      <div class="pay-field">
+        <label>Amount (₹)</label>
+        <input type="number" id="pay-amount" placeholder="Enter amount from invoice" min="1" />
+      </div>
+      <div class="pay-methods">
+        <div class="pm">💳 Cards</div>
+        <div class="pm">📱 UPI</div>
+        <div class="pm">🏦 Net Banking</div>
+        <div class="pm">👛 Wallets</div>
+      </div>
+      <button class="razorpay-btn" onclick="initiatePayment()">
+        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        Pay Securely via Razorpay
+      </button>
+      <div class="secure-note">🔒 256-bit SSL encrypted · PCI-DSS compliant · Powered by Razorpay</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── FOOTER MINI ── -->
+<div class="footer-mini">
+  <p>© 2025 Enovexa Solutions Pvt. Ltd. All rights reserved.</p>
+  <a href="index.html">← Back to Main Site</a>
+</div>
+
+
+<script>
+/* ── NAVBAR SCROLL SHADOW ── */
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 10);
+});
+
+/* ── FADE-UP ON SCROLL ── */
+const fadeEls = document.querySelectorAll('.fade-up');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+}, { threshold: 0.12 });
+fadeEls.forEach(el => observer.observe(el));
+
+/* ── FAQ TOGGLE ── */
+function toggleFaq(el) {
+  const answer = el.nextElementSibling;
+  const isOpen = answer.classList.contains('open');
+  // close all
+  document.querySelectorAll('.faq-a').forEach(a => a.classList.remove('open'));
+  document.querySelectorAll('.faq-q').forEach(q => q.classList.remove('open'));
+  if (!isOpen) {
+    answer.classList.add('open');
+    el.classList.add('open');
+  }
+}
+
+/* ── FEATURE CHIPS (multi-select) ── */
+function toggleChip(btn) {
+  btn.classList.toggle('active');
+}
+
+/* ── STYLE CHIPS (single-select) ── */
+function toggleStyle(btn) {
+  document.querySelectorAll('#style-chips .suggest-chip').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+/* ── VISION FORM SUBMIT ── */
+function submitVision() {
+  const name  = document.getElementById('vf-name').value.trim();
+  const email = document.getElementById('vf-email').value.trim();
+  if (!name || !email) {
+    alert('Please fill in your name and email address to continue.');
+    return;
+  }
+  const features = [...document.querySelectorAll('#feature-chips .suggest-chip.active')].map(b => b.textContent).join(', ');
+  const style    = document.querySelector('#style-chips .suggest-chip.active')?.textContent || '';
+  const type     = document.getElementById('vf-type').value;
+  const budget   = document.getElementById('vf-budget').value;
+  const timeline = document.getElementById('vf-timeline').value;
+  const desc     = document.getElementById('vf-desc').value.trim();
+  const phone    = document.getElementById('vf-phone').value.trim();
+  const company  = document.getElementById('vf-company').value.trim();
+
+  const subject = encodeURIComponent(`App Development Enquiry from ${name}`);
+  const body = encodeURIComponent(
+    `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nCompany: ${company}\n\nApp Type: ${type}\nFeatures: ${features}\nDesign Style: ${style}\nBudget: ${budget}\nTimeline: ${timeline}\n\nVision:\n${desc}`
+  );
+  window.location.href = `mailto:info@enovexa.com?subject=${subject}&body=${body}`;
+
+  document.getElementById('vision-form-inner').style.display = 'none';
+  document.getElementById('vision-success').style.display = 'block';
+}
+
+/* ── RAZORPAY PAYMENT ── */
+function initiatePayment() {
+  const name   = document.getElementById('pay-name').value.trim();
+  const email  = document.getElementById('pay-email').value.trim();
+  const amount = parseFloat(document.getElementById('pay-amount').value);
+  const inv    = document.getElementById('inv-id').value.trim();
+
+  if (!name || !email || !amount || !inv) {
+    alert('Please fill in all invoice payment fields.');
+    return;
+  }
+  if (typeof Razorpay === 'undefined') {
+    alert('Razorpay could not be loaded. Please check your connection and try again.');
+    return;
+  }
+  const options = {
+    key: 'YOUR_RAZORPAY_KEY_ID',
+    amount: Math.round(amount * 100),
+    currency: 'INR',
+    name: 'Enovexa Solutions',
+    description: `Invoice Payment — ${inv}`,
+    prefill: { name, email },
+    theme: { color: '#c0392b' },
+    handler: function (response) {
+      alert(`✅ Payment successful!\nPayment ID: ${response.razorpay_payment_id}`);
+    }
+  };
+  new Razorpay(options).open();
+}
+
+</script>
+</body>
+</html>

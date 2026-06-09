@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Staff Login — Enovexa Solutions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --red: #C8102E; --red-mid: #A50D25; --accent: #E8314D;
+      --dark: #1A1A1A; --muted: #6B6B6B; --off-white: #F4F6FB;
+      --gold:  #C8102E; --gold-light: #A50D25;
+      --head: Arial, sans-serif; --body: Arial, sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--body); min-height: 100vh; display: flex;
+      background:
+        radial-gradient(ellipse 70% 60% at 80% 10%, rgba(200,16,46,0.10) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 50% at 10% 90%, rgba(200,16,46,0.06) 0%, transparent 60%),
+        #F4F6FB;
+      align-items: center; justify-content: center; padding: 24px;
+    }
+    .card {
+      background: #fff; border-radius: 22px; padding: 48px 44px 40px;
+      width: 100%; max-width: 460px;
+      box-shadow: 0 12px 60px rgba(0,0,0,0.10);
+      border: 1px solid rgba(200,16,46,0.09);
+      animation: up .55s cubic-bezier(.22,1,.36,1) both;
+    }
+    @keyframes up { from { opacity:0; transform:translateY(28px) scale(.97); } to { opacity:1; transform:none; } }
+    .logo-wrap { text-align: center; margin-bottom: 28px; }
+    .logo-wrap img { height: 54px; width: auto; object-fit: contain; }
+    .logo-wrap .fallback { display:none; font-family:var(--head); font-size:1.5rem; font-weight:800; color:var(--red); }
+
+    .role-tabs { display: flex; gap: 8px; margin-bottom: 24px; }
+    .role-tab {
+      flex: 1; padding: 11px 8px; border: 1.5px solid rgba(0,0,0,0.11);
+      border-radius: 10px; font-family: var(--body); font-size: .83rem;
+      font-weight: 600; cursor: pointer; background: #fafafa;
+      color: var(--muted); transition: all .2s; text-align: center;
+    }
+    .role-tab .tab-icon { display: block; font-size: 1.3rem; margin-bottom: 3px; }
+    .role-tab.active { border-color: var(--red); background: rgba(200,16,46,.06); color: var(--red); }
+    .role-tab.admin-tab.active { border-color: var(--gold); background: rgba(184,134,11,.08); color: var(--gold); }
+
+    h2 { font-family: var(--head); font-size: 1.5rem; font-weight: 800; text-align: center; color: var(--dark); letter-spacing: -.5px; margin-bottom: 5px; }
+    .sub { text-align: center; color: var(--muted); font-size: .83rem; margin-bottom: 28px; line-height: 1.6; }
+
+    .role-badge { display: none; text-align: center; margin-bottom: 18px; }
+    .role-badge-inner {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 7px 18px; border-radius: 100px;
+      font-size: .75rem; font-weight: 700; letter-spacing: .8px;
+    }
+    .role-badge-inner.hr-style { background: linear-gradient(135deg, #1A1A1A, #2d0a10); border: 1px solid rgba(200,16,46,.35); color: #fff; }
+    .role-badge-inner.hr-style span { color: var(--accent); }
+    .role-badge-inner.admin-style { background: linear-gradient(135deg, #1A1A1A, #2a1f00); border: 1px solid rgba(184,134,11,.45); color: #fff; }
+    .role-badge-inner.admin-style span { color: var(--gold-light); }
+
+    .error {
+      background: #fee2e2; color: #b91c1c; border-radius: 8px;
+      padding: 11px 14px; font-size: .83rem; font-weight: 600;
+      margin-bottom: 18px; display: none; animation: shake .3s ease;
+    }
+    @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+
+    .field { margin-bottom: 18px; }
+    .field label { display: block; font-size: .74rem; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--muted); margin-bottom: 7px; }
+    .field input {
+      width: 100%; padding: 13px 16px;
+      border: 1.5px solid rgba(0,0,0,0.12); border-radius: 10px;
+      font-family: var(--body); font-size: .93rem; color: var(--dark);
+      background: #fafafa; outline: none; transition: border-color .2s, box-shadow .2s;
+    }
+    .field input:focus { border-color: var(--red); background: #fff; box-shadow: 0 0 0 3px rgba(200,16,46,.10); }
+    .field input.admin-focus:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(184,134,11,.12); }
+    .field input::placeholder { color: #bbb; }
+
+    .btn {
+      width: 100%; padding: 14px; background: var(--red); color: #fff;
+      border: none; border-radius: 10px; font-family: var(--body);
+      font-size: .96rem; font-weight: 700; cursor: pointer; margin-top: 6px;
+      letter-spacing: .3px; transition: background .2s, transform .18s, box-shadow .2s;
+    }
+    .btn:hover { background: var(--red-mid); transform: translateY(-2px); box-shadow: 0 10px 28px rgba(200,16,46,.25); }
+    .btn:disabled { opacity: .65; cursor: not-allowed; transform: none; }
+    .btn.hr-mode { background: linear-gradient(135deg, #1A1A1A, #2d0a10); border: 1px solid rgba(200,16,46,.4); }
+    .btn.hr-mode:hover { background: linear-gradient(135deg, #2d0a10, #1A1A1A); }
+    .btn.admin-mode { background: linear-gradient(135deg, #1A1A1A, #2a1f00); border: 1px solid rgba(184,134,11,.5); }
+    .btn.admin-mode:hover { background: linear-gradient(135deg, #2a1f00, #1A1A1A); box-shadow: 0 10px 28px rgba(184,134,11,.2); }
+
+    .demo-box { margin-top: 16px; background: #f8f8f8; border: 1px solid rgba(0,0,0,0.08); border-radius: 10px; padding: 12px 16px; }
+    .demo-label { font-size: .65rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #bbb; margin-bottom: 7px; }
+    .demo-row { font-size: .77rem; color: var(--muted); margin-bottom: 3px; line-height: 1.8; }
+    .demo-row strong { color: var(--dark); }
+
+    .back-link { text-align: center; margin-top: 16px; }
+    .back-link a { color: var(--red); font-size: .82rem; font-weight: 600; text-decoration: none; }
+    .back-link a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo-wrap">
+      <img src="logo.png" alt="Enovexa" onerror="this.style.display='none';document.querySelector('.fallback').style.display='block'" />
+      <span class="fallback">ENOVEXA</span>
+    </div>
+
+    <div class="role-tabs">
+      <button class="role-tab active" id="tab-emp" onclick="setRole('employee')">
+        <span class="tab-icon"></span> Employee
+      </button>
+      <button class="role-tab" id="tab-hr" onclick="setRole('hr')">
+        <span class="tab-icon"></span> HR 
+      </button>
+      <button class="role-tab admin-tab" id="tab-admin" onclick="setRole('admin')">
+        <span class="tab-icon"></span> Admin
+      </button>
+    </div>
+
+    <div class="role-badge" id="role-badge">
+      <div class="role-badge-inner hr-style" id="badge-inner"> HR Admin &nbsp;·&nbsp; <span>Restricted Access</span></div>
+    </div>
+
+    <h2 id="login-title">Employee Portal</h2>
+    <p class="sub" id="login-sub">Enovexa staff access only. Enter your credentials below.</p>
+
+    <div class="error" id="err">❌ Invalid credentials. Please try again.</div>
+
+    <div class="field">
+      <label id="id-label">Employee ID</label>
+      <input type="text" id="emp-id" placeholder="e.g. ENV-001" autocomplete="username" />
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="emp-pass" placeholder="••••••••" autocomplete="current-password" />
+    </div>
+
+    <button class="btn" id="login-btn" onclick="doLogin()">Sign In to Portal →</button>
+
+    <div class="demo-box">
+      <div class="demo-label">Demo Credentials</div>
+      <div class="demo-row" id="demo-creds">👤 Employee &nbsp;— ID: <strong>ENV-001</strong> · Pass: <strong>enovexa</strong></div>
+    </div>
+
+    <div class="back-link"><a href="index.html">← Back to Website</a></div>
+  </div>
+
+  <script>
+    let currentRole = 'employee';
+
+    // Base credentials — can be extended via admin_resets in localStorage
+    const BASE_USERS = {
+      employee: {
+        'ENV-001': { password: 'enovexa',  name: 'Arjun Menon' },
+        'ENV-002': { password: 'enovexa2', name: 'Priya Nair' },
+      },
+      hr: {
+        'HR-001': { password: 'hrAdmin@2025', name: 'David' },
+        'HR-002': { password: 'hr@enovexa',   name: 'Vikram Nair' },
+      },
+      admin: {
+        'ADM-001': { password: 'admin@enovexa2025', name: 'Super Admin' },
+      }
+    };
+
+    function setRole(role) {
+      currentRole = role;
+      const isHR = role === 'hr', isAdmin = role === 'admin', isEmp = role === 'employee';
+
+      document.getElementById('tab-emp').classList.toggle('active', isEmp);
+      document.getElementById('tab-hr').classList.toggle('active', isHR);
+      document.getElementById('tab-admin').classList.toggle('active', isAdmin);
+
+      const badge = document.getElementById('role-badge');
+      const badgeInner = document.getElementById('badge-inner');
+      badge.style.display = (isHR || isAdmin) ? 'block' : 'none';
+      if (isHR) {
+        badgeInner.className = 'role-badge-inner hr-style';
+        badgeInner.innerHTML = ' HR Admin &nbsp;·&nbsp; <span>Restricted Access</span>';
+      } else if (isAdmin) {
+        badgeInner.className = 'role-badge-inner admin-style';
+        badgeInner.innerHTML = ' Admin &nbsp;·&nbsp; <span>Full System Access</span>';
+      }
+
+      document.getElementById('login-title').textContent =
+        isAdmin ? ' Admin Control Panel' : isHR ? ' HR Admin Portal' : '🔐 Employee Portal';
+      document.getElementById('login-sub').textContent = isAdmin
+        ? 'Master administrator access. Full system control.'
+        : isHR ? 'HR access only. Statistics & management dashboard.'
+        : 'Enovexa staff access only. Enter your credentials below.';
+      document.getElementById('id-label').textContent =
+        isAdmin ? 'Admin ID' : isHR ? 'HR Admin ID' : 'Employee ID';
+      document.getElementById('emp-id').placeholder =
+        isAdmin ? 'e.g. ADM-001' : isHR ? 'e.g. HR-001' : 'e.g. ENV-001';
+
+      const empIdInput = document.getElementById('emp-id');
+      const empPassInput = document.getElementById('emp-pass');
+      empIdInput.classList.toggle('admin-focus', isAdmin);
+      empPassInput.classList.toggle('admin-focus', isAdmin);
+
+      const btn = document.getElementById('login-btn');
+      btn.className = isAdmin ? 'btn admin-mode' : isHR ? 'btn hr-mode' : 'btn';
+      btn.textContent = isAdmin ? 'Access Admin Panel →' : isHR ? 'Access HR Dashboard →' : 'Sign In to Portal →';
+
+      document.getElementById('demo-creds').innerHTML = isAdmin
+        ? '⚙️ Admin &nbsp;— ID: <strong>ADM-001</strong> · Pass: <strong>admin@enovexa2025</strong>'
+        : isHR
+        ? '🏢 HR Admin &nbsp;— ID: <strong>HR-001</strong> · Pass: <strong>hrAdmin@2025</strong>'
+        : '👤 Employee &nbsp;— ID: <strong>ENV-001</strong> · Pass: <strong>enovexa</strong>';
+
+      document.getElementById('emp-id').value = '';
+      document.getElementById('emp-pass').value = '';
+      document.getElementById('err').style.display = 'none';
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+    function doLogin() {
+      const id   = document.getElementById('emp-id').value.trim().toUpperCase();
+      const pass = document.getElementById('emp-pass').value.trim();
+      const btn  = document.getElementById('login-btn');
+      const err  = document.getElementById('err');
+      btn.textContent = 'Verifying...';
+      btn.disabled = true;
+
+      setTimeout(() => {
+        const pool = BASE_USERS[currentRole];
+        // Check admin-reset passwords first
+        const resets = JSON.parse(localStorage.getItem('admin_resets') || '{}');
+        const effectivePass = resets[id] || (pool[id] ? pool[id].password : null);
+
+        if (pool[id] && effectivePass === pass) {
+          sessionStorage.setItem('emp_id',   id);
+          sessionStorage.setItem('emp_name', pool[id].name);
+          sessionStorage.setItem('emp_role', currentRole);
+          if (currentRole === 'admin')         window.location.href = 'admin-dashboard.html';
+          else if (currentRole === 'hr')       window.location.href = 'hr-dashboard.html';
+          else                                 window.location.href = 'portal-dashboard.html';
+        } else {
+          err.style.display = 'block';
+          btn.textContent = currentRole === 'admin' ? 'Access Admin Panel →' : currentRole === 'hr' ? 'Access HR Dashboard →' : 'Sign In to Portal →';
+          btn.disabled = false;
+          document.getElementById('emp-pass').value = '';
+          document.getElementById('emp-pass').focus();
+        }
+      }, 700);
+    }
+  </script>
+</body>
+</html>

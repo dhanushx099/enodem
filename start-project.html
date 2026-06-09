@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Start Your Project — Enovexa Solutions</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red: #C8102E;
+      --red-dark: #a31515;
+      --black: #111111;
+      --dark: #1a1a1a;
+      --dark2: #222222;
+      --white: #ffffff;
+      --gray: #888888;
+      --gray-light: #cccccc;
+      --border: rgba(255,255,255,0.08);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: var(--black);
+      color: var(--white);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 60px;
+      background: rgba(17,17,17,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .logo-circle {
+      width: 42px; height: 42px; background: var(--red);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 18px; color: #fff;
+    }
+    .logo-text { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 15px; letter-spacing: 1px; color: #fff; line-height: 1.2; }
+    .logo-text span { display: block; font-weight: 400; font-size: 10px; letter-spacing: 2px; color: var(--gray); text-transform: uppercase; }
+    .nav-back {
+      background: transparent; color: var(--gray-light); border: 1px solid rgba(255,255,255,0.15);
+      padding: 10px 24px; border-radius: 4px; font-family: 'Montserrat', sans-serif;
+      font-weight: 600; font-size: 13px; letter-spacing: 0.5px; cursor: pointer;
+      text-decoration: none; transition: all 0.2s;
+    }
+    .nav-back:hover { border-color: var(--red); color: #fff; }
+
+    /* HERO STRIP */
+    .hero-strip {
+      margin-top: 80px;
+      background: var(--red);
+      padding: 22px 60px;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .hero-strip-line { width: 40px; height: 3px; background: rgba(255,255,255,0.5); flex-shrink: 0; }
+    .hero-strip h1 {
+      font-family: 'Montserrat', sans-serif; font-weight: 900;
+      font-size: clamp(22px, 4vw, 36px); letter-spacing: -0.5px; color: #fff;
+    }
+    .hero-strip p {
+      margin-left: auto; font-size: 13px; color: rgba(255,255,255,0.75);
+      letter-spacing: 0.3px; font-weight: 500; max-width: 260px; text-align: right;
+    }
+
+    /* MAIN LAYOUT */
+    .main-wrap {
+      display: grid; grid-template-columns: 1fr 340px; gap: 48px;
+      max-width: 1100px; margin: 56px auto 80px; padding: 0 40px;
+    }
+
+    /* FORM */
+    .section-label {
+      font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 700;
+      letter-spacing: 3px; text-transform: uppercase; color: var(--red); margin-bottom: 10px;
+    }
+    .section-title {
+      font-family: 'Montserrat', sans-serif; font-weight: 800;
+      font-size: clamp(20px, 2.5vw, 28px); color: #fff; margin-bottom: 8px; line-height: 1.2;
+    }
+    .section-sub { font-size: 13px; color: var(--gray); margin-bottom: 36px; line-height: 1.6; }
+
+    .form-group { display: flex; flex-direction: column; margin-bottom: 22px; }
+    .form-group label {
+      font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase; color: var(--gray-light); margin-bottom: 8px;
+    }
+    .form-group input,
+    .form-group textarea {
+      background: var(--dark2);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 6px;
+      padding: 14px 16px;
+      color: #fff;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      resize: none;
+    }
+    .form-group input::placeholder,
+    .form-group textarea::placeholder { color: #555; }
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: var(--red);
+      box-shadow: 0 0 0 3px rgba(200,16,46,0.15);
+    }
+    .form-group.error input,
+    .form-group.error textarea { border-color: #ff4444; }
+    .err-msg { font-size: 11px; color: #ff6666; margin-top: 5px; display: none; }
+    .form-group.error .err-msg { display: block; }
+
+    .submit-btn {
+      width: 100%; padding: 16px; margin-top: 10px;
+      background: var(--red); border: none; border-radius: 6px;
+      color: #fff; font-family: 'Montserrat', sans-serif;
+      font-weight: 800; font-size: 14px; letter-spacing: 1px;
+      text-transform: uppercase; cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .submit-btn:hover:not(:disabled) { background: var(--red-dark); transform: translateY(-1px); }
+    .submit-btn:active { transform: translateY(0); }
+    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .submit-btn .arrow { font-size: 18px; transition: transform 0.2s; }
+    .submit-btn:hover:not(:disabled) .arrow { transform: translateX(4px); }
+
+    .form-note { text-align: center; font-size: 11px; color: var(--gray); margin-top: 14px; line-height: 1.6; }
+
+    /* SIDEBAR */
+    .info-sidebar { display: flex; flex-direction: column; gap: 20px; }
+    .info-card {
+      background: var(--dark2); border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 10px; padding: 24px;
+    }
+    .info-card-title {
+      font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 13px;
+      letter-spacing: 0.5px; color: #fff; margin-bottom: 16px;
+      padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+
+    /* Stats */
+    .stat-row { display: flex; }
+    .stat-item {
+      flex: 1; text-align: center; padding: 20px 10px;
+      border-right: 1px solid rgba(255,255,255,0.07);
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-num { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 22px; color: var(--red); }
+    .stat-lbl { font-size: 10px; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+
+    /* Contact */
+    .contact-item { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 16px; }
+    .contact-item:last-child { margin-bottom: 0; }
+    .contact-icon {
+      width: 36px; height: 36px; background: rgba(200,16,46,0.12);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      font-size: 15px; flex-shrink: 0;
+    }
+    .contact-info .label { font-size: 10px; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+    .contact-info .value { font-size: 13px; color: #fff; font-weight: 600; }
+    .contact-info .value a { color: #fff; text-decoration: none; transition: color 0.2s; }
+    .contact-info .value a:hover { color: var(--red); }
+
+    /* Promises */
+    .promise-list { list-style: none; }
+    .promise-list li {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 12px; color: var(--gray-light); line-height: 1.6;
+      padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .promise-list li:last-child { border-bottom: none; }
+    .promise-list li::before {
+      content: '→'; color: var(--red); font-weight: 700; flex-shrink: 0; margin-top: 1px;
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center; padding: 28px 40px;
+      border-top: 1px solid var(--border);
+      font-size: 12px; color: var(--gray);
+    }
+    footer span { color: var(--red); font-weight: 600; }
+
+    /* SUCCESS */
+    #success-screen {
+      display: none; position: fixed; inset: 0; z-index: 200;
+      background: rgba(17,17,17,0.97);
+      align-items: center; justify-content: center; flex-direction: column;
+      text-align: center; padding: 40px;
+    }
+    #success-screen.show { display: flex; }
+    .success-icon {
+      width: 80px; height: 80px; background: var(--red); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px; margin-bottom: 28px;
+      animation: pop 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    @keyframes pop { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .success-title { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 32px; margin-bottom: 14px; }
+    .success-sub { font-size: 15px; color: var(--gray-light); max-width: 480px; line-height: 1.7; margin-bottom: 28px; }
+    .success-detail {
+      background: var(--dark2); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px; padding: 20px 28px; font-size: 13px;
+      color: var(--gray-light); line-height: 2; margin-bottom: 32px;
+      text-align: left; max-width: 480px; width: 100%;
+    }
+    .success-detail strong { color: #fff; }
+    .back-btn {
+      background: transparent; border: 1px solid rgba(255,255,255,0.2);
+      color: var(--gray-light); padding: 12px 28px; border-radius: 6px;
+      font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 13px;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .back-btn:hover { border-color: var(--red); color: #fff; }
+
+    /* RESPONSIVE */
+    @media (max-width: 800px) {
+      nav { padding: 16px 24px; }
+      .hero-strip { padding: 20px 24px; flex-wrap: wrap; }
+      .hero-strip p { margin-left: 0; text-align: left; }
+      .main-wrap { grid-template-columns: 1fr; padding: 0 20px; }
+      .info-sidebar { order: -1; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div style="padding-left: 30px;"><img src="logo.png" alt="" width="130px"></div>
+  </a>
+  <a href="index.html" class="nav-back">← Back to Home</a>
+</nav>
+
+<!-- HERO STRIP -->
+<div class="hero-strip">
+  <div class="hero-strip-line"></div>
+  <h1>Start Your Project</h1>
+  <p>Tell us about your idea — we'll handle the rest.</p>
+</div>
+
+<!-- MAIN -->
+<div class="main-wrap">
+
+  <!-- FORM -->
+  <div class="form-section">
+    <div class="section-label">Get in Touch</div>
+    <div class="section-title">Let's Build Something Great</div>
+    <div class="section-sub">Fill in your details below and describe your project. Our team will review and get back to you within 24 hours.</div>
+
+    <div class="form-group" id="fg-name">
+      <label>Full Name *</label>
+      <input type="text" id="clientName" placeholder="John Smith" oninput="clearError('fg-name')" />
+      <span class="err-msg">Please enter your full name.</span>
+    </div>
+
+    <div class="form-group" id="fg-phone">
+      <label>Phone Number *</label>
+      <input type="tel" id="clientPhone" placeholder="+1 234 567 8900" oninput="clearError('fg-phone')" />
+      <span class="err-msg">Please enter a valid phone number.</span>
+    </div>
+
+    <div class="form-group" id="fg-email">
+      <label>Email Address *</label>
+      <input type="email" id="clientEmail" placeholder="you@company.com" oninput="clearError('fg-email')" />
+      <span class="err-msg">Please enter a valid email address.</span>
+    </div>
+
+    <div class="form-group" id="fg-desc">
+      <label>Project Description *</label>
+      <textarea id="projectDesc" rows="7" placeholder="Describe your project — what you want to build, your goals, target audience, key features, and any specific requirements…" oninput="clearError('fg-desc')"></textarea>
+      <span class="err-msg">Please describe your project.</span>
+    </div>
+
+    <button class="submit-btn" id="submitBtn" onclick="handleSubmit()">
+      Send to Enovexa <span class="arrow">→</span>
+    </button>
+    <p class="form-note">🔒 Your information is kept strictly confidential. No spam, ever.</p>
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="info-sidebar">
+
+    <div class="info-card" style="padding:0; overflow:hidden;">
+      <div class="stat-row">
+        <div class="stat-item"><div class="stat-num">150+</div><div class="stat-lbl">Projects</div></div>
+        <div class="stat-item"><div class="stat-num">40+</div><div class="stat-lbl">Countries</div></div>
+        <div class="stat-item"><div class="stat-num">98%</div><div class="stat-lbl">Satisfaction</div></div>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-card-title">Reach Us Directly</div>
+      <div class="contact-item">
+        <div class="contact-icon">✉</div>
+        <div class="contact-info">
+          <div class="label">Email</div>
+          <div class="value"><a href="mailto:info@enovexa.com">info@enovexa.com</a></div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">📞</div>
+        <div class="contact-info">
+          <div class="label">India</div>
+          <div class="value"><a href="tel:+918468900600">+91 84689 00600</a></div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">🌐</div>
+        <div class="contact-info">
+          <div class="label">USA</div>
+          <div class="value"><a href="tel:+19042359447">+1 904 235 9447</a></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-card-title">What Happens Next</div>
+      <ul class="promise-list">
+        <li>We review your brief within a few hours of receiving it</li>
+        <li>A tailored proposal is crafted specifically for your goals</li>
+        <li>You'll hear back within 24 hours — guaranteed</li>
+        <li>Free 30-minute strategy call to align on scope</li>
+        <li>No obligation — explore the fit at your own pace</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  © 2026 <span>Enovexa Solutions</span> · Innovation, Elevated. &nbsp;|&nbsp;
+  <a href="mailto:info@enovexa.com" style="color:var(--gray);text-decoration:none;">info@enovexa.com</a>
+</footer>
+
+<!-- SUCCESS SCREEN -->
+<div id="success-screen">
+  <div class="success-icon">✓</div>
+  <div class="success-title">Brief Received!</div>
+  <p class="success-sub">Thank you for reaching out to Enovexa Solutions. Our team will review your project and get back to you within <strong>24 hours</strong>.</p>
+  <div class="success-detail" id="successDetail"></div>
+  <button class="back-btn" onclick="resetForm()">← Submit Another Brief</button>
+</div>
+
+<script>
+  // ─── EmailJS Setup ───────────────────────────────────────────────
+  // 1. Sign up free at https://www.emailjs.com
+  // 2. Create an Email Service and note your Service ID
+  // 3. Create an Email Template with variables:
+  //      {{client_name}}, {{client_phone}}, {{client_email}}, {{project_desc}}
+  //    and set the "To Email" in the template to info@enovexa.com
+  // 4. Replace the three placeholders below with your real IDs
+
+  const EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY';   // from EmailJS → Account → API Keys
+  const EMAILJS_SERVICE_ID  = 'YOUR_SERVICE_ID';   // from EmailJS → Email Services
+  const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';  // from EmailJS → Email Templates
+
+  emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+
+  // ─── Validation helpers ──────────────────────────────────────────
+  function clearError(groupId) {
+    document.getElementById(groupId).classList.remove('error');
+  }
+
+  function showError(groupId) {
+    document.getElementById(groupId).classList.add('error');
+  }
+
+  function isValidEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+  function isValidPhone(v) { return /^[\d\s\+\-\(\)]{7,20}$/.test(v.trim()); }
+
+  // ─── Submit ──────────────────────────────────────────────────────
+  async function handleSubmit() {
+    const name  = document.getElementById('clientName').value.trim();
+    const phone = document.getElementById('clientPhone').value.trim();
+    const email = document.getElementById('clientEmail').value.trim();
+    const desc  = document.getElementById('projectDesc').value.trim();
+
+    let valid = true;
+
+    if (!name)              { showError('fg-name');  valid = false; }
+    if (!isValidPhone(phone)) { showError('fg-phone'); valid = false; }
+    if (!isValidEmail(email)) { showError('fg-email'); valid = false; }
+    if (!desc)              { showError('fg-desc');  valid = false; }
+
+    if (!valid) return;
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = 'Sending… <span style="font-size:16px;">⏳</span>';
+
+    try {
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        client_name:  name,
+        client_phone: phone,
+        client_email: email,
+        project_desc: desc
+      });
+
+      document.getElementById('successDetail').innerHTML =
+        `<strong>Name:</strong> ${name}<br>
+         <strong>Phone:</strong> ${phone}<br>
+         <strong>Email:</strong> ${email}<br>
+         <strong>Project:</strong> ${desc.length > 120 ? desc.slice(0, 120) + '…' : desc}`;
+
+      document.getElementById('success-screen').classList.add('show');
+
+    } catch (err) {
+      console.error('EmailJS error:', err);
+      alert('Something went wrong. Please email us directly at info@enovexa.com');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = 'Send to Enovexa <span class="arrow">→</span>';
+    }
+  }
+
+  // ─── Reset ───────────────────────────────────────────────────────
+  function resetForm() {
+    document.getElementById('success-screen').classList.remove('show');
+    ['clientName','clientPhone','clientEmail','projectDesc'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+    ['fg-name','fg-phone','fg-email','fg-desc'].forEach(id => {
+      document.getElementById(id).classList.remove('error');
+    });
+  }
+</script>
+</body>
+</html>

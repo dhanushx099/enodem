@@ -1,0 +1,3316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Control Panel — Enovexa Solutions</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <style>
+    :root {
+      --gold: #c11212;
+      --gold-light: #cf2222;
+      --gold-dim: rgba(184, 134, 11, 0.15);
+      --red: #c8102e;
+      --red-mid: #A50D25;
+      --accent: #E8314D;
+      --dark: #0F0F0F;
+      --dark2: #1A1A1A;
+      --muted: #6B6B6B;
+      --off-white: #F4F6FB;
+      --card: #FFFFFF;
+      --border: rgba(0, 0, 0, 0.07);
+      --head: 'Arial', sans-serif;
+      --body: 'Arial', sans-serif;
+      --shadow-sm: 0 2px 12px rgba(0, 0, 0, 0.07);
+      --shadow-md: 0 8px 40px rgba(0, 0, 0, 0.11);
+      --shadow-gold: 0 8px 32px rgba(184, 134, 11, 0.18);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--body);
+      background: var(--off-white);
+      color: var(--dark2);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      height: 68px;
+      background: linear-gradient(135deg, #0F0F0F 0%, #1a1200 50%, #0F0F0F 100%);
+      border-bottom: 1px solid rgba(184, 134, 11, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      box-shadow: 0 2px 32px rgba(0, 0, 0, 0.4), 0 0 60px rgba(184, 134, 11, 0.05);
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .topbar-left img {
+      height: 38px;
+      width: auto;
+      object-fit: contain;
+      opacity: .9;
+    }
+
+    .topbar-brand {
+      font-family: var(--head);
+      font-size: 1rem;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -.3px;
+    }
+
+    .topbar-brand span {
+      color: var(--gold-light);
+    }
+
+    .topbar-divider {
+      width: 1px;
+      height: 24px;
+      background: rgba(255, 255, 255, .14);
+    }
+
+    .admin-pill {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: linear-gradient(135deg, rgba(184, 134, 11, .22), rgba(245, 200, 66, .10));
+      border: 1px solid rgba(184, 134, 11, .5);
+      padding: 5px 16px;
+      border-radius: 100px;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .9px;
+      color: var(--gold-light);
+      text-transform: uppercase;
+    }
+
+    .topbar-welcome {
+      font-size: .82rem;
+      color: rgba(255, 255, 255, .5);
+    }
+
+    .topbar-welcome strong {
+      color: rgba(255, 255, 255, .88);
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .topbar-empid {
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .5px;
+      color: rgba(255, 255, 255, .35);
+    }
+
+    .signout-btn {
+      background: rgba(255, 255, 255, .08);
+      border: 1px solid rgba(255, 255, 255, .16);
+      color: rgba(255, 255, 255, .7);
+      padding: 7px 18px;
+      border-radius: 8px;
+      font-family: var(--body);
+      font-size: .82rem;
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .signout-btn:hover {
+      background: rgba(255, 255, 255, .16);
+      color: #fff;
+    }
+
+    /* ── LAYOUT ── */
+    .layout {
+      display: flex;
+      flex: 1;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 234px;
+      flex-shrink: 0;
+      background: #fff;
+      border-right: 1px solid var(--border);
+      padding: 28px 12px;
+      position: sticky;
+      top: 68px;
+      height: calc(100vh - 68px);
+      overflow-y: auto;
+    }
+
+    .sb-section-label {
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      color: #c0c0c0;
+      padding: 0 10px;
+      margin-bottom: 5px;
+      margin-top: 22px;
+    }
+
+    .sb-section-label:first-child {
+      margin-top: 0;
+    }
+
+    .sb-section-label.gold {
+      color: rgba(184, 134, 11, .6);
+    }
+
+    .sb-btn {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      width: 100%;
+      padding: 10px 12px;
+      border: none;
+      background: none;
+      border-radius: 9px;
+      font-family: var(--body);
+      font-size: .875rem;
+      font-weight: 500;
+      color: #555;
+      cursor: pointer;
+      text-align: left;
+      transition: all .18s;
+      margin-bottom: 2px;
+    }
+
+    .sb-btn .icon {
+      font-size: 1.05rem;
+      width: 22px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .sb-btn:hover {
+      background: var(--gold-dim);
+      color: var(--gold);
+    }
+
+    .sb-btn.active {
+      background: var(--gold-dim);
+      color: var(--gold);
+      font-weight: 700;
+      border-left: 3px solid var(--gold);
+    }
+
+    .sb-count {
+      margin-left: auto;
+      background: var(--red);
+      color: #fff;
+      font-size: .64rem;
+      font-weight: 800;
+      border-radius: 20px;
+      padding: 1px 7px;
+      min-width: 20px;
+      text-align: center;
+    }
+
+    .sb-count.gold {
+      background: var(--gold);
+    }
+
+    /* ── MAIN ── */
+    .main {
+      flex: 1;
+      padding: 38px 44px;
+      max-width: 1200px;
+    }
+
+    .panel {
+      display: none;
+      animation: panelIn .3s ease both;
+    }
+
+    .panel.active {
+      display: block;
+    }
+
+    @keyframes panelIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    /* page head */
+    .pg-title {
+      font-family: var(--head);
+      font-size: 1.65rem;
+      font-weight: 800;
+      color: var(--dark2);
+      letter-spacing: -.5px;
+      margin-bottom: 4px;
+    }
+
+    .pg-title .crown {
+      color: var(--gold);
+    }
+
+    .pg-sub {
+      font-size: .84rem;
+      color: var(--muted);
+      margin-bottom: 30px;
+    }
+
+    /* stat cards */
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 22px 20px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      transition: transform .2s, box-shadow .2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--gold);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .25s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-gold);
+    }
+
+    .stat-card:hover::after {
+      transform: scaleX(1);
+    }
+
+    .sc-icon {
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .sc-val {
+      font-family: var(--head);
+      font-size: 2.1rem;
+      font-weight: 800;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 5px;
+    }
+
+    .sc-val.red {
+      color: var(--red);
+    }
+
+    .sc-lbl {
+      font-size: .75rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    /* section card */
+    .sec-card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 26px 28px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      margin-bottom: 20px;
+    }
+
+    .sec-card-title {
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .sec-card-title::before {
+      content: '';
+      width: 14px;
+      height: 2px;
+      background: var(--gold);
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    /* list */
+    .p-list {
+      list-style: none;
+    }
+
+    .p-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #f2f2f2;
+      font-size: .875rem;
+      color: var(--dark2);
+      gap: 10px;
+    }
+
+    .p-list li:last-child {
+      border-bottom: none;
+    }
+
+    /* badges */
+    .badge {
+      padding: 3px 11px;
+      border-radius: 20px;
+      font-size: .7rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .bg {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .by {
+      background: #fef9c3;
+      color: #a16207;
+    }
+
+    .br {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .bb {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+
+    .bgy {
+      background: #f3f4f6;
+      color: #4b5563;
+    }
+
+    .bgold {
+      background: rgba(184, 134, 11, .12);
+      color: var(--gold);
+      border: 1px solid rgba(184, 134, 11, .25);
+    }
+
+    /* action button */
+    .act-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      background: linear-gradient(135deg, var(--gold), #9a6e09);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-family: var(--body);
+      font-size: .875rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .2s;
+      letter-spacing: .2px;
+    }
+
+    .act-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(184, 134, 11, .30);
+    }
+
+    .act-btn.red-btn {
+      background: var(--red);
+    }
+
+    .act-btn.red-btn:hover {
+      background: var(--red-mid);
+      box-shadow: 0 6px 20px rgba(200, 16, 46, .22);
+    }
+
+    .act-btn.outline {
+      background: transparent;
+      color: var(--gold);
+      border: 1.5px solid var(--gold);
+    }
+
+    .act-btn.outline:hover {
+      background: var(--gold-dim);
+      box-shadow: none;
+      transform: none;
+    }
+
+    .act-btn.danger {
+      background: transparent;
+      color: #b91c1c;
+      border: 1.5px solid #fca5a5;
+    }
+
+    .act-btn.danger:hover {
+      background: #fee2e2;
+      box-shadow: none;
+      transform: none;
+    }
+
+    /* table */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .84rem;
+    }
+
+    .data-table thead tr {
+      background: var(--dark2);
+    }
+
+    .data-table thead th {
+      padding: 11px 14px;
+      color: rgba(255, 255, 255, .65);
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .data-table thead th:first-child {
+      border-radius: 8px 0 0 8px;
+    }
+
+    .data-table thead th:last-child {
+      border-radius: 0 8px 8px 0;
+    }
+
+    .data-table tbody tr {
+      border-bottom: 1px solid #f2f2f2;
+      transition: background .15s;
+    }
+
+    .data-table tbody tr:hover {
+      background: rgba(184, 134, 11, .03);
+    }
+
+    .data-table tbody td {
+      padding: 12px 14px;
+      vertical-align: middle;
+    }
+
+    /* two-col grid */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .three-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+    }
+
+    /* toast */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      background: var(--dark2);
+      color: #fff;
+      padding: 12px 22px;
+      border-radius: 12px;
+      font-size: .85rem;
+      font-weight: 600;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+      z-index: 9999;
+      transform: translateY(20px);
+      opacity: 0;
+      transition: all .3s cubic-bezier(.22, 1, .36, 1);
+      pointer-events: none;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* avatar */
+    .av-sm {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), #9a6e09);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--head);
+      font-size: .85rem;
+      font-weight: 800;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    /* form inputs */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: .74rem;
+      font-weight: 700;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 7px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid rgba(0, 0, 0, 0.11);
+      border-radius: 9px;
+      font-family: var(--body);
+      font-size: .875rem;
+      color: var(--dark2);
+      background: #fafafa;
+      outline: none;
+      transition: border-color .2s;
+      resize: vertical;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--gold);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(184, 134, 11, .10);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    /* announcement card */
+    .announce-card {
+      background: linear-gradient(135deg, #fffbea, #fff9e0);
+      border: 1px solid rgba(184, 134, 11, .22);
+      border-left: 3px solid var(--gold);
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-bottom: 12px;
+      transition: box-shadow .2s;
+    }
+
+    .announce-card:hover {
+      box-shadow: 0 4px 18px rgba(184, 134, 11, .10);
+    }
+
+    .announce-title {
+      font-weight: 700;
+      font-size: .92rem;
+      margin-bottom: 3px;
+    }
+
+    .announce-meta {
+      font-size: .75rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .announce-body {
+      font-size: .84rem;
+      color: var(--dark2);
+      line-height: 1.6;
+    }
+
+    .announce-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    /* task assign card */
+    .task-assign-form {
+      background: #fafafa;
+      border: 1px solid rgba(0, 0, 0, .08);
+      border-radius: 12px;
+      padding: 20px 22px;
+      margin-bottom: 20px;
+    }
+
+    /* progress */
+    .prog-wrap {
+      margin-bottom: 14px;
+    }
+
+    .prog-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: .78rem;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+
+    .prog-track {
+      height: 7px;
+      background: #f0f0f0;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .prog-fill {
+      height: 100%;
+      border-radius: 20px;
+      background: linear-gradient(90deg, var(--gold) 0%, var(--gold-light) 100%);
+      transition: width 1.1s cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .prog-fill.red {
+      background: linear-gradient(90deg, var(--red), var(--accent));
+    }
+
+    .prog-fill.green {
+      background: linear-gradient(90deg, #059669, #34d399);
+    }
+
+    /* activity log */
+    .log-item {
+      display: flex;
+      gap: 14px;
+      padding: 13px 0;
+      border-bottom: 1px solid #f2f2f2;
+      align-items: flex-start;
+    }
+
+    .log-item:last-child {
+      border-bottom: none;
+    }
+
+    .log-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--gold);
+      flex-shrink: 0;
+      margin-top: 5px;
+    }
+
+    .log-dot.red {
+      background: var(--red);
+    }
+
+    .log-dot.green {
+      background: #059669;
+    }
+
+    .log-dot.blue {
+      background: #1d4ed8;
+    }
+
+    .log-text {
+      font-size: .84rem;
+      flex: 1;
+    }
+
+    .log-time {
+      font-size: .74rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    /* user mgmt row */
+    .user-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid #f2f2f2;
+    }
+
+    .user-row:last-child {
+      border-bottom: none;
+    }
+
+    .user-info {
+      flex: 1;
+    }
+
+    .user-name {
+      font-weight: 600;
+      font-size: .88rem;
+    }
+
+    .user-id {
+      font-size: .75rem;
+      color: var(--muted);
+    }
+
+    /* switch toggle */
+    .toggle-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: .84rem;
+      color: var(--muted);
+    }
+
+    .toggle {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      inset: 0;
+      background: #ddd;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background .2s;
+    }
+
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      background: #fff;
+      border-radius: 50%;
+      left: 3px;
+      top: 3px;
+      transition: transform .2s;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, .2);
+    }
+
+    .toggle input:checked+.toggle-slider {
+      background: var(--gold);
+    }
+
+    .toggle input:checked+.toggle-slider::before {
+      transform: translateX(20px);
+    }
+
+    /* website content editor */
+    .content-block {
+      background: #fafafa;
+      border: 1px solid #ebebeb;
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin-bottom: 14px;
+    }
+
+    .cb-label {
+      font-size: .74rem;
+      font-weight: 700;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .cb-value {
+      font-size: .9rem;
+      color: var(--dark2);
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+
+    /* responsive */
+    @media (max-width: 1000px) {
+      .sidebar {
+        display: none;
+      }
+
+      .main {
+        padding: 24px 18px;
+      }
+
+      .two-col,
+      .three-col {
+        grid-template-columns: 1fr;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        padding: 0 16px;
+      }
+    }
+
+    @media (max-width: 500px) {
+
+      .topbar-divider,
+      .topbar-welcome,
+      .topbar-empid {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <img src="logo.png" alt="Enovexa" onerror="this.style.display='none'" />
+    
+
+      <div class="topbar-welcome"><strong id="t-name"></strong></div>
+    </div>
+    <div class="topbar-right">
+      <span class="topbar-empid" id="t-empid"></span>
+      <button class="signout-btn" onclick="signOut()">Sign Out</button>
+    </div>
+  </header>
+
+  <div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sb-section-label gold">Control Center</div>
+      <button class="sb-btn active" onclick="go(this,'p-overview')"><span class="icon">📊</span> Overview</button>
+      <button class="sb-btn" onclick="go(this,'p-activity')"><span class="icon">🕐</span> Activity Log <span
+          class="sb-count gold" id="sb-activity-count" style="display:none;">0</span></button>
+
+      <div class="sb-section-label">People</div>
+      <button class="sb-btn" onclick="go(this,'p-employees')"><span class="icon">👥</span> Employees</button>
+      <button class="sb-btn" onclick="go(this,'p-hr-team')"><span class="icon">🏢</span> HR Team</button>
+      <button class="sb-btn" onclick="go(this,'p-users')"><span class="icon">🔐</span> User Accounts</button>
+
+      <div class="sb-section-label">Operations</div>
+      <button class="sb-btn" onclick="go(this,'p-tasks')"><span class="icon">📋</span> Assign Tasks <span
+          class="sb-count" id="sb-task-count" style="display:none;">0</span></button>
+      <button class="sb-btn" onclick="go(this,'p-peer-report');renderAdminPeerReport()"><span class="icon">🤝</span>
+        Peer Task Report</button>
+      <button class="sb-btn" onclick="go(this,'p-attendance-report');renderAdminAttendance()"><span class="icon">🕐</span> Attendance Reports</button>
+      <button class="sb-btn" onclick="go(this,'p-leaves')"><span class="icon">📅</span> Leave Overview</button>
+      <button class="sb-btn" onclick="go(this,'p-payroll')"><span class="icon">💸</span> Payroll</button>
+
+
+      <div class="sb-section-label">Communications</div>
+      <button class="sb-btn" onclick="go(this,'p-announcements')"><span class="icon">📢</span> Announcements</button>
+
+      <div class="sb-section-label">Website</div>
+      <button class="sb-btn" onclick="go(this,'p-website')"><span class="icon">🌐</span> Site Content</button>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+
+      <!-- ── OVERVIEW ── -->
+      <div class="panel active" id="p-overview">
+        <h1 class="pg-title"><span class="crown"></span> Admin Overview</h1>
+        <p class="pg-sub">Complete system snapshot — all portals, people, and operations at a glance.</p>
+
+        <div class="stat-row">
+          <div class="stat-card"><span class="sc-icon"></span>
+            <div class="sc-val" id="ov-total-emp">—</div>
+            <div class="sc-lbl">Total Employees</div>
+          </div>
+          <div class="stat-card"><span class="sc-icon"></span>
+            <div class="sc-val" style="color:#059669;" id="ov-present-today">—</div>
+            <div class="sc-lbl">Present Today</div>
+          </div>
+          <div class="stat-card"><span class="sc-icon"></span>
+            <div class="sc-val red" id="ov-onleave-today">—</div>
+            <div class="sc-lbl">Absent Today</div>
+          </div>
+          <div class="stat-card"><span class="sc-icon"></span>
+            <div class="sc-val red" id="ov-overdue">0</div>
+            <div class="sc-lbl">Overdue Tasks</div>
+          </div>
+          <div class="stat-card"><span class="sc-icon"></span>
+            <div class="sc-val" id="adm-total-payroll">₹0</div>
+            <div class="sc-lbl">June Payroll</div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="sec-card">
+            <div class="sec-card-title">Portal Status</div>
+            <ul class="p-list">
+              <li>Employee Portal <span class="badge bg">● Live</span></li>
+              <li>HR Admin Portal <span class="badge bg">● Live</span></li>
+              <li>Admin Control Panel <span class="badge bgold">● Active (You)</span></li>
+              <li>Main Website <span class="badge bg">● Live</span></li>
+            </ul>
+          </div>
+          <div class="sec-card">
+            <div class="sec-card-title">Quick Actions</div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <button class="act-btn" onclick="go(document.querySelector('.sb-btn:nth-child(10)'),'p-tasks')">📋 Assign
+                New Task</button>
+              <button class="act-btn"
+                onclick="go(document.querySelector('[onclick*=p-announcements]'),'p-announcements')">📢 Post
+                Announcement</button>
+              <button class="act-btn outline" onclick="go(document.querySelector('[onclick*=p-leaves]'),'p-leaves')">📅
+                Review Pending Leaves</button>
+              <button class="act-btn outline"
+                onclick="go(document.querySelector('[onclick*=p-website]'),'p-website')">🌐 Edit Website
+                Content</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="sec-card">
+          <div class="sec-card-title">Department Headcount</div>
+          <div class="prog-wrap">
+            <div class="prog-label"><span>Engineering</span><span>8 employees</span></div>
+            <div class="prog-track">
+              <div class="prog-fill" style="width:100%"></div>
+            </div>
+          </div>
+          <div class="prog-wrap">
+            <div class="prog-label"><span>Marketing</span><span>5 employees</span></div>
+            <div class="prog-track">
+              <div class="prog-fill" style="width:62%"></div>
+            </div>
+          </div>
+          <div class="prog-wrap">
+            <div class="prog-label"><span>Operations</span><span>4 employees</span></div>
+            <div class="prog-track">
+              <div class="prog-fill" style="width:50%"></div>
+            </div>
+          </div>
+          <div class="prog-wrap">
+            <div class="prog-label"><span>Design</span><span>4 employees</span></div>
+            <div class="prog-track">
+              <div class="prog-fill" style="width:50%"></div>
+            </div>
+          </div>
+          <div class="prog-wrap">
+            <div class="prog-label"><span>Finance</span><span>3 employees</span></div>
+            <div class="prog-track">
+              <div class="prog-fill" style="width:37%"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sec-card">
+          <div class="sec-card-title">Recent Activity</div>
+          <div id="overview-recent-activity">
+            <p style="color:var(--muted);font-size:.85rem;padding:16px 0;text-align:center;">No recent activity yet.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── ACTIVITY LOG ── -->
+      <div class="panel" id="p-activity">
+        <h1 class="pg-title">Activity Log</h1>
+        <p class="pg-sub">Complete audit trail of all actions — tasks, announcements, leaves, payroll, and updates.</p>
+        <div class="sec-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px;">
+            <div class="sec-card-title" style="margin-bottom:0;">All System Events</div>
+            <button class="act-btn danger" style="padding:6px 16px;font-size:.76rem;" onclick="clearAllActivityLog()">🗑️ Clear All</button>
+          </div>
+          <div id="activity-log-list">
+            <p style="color:var(--muted);font-size:.85rem;padding:24px 0;text-align:center;">No activity recorded yet. Actions like task assignments, announcements, leave approvals, and payroll updates will appear here.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── EMPLOYEES ── -->
+      <div class="panel" id="p-employees">
+        <h1 class="pg-title">All Employees</h1>
+        <p class="pg-sub">Full visibility and management of all 12 employees.</p>
+        <div class="sec-card">
+          <div
+            style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px;">
+            <div class="sec-card-title" style="margin-bottom:0;">Employee Directory</div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <input type="text" placeholder="Search name / ID…" oninput="filterTable(this,'emp-tbody')"
+                style="padding:8px 14px;border:1.5px solid rgba(0,0,0,.11);border-radius:9px;font-size:.83rem;outline:none;width:200px;" />
+              <button class="act-btn" onclick="openEmpModal()">+ Add Employee</button>
+            </div>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>ID</th>
+                  <th>Department</th>
+                  <th>Role</th>
+                  <th>Joined</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="emp-tbody">
+                <tr>
+                  <td>Arjun Menon</td>
+                  <td>ENV-001</td>
+                  <td>Engineering</td>
+                  <td>Software Dev</td>
+                  <td>Jan 2023</td>
+                  <td><span class="badge bg">Active</span></td>
+                  <td><button class="act-btn outline" style="padding:5px 12px;font-size:.75rem;"
+                      onclick="editEmpRow(this)">Edit</button></td>
+                </tr>
+                <tr>
+                  <td>Priya Nair</td>
+                  <td>ENV-002</td>
+                  <td>Marketing</td>
+                  <td>Marketing Exec</td>
+                  <td>Jan 2023</td>
+                  <td><span class="badge bg">Active</span></td>
+                  <td><button class="act-btn outline" style="padding:5px 12px;font-size:.75rem;"
+                      onclick="editEmpRow(this)">Edit</button></td>
+                </tr>
+                <tr>
+                  <td>Rahul Das</td>
+                  <td>ENV-003</td>
+                  <td>Design</td>
+                  <td>UI/UX Designer</td>
+                  <td>Apr 2023</td>
+                  <td><span class="badge bg">Active</span></td>
+                  <td><button class="act-btn outline" style="padding:5px 12px;font-size:.75rem;"
+                      onclick="editEmpRow(this)">Edit</button></td>
+                </tr>
+                <tr>
+                  <td>Sneha Pillai</td>
+                  <td>ENV-004</td>
+                  <td>Engineering</td>
+                  <td>Flutter Dev</td>
+                  <td>Feb 2022</td>
+                  <td><span class="badge bg">Active</span></td>
+                  <td><button class="act-btn outline" style="padding:5px 12px;font-size:.75rem;"
+                      onclick="editEmpRow(this)">Edit</button></td>
+                </tr>
+                <tr>
+                  <td>Karan Shah</td>
+                  <td>ENV-005</td>
+                  <td>Operations</td>
+                  <td>Ops Analyst</td>
+                  <td>Jun 2023</td>
+                  <td><span class="badge bg">Active</span></td>
+                  <td><button class="act-btn outline" style="padding:5px 12px;font-size:.75rem;"
+                      onclick="editEmpRow(this)">Edit</button></td>
+                </tr>
+                <tr>
+                  <td>Divya Krishnan</td>
+                  <td>ENV-006</td>
+                  <td>Marketing</td>
+                  <td>Content Lead</td>
+                  <td>Aug 2022</td>
+                  <td><span class="badge bg">Active</span></td>
+                  <td><button class="act-btn outline" style="padding:5px 12px;font-size:.75rem;"
+                      onclick="editEmpRow(this)">Edit</button></td>
+                </tr>
+                <tr>
+                  <td>Amal Thomas</td>
+                  <td>ENV-007</td>
+                  <td>Engineering</td>
+                  <td>Backend Dev</td>
+                  <td>Nov 2022</td>
+                  <td><span class="badge bg">Active</span></td>
+                  <td><button class="act-btn outline" style="padding:5px 12px;font-size:.75rem;"
+                      onclick="editEmpRow(this)">Edit</button></td>
+                </tr>
+                <tr>
+                  <td>Meera Iyer</td>
+                  <td>ENV-008</td>
+                  <td>Design</td>
+                  <td>Graphic Designer</td>
+                  <td>Jan 2024</td>
+                  <td><span class="badge by">Review</span></td>
+                  <td><button class="act-btn outline" style="padding:5px 12px;font-size:.75rem;"
+                      onclick="editEmpRow(this)">Edit</button></td>
+                </tr>
+                <tr>
+                  <td>Rohan Verma</td>
+                  <td>ENV-009</td>
+                  <td>Marketing</td>
+                  <td>Digital Marketer</td>
+                  <td>Jul 2023</td>
+                  <td><span class="badge bg">Active</span></td>
+                  <td><button class="act-btn outline" style="padding:5px 12px;font-size:.75rem;"
+                      onclick="editEmpRow(this)">Edit</button></td>
+                </tr>
+                <tr>
+                  <td>Lakshmi Reddy</td>
+                  <td>ENV-010</td>
+                  <td>Engineering</td>
+                  <td>QA Engineer</td>
+                  <td>Mar 2022</td>
+                  <td><span class="badge bg">Active</span></td>
+                  <td><button class="act-btn outline" style="padding:5px 12px;font-size:.75rem;"
+                      onclick="editEmpRow(this)">Edit</button></td>
+                </tr>
+                <tr>
+                  <td>Nisha George</td>
+                  <td>ENV-024</td>
+                  <td>Marketing</td>
+                  <td>SEO Specialist</td>
+                  <td>Jun 2026</td>
+                  <td><span class="badge bb">New</span></td>
+                  <td><button class="act-btn outline" style="padding:5px 12px;font-size:.75rem;"
+                      onclick="editEmpRow(this)">Edit</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p style="font-size:.78rem;color:var(--muted);margin-top:14px;">Showing 11 of 24 employees.</p>
+        </div>
+      </div>
+
+      <!-- ── HR TEAM ── -->
+      <div class="panel" id="p-hr-team">
+        <h1 class="pg-title">HR Team</h1>
+        <p class="pg-sub">Manage HR admins — their access, permissions, and activity.</p>
+        <div class="sec-card">
+          <div class="sec-card-title">HR Administrators</div>
+          <div class="user-row">
+            <div class="av-sm">D</div>
+            <div class="user-info">
+              <div class="user-name">David</div>
+              <div class="user-id">HR-001 · Full HR Admin</div>
+            </div>
+            <span class="badge bg">Active</span>
+            <button class="act-btn outline" style="padding:6px 14px;font-size:.77rem;"
+              onclick="editHRAdmin(this)">Manage</button>
+          </div>
+          <div class="user-row">
+            <div class="av-sm">V</div>
+            <div class="user-info">
+              <div class="user-name">Vikram Nair</div>
+              <div class="user-id">HR-002 · Full HR Admin</div>
+            </div>
+            <span class="badge bg">Active</span>
+            <button class="act-btn outline" style="padding:6px 14px;font-size:.77rem;"
+              onclick="editHRAdmin(this)">Manage</button>
+          </div>
+          <button class="act-btn" style="margin-top:18px;" onclick="openHRAdminModal()">+
+            Add HR Admin</button>
+        </div>
+      </div>
+
+      <!-- ── USER ACCOUNTS ── -->
+      <div class="panel" id="p-users">
+        <h1 class="pg-title">User Accounts</h1>
+        <p class="pg-sub">Manage login credentials and portal access for all users.</p>
+        <div class="two-col">
+          <div class="sec-card">
+            <div class="sec-card-title">Employee Accounts</div>
+            <div class="user-row">
+              <div class="user-info">
+                <div class="user-name">Rahul Menon (ENV-001)</div>
+                <div class="user-id">Pass: enovexa · Portal access</div>
+              </div>
+              <div class="toggle-wrap"><label class="toggle"><input type="checkbox" checked
+                    onchange="showToast('🔐 Access toggled for ENV-001')"><span class="toggle-slider"></span></label>
+              </div>
+            </div>
+            <div class="user-row">
+              <div class="user-info">
+                <div class="user-name">Priya Sharma (ENV-002)</div>
+                <div class="user-id">Pass: enovexa2 · Portal access</div>
+              </div>
+              <div class="toggle-wrap"><label class="toggle"><input type="checkbox" checked
+                    onchange="showToast('🔐 Access toggled for ENV-002')"><span class="toggle-slider"></span></label>
+              </div>
+            </div>
+            <button class="act-btn" style="margin-top:14px;" onclick="openAddUserModal('employee')">+
+              Add User</button>
+          </div>
+          <div class="sec-card">
+            <div class="sec-card-title">HR Admin Accounts</div>
+            <div class="user-row">
+              <div class="user-info">
+                <div class="user-name">David (HR-001)</div>
+                <div class="user-id">Pass: hrAdmin@2025 · Full HR</div>
+              </div>
+              <div class="toggle-wrap"><label class="toggle"><input type="checkbox" checked
+                    onchange="showToast('🔐 Access toggled for HR-001')"><span class="toggle-slider"></span></label>
+              </div>
+            </div>
+            <div class="user-row">
+              <div class="user-info">
+                <div class="user-name">Vikram Nair (HR-002)</div>
+                <div class="user-id">Pass: hr@enovexa · Full HR</div>
+              </div>
+              <div class="toggle-wrap"><label class="toggle"><input type="checkbox" checked
+                    onchange="showToast('🔐 Access toggled for HR-002')"><span class="toggle-slider"></span></label>
+              </div>
+            </div>
+            <button class="act-btn" style="margin-top:14px;" onclick="openAddUserModal('hr')">+
+              Add HR User</button>
+          </div>
+        </div>
+        <div class="sec-card">
+          <div class="sec-card-title">Reset Password</div>
+          <div class="form-row">
+            <div class="form-group"><label>User ID</label><input type="text" id="reset-id"
+                placeholder="e.g. ENV-001 or HR-001" /></div>
+            <div class="form-group"><label>New Password</label><input type="password" id="reset-pass"
+                placeholder="New password" /></div>
+          </div>
+          <button class="act-btn" onclick="resetPassword()">🔑 Reset Password</button>
+        </div>
+      </div>
+
+      <!-- ── ASSIGN TASKS ── -->
+      <div class="panel" id="p-tasks">
+        <h1 class="pg-title">Assign Tasks</h1>
+        <p class="pg-sub">Create and assign tasks to employees or HR. Edit or update any task at any time.</p>
+
+        <!-- TASK FORM -->
+        <div class="sec-card" id="task-form-card">
+          <div class="sec-card-title" id="task-form-label">New Task Assignment</div>
+          <input type="hidden" id="t-edit-id" value="" />
+          <div class="form-row">
+            <div class="form-group"><label>Task Title</label><input type="text" id="t-title"
+                placeholder="e.g. Prepare Q3 marketing plan" /></div>
+            <div class="form-group"><label>Assign To</label>
+              <select id="t-assign">
+                <option value="">— Select —</option>
+                <optgroup label="👥 Employees">
+                  <option value="ENV-001 — Arjun Menon">ENV-001 — Arjun Menon</option>
+                  <option value="ENV-002 — Priya Nair">ENV-002 — Priya Nair</option>
+                  <option value="ENV-003 — Rahul Das">ENV-003 — Rahul Das</option>
+                  <option value="ENV-004 — Sneha Pillai">ENV-004 — Sneha Pillai</option>
+                  <option value="ENV-005 — Karan Shah">ENV-005 — Karan Shah</option>
+                  <option value="ENV-006 — Divya Krishnan">ENV-006 — Divya Krishnan</option>
+                  <option value="ENV-007 — Amal Thomas">ENV-007 — Amal Thomas</option>
+                  <option value="ENV-008 — Meera Iyer">ENV-008 — Meera Iyer</option>
+                  <option value="All Employees">📢 All Employees</option>
+                </optgroup>
+                <optgroup label="🏢 HR Admins">
+                  <option value="HR-001 — David">HR-001 — David</option>
+                  <option value="HR-002 — Vikram Nair">HR-002 — Vikram Nair</option>
+                  <option value="HR Team">📢 HR Team (Both)</option>
+                </optgroup>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Due Date</label><input type="date" id="t-due" /></div>
+            <div class="form-group"><label>Priority</label>
+              <select id="t-priority">
+                <option value="Normal">Normal</option>
+                <option value="High">High</option>
+                <option value="Urgent">🚨 Urgent</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Category</label>
+              <select id="t-category">
+                <option value="General">General</option>
+                <option value="Development">Development</option>
+                <option value="Design">Design</option>
+                <option value="Marketing">Marketing</option>
+                <option value="HR / People">HR / People</option>
+                <option value="Finance">Finance</option>
+                <option value="Operations">Operations</option>
+                <option value="Compliance">Compliance</option>
+              </select>
+            </div>
+            <div class="form-group"><label>Status</label>
+              <select id="t-status">
+                <option value="Pending">Pending</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Review">Review</option>
+                <option value="Completed">Completed</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group"><label>Task Description</label><textarea id="t-desc" rows="3"
+              placeholder="Describe the task in detail…"></textarea></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+            <button class="act-btn" id="task-submit-btn" onclick="assignTask()">📋 Assign Task</button>
+            <button class="act-btn outline" id="task-cancel-btn" onclick="cancelEditTask()" style="display:none;">✕
+              Cancel Edit</button>
+          </div>
+        </div>
+
+        <!-- TASK STATS -->
+        <div class="stat-row" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px;">
+          <div class="stat-card"><span class="sc-icon"></span>
+            <div class="sc-val" id="ts-total">3</div>
+            <div class="sc-lbl">Total Assigned</div>
+          </div>
+          <div class="stat-card"><span class="sc-icon"></span>
+            <div class="sc-val red" id="ts-pending">1</div>
+            <div class="sc-lbl">Pending</div>
+          </div>
+          <div class="stat-card"><span class="sc-icon"></span>
+            <div class="sc-val" id="ts-inprogress">2</div>
+            <div class="sc-lbl">In Progress</div>
+          </div>
+          <div class="stat-card"><span class="sc-icon"></span>
+            <div class="sc-val" style="color:#059669;" id="ts-done">0</div>
+            <div class="sc-lbl">Completed</div>
+          </div>
+        </div>
+
+        <!-- FILTER + TASK LIST -->
+        <div class="sec-card">
+          <div
+            style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+            <div class="sec-card-title" style="margin-bottom:0;">All Assigned Tasks</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+              <select id="filter-assignee" onchange="renderTaskList()"
+                style="padding:7px 12px;border:1.5px solid rgba(0,0,0,.11);border-radius:9px;font-size:.8rem;background:#fafafa;outline:none;">
+                <option value="">All Assignees</option>
+                <option value="Employee">Employees Only</option>
+                <option value="HR">HR Only</option>
+              </select>
+              <select id="filter-status" onchange="renderTaskList()"
+                style="padding:7px 12px;border:1.5px solid rgba(0,0,0,.11);border-radius:9px;font-size:.8rem;background:#fafafa;outline:none;">
+                <option value="">All Statuses</option>
+                <option value="Pending">Pending</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Review">Review</option>
+                <option value="Completed">Completed</option>
+              </select>
+              <select id="filter-priority" onchange="renderTaskList()"
+                style="padding:7px 12px;border:1.5px solid rgba(0,0,0,.11);border-radius:9px;font-size:.8rem;background:#fafafa;outline:none;">
+                <option value="">All Priorities</option>
+                <option value="Normal">Normal</option>
+                <option value="High">High</option>
+                <option value="Urgent">Urgent</option>
+              </select>
+            </div>
+          </div>
+          <ul class="p-list" id="assigned-tasks-list"></ul>
+          <p style="font-size:.78rem;color:var(--muted);margin-top:8px;" id="task-count-label"></p>
+        </div>
+      </div>
+
+      <!-- ── PEER TASK REPORT ── -->
+      <div class="panel" id="p-peer-report">
+        <div
+          style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:4px;">
+          <h1 class="pg-title" style="margin-bottom:0;">Peer Task Report</h1>
+          <button onclick="renderAdminPeerReport();showToast('🔄 Refreshed!');"
+            style="background:var(--red);color:#fff;border:none;border-radius:9px;padding:8px 18px;font-size:.82rem;font-weight:700;cursor:pointer;">↻
+            Refresh</button>
+        </div>
+        <p class="pg-sub">All employee-to-employee tasks across the organization — full visibility and oversight.</p>
+
+        <div class="stat-row" style="grid-template-columns:repeat(4,1fr);">
+          <div class="stat-card"><span class="sc-icon"></span>
+            <div class="sc-val" id="apr-total">—</div>
+            <div class="sc-lbl">Total Peer Tasks</div>
+          </div>
+          <div class="stat-card"><span class="sc-icon"></span>
+            <div class="sc-val" id="apr-pending">—</div>
+            <div class="sc-lbl">Pending</div>
+          </div>
+          <div class="stat-card"><span class="sc-icon"></span>
+            <div class="sc-val" id="apr-ongoing">—</div>
+            <div class="sc-lbl">In Progress</div>
+          </div>
+          <div class="stat-card"><span class="sc-icon"></span>
+            <div class="sc-val" id="apr-done">—</div>
+            <div class="sc-lbl">Completed</div>
+          </div>
+        </div>
+
+        <div class="sec-card">
+          <div
+            style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+            <div class="sec-card-title" style="margin-bottom:0;">All Peer Tasks</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;" id="apr-filter-btns">
+              <button class="apr-filter act-btn" style="padding:6px 14px;font-size:.75rem;"
+                onclick="setAprFilter('all',this)">All</button>
+              <button class="apr-filter act-btn outline" style="padding:6px 14px;font-size:.75rem;"
+                onclick="setAprFilter('Pending',this)">⏳ Pending</button>
+              <button class="apr-filter act-btn outline" style="padding:6px 14px;font-size:.75rem;"
+                onclick="setAprFilter('In Progress',this)">🔄 In Progress</button>
+              <button class="apr-filter act-btn outline" style="padding:6px 14px;font-size:.75rem;"
+                onclick="setAprFilter('Completed',this)">✅ Completed</button>
+            </div>
+          </div>
+          <div id="apr-task-list" style="overflow-x:auto;">
+            <p style="color:var(--muted);font-size:.85rem;padding:18px 0;text-align:center;">Loading peer tasks…</p>
+          </div>
+        </div>
+
+        <div class="sec-card">
+          <div class="sec-card-title">Employee Peer Task Activity</div>
+          <div id="apr-by-employee" style="overflow-x:auto;">
+            <p style="color:var(--muted);font-size:.85rem;padding:18px 0;">Loading…</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── ATTENDANCE REPORTS ── -->
+      <div class="panel" id="p-attendance-report">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:4px;">
+          <h1 class="pg-title">Attendance Reports</h1>
+          <button onclick="renderAdminAttendance();showToast('🔄 Refreshed!');" style="background:var(--gold);color:#fff;border:none;border-radius:9px;padding:8px 18px;font-size:.82rem;font-weight:700;cursor:pointer;">↻ Refresh</button>
+        </div>
+        <p class="pg-sub">Company-wide attendance data submitted by HR — track presence, absences, and leave trends.</p>
+
+        <!-- KPI Row -->
+        <div class="stat-row" style="grid-template-columns:repeat(3,1fr);">
+          <div class="stat-card"><span class="sc-icon"></span><div class="sc-val" style="color:#059669;" id="adm-att-present">—</div><div class="sc-lbl">Present Today</div></div>
+          <div class="stat-card"><span class="sc-icon"></span><div class="sc-val red" id="adm-att-absent">—</div><div class="sc-lbl">Absent Today</div></div>
+          <div class="stat-card"><span class="sc-icon"></span><div class="sc-val" id="adm-att-rate">—</div><div class="sc-lbl">Today's Rate</div></div>
+        </div>
+
+        <!-- Filters -->
+        <div class="sec-card">
+          <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:0;">
+            <div>
+              <label style="display:block;font-size:.72rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">View Date</label>
+              <input type="date" id="adm-att-date" style="padding:10px 13px;border:1.5px solid rgba(0,0,0,0.11);border-radius:8px;font-family:var(--body);font-size:.875rem;background:#fafafa;outline:none;" />
+            </div>
+            <button class="act-btn" onclick="loadAdminDayView()">Load Day</button>
+            <div style="margin-left:auto;display:flex;gap:8px;align-items:center;">
+              <input type="month" id="adm-att-month" style="padding:8px 12px;border:1.5px solid rgba(0,0,0,0.11);border-radius:8px;font-family:var(--body);font-size:.83rem;background:#fafafa;outline:none;" onchange="renderAdminMonthSummary()" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Day View Table -->
+        <div class="sec-card" id="adm-att-dayview">
+          <div class="sec-card-title" id="adm-att-dayview-title">Day View</div>
+          <div style="overflow-x:auto;">
+            <table class="data-table">
+              <thead><tr><th>Employee</th><th>ID</th><th>Dept</th><th>Status</th><th>Note</th></tr></thead>
+              <tbody id="adm-att-dayview-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Monthly Summary -->
+        <div class="sec-card">
+          <div class="sec-card-title">📈 Monthly Summary</div>
+          <div style="overflow-x:auto;">
+            <table class="data-table">
+              <thead><tr><th>Employee</th><th>ID</th><th>Dept</th><th>Present</th><th>Absent</th><th>Days Tracked</th><th>Rate</th></tr></thead>
+              <tbody id="adm-att-summary-body">
+                <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:24px;font-size:.85rem;">Select a month above to load the summary.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Full History -->
+        
+      </div>
+
+      <!-- ── LEAVE OVERVIEW ── -->
+      <div class="panel" id="p-leaves">
+        <h1 class="pg-title">Leave Overview</h1>
+        <p class="pg-sub">Full visibility of all leave requests across the organisation.</p>
+        <div class="stat-row" style="grid-template-columns:repeat(4,1fr);">
+          <div class="stat-card"><span class="sc-icon"></span>
+            <div class="sc-val red" id="adm-lv-pending">0</div>
+            <div class="sc-lbl">Pending Requests</div>
+          </div>
+          <div class="stat-card"><span class="sc-icon"></span>
+            <div class="sc-val" id="adm-lv-approved">—</div>
+            <div class="sc-lbl">Approved</div>
+          </div>
+          <div class="stat-card"><span class="sc-icon"></span>
+            <div class="sc-val" id="adm-lv-rejected">—</div>
+            <div class="sc-lbl">Rejected</div>
+          </div>
+          <div class="stat-card"><span class="sc-icon"></span>
+            <div class="sc-val" id="adm-lv-rate">—</div>
+            <div class="sc-lbl">Approval Rate</div>
+          </div>
+        </div>
+        <div class="sec-card">
+          <div class="sec-card-title" style="justify-content:space-between;">
+            <span>All Employee Leave Requests</span>
+            <button onclick="renderAdminLeave();showToast('🔄 Refreshed!');"
+              style="background:var(--red);color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:.75rem;font-weight:700;cursor:pointer;">↻
+              Refresh</button>
+          </div>
+          <ul class="p-list" id="adm-leave-list">
+            <li style="color:var(--muted);font-size:.84rem;padding:16px 0;text-align:center;">Loading…</li>
+          </ul>
+        </div>
+        <div class="sec-card">
+          <div class="sec-card-title">Leave Policy Override</div>
+          <p style="font-size:.84rem;color:var(--muted);margin-bottom:16px;">As Admin, you can override HR decisions and
+            update leave limits.</p>
+          <div class="form-row">
+            <div class="form-group"><label>Annual Casual Leave Days</label><input type="number" value="18" /></div>
+            <div class="form-group"><label>Annual Sick Leave Days</label><input type="number" value="10" /></div>
+          </div>
+          <button class="act-btn" onclick="showToast('⚙️ Leave policy updated!')">Save Policy</button>
+        </div>
+      </div>
+
+      <!-- ── PAYROLL ── -->
+      <div class="panel" id="p-payroll">
+        <h1 class="pg-title">Salary Management</h1>
+        <p class="pg-sub">Set, edit, and manage salaries for all employees and HR staff. Only Admin can edit salary
+          data.</p>
+        <div class="stat-row" style="grid-template-columns:repeat(3,1fr);">
+          <div class="stat-card"><span class="sc-icon"></span>
+            <div class="sc-val" id="adm-total-payroll">—</div>
+            <div class="sc-lbl">Total Monthly Payroll</div>
+          </div>
+          <div class="stat-card"><span class="sc-icon"></span>
+            <div class="sc-val" id="adm-emp-count">12</div>
+            <div class="sc-lbl">Employees</div>
+          </div>
+          <div class="stat-card"><span class="sc-icon"></span>
+            <div class="sc-val" id="adm-hr-count">2</div>
+            <div class="sc-lbl">HR Staff</div>
+          </div>
+        </div>
+
+        <!-- Set / Update Salary Form -->
+        <div class="sec-card">
+          <div class="sec-card-title">💰 Set / Update Salary</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Staff Type</label>
+              <select id="sal-type" onchange="updateSalFormPlaceholder()">
+                <option value="employee">Employee</option>
+                <option value="hr">HR Staff</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Staff ID</label>
+              <input type="text" id="sal-id" placeholder="e.g. ENV-001" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Name</label><input type="text" id="sal-name"
+                placeholder="e.g. Arjun Menon" /></div>
+            <div class="form-group"><label>Department</label><input type="text" id="sal-dept"
+                placeholder="e.g. Engineering" /></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Gross Salary (₹)</label><input type="number" id="sal-gross"
+                placeholder="e.g. 52000" /></div>
+            <div class="form-group"><label>Deductions (₹) — PF + Tax</label><input type="number" id="sal-ded"
+                placeholder="e.g. 7000" /></div>
+          </div>
+          <div class="form-group"><label>Reason / Note</label><input type="text" id="sal-note"
+              placeholder="e.g. Annual increment, joining, promotion" /></div>
+          <button class="act-btn" onclick="saveSalaryData()">💾 Save Salary</button>
+        </div>
+
+        <!-- Employee Salary List -->
+        <div class="sec-card">
+          <div class="sec-card-title" style="justify-content:space-between;">
+            <span>Employee Salary List</span>
+            <button onclick="renderSalaryTables()"
+              style="background:var(--gold);color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:.74rem;font-weight:700;cursor:pointer;">↻
+              Refresh</button>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="data-table" id="emp-salary-table">
+              <thead>
+                <tr>
+                  <th>Employee</th>
+                  <th>ID</th>
+                  <th>Department</th>
+                  <th>Gross</th>
+                  <th>Deductions</th>
+                  <th>Net Pay</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="emp-salary-tbody">
+                <tr>
+                  <td colspan="7" style="text-align:center;color:var(--muted);padding:20px;">No salary data yet. Use the
+                    form above to add salaries.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- HR Salary List -->
+        <div class="sec-card">
+          <div class="sec-card-title">HR Staff Salary List</div>
+          <div style="overflow-x:auto;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>HR Staff</th>
+                  <th>ID</th>
+                  <th>Gross</th>
+                  <th>Deductions</th>
+                  <th>Net Pay</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="hr-salary-tbody">
+                <tr>
+                  <td colspan="6" style="text-align:center;color:var(--muted);padding:20px;">No HR salary data yet. Use
+                    the form above (select "HR Staff").</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── ANNOUNCEMENTS ── -->
+      <div class="panel" id="p-announcements">
+        <h1 class="pg-title">Announcements</h1>
+        <p class="pg-sub">Post notices to employees, HR, or the entire company. They appear on respective dashboards.
+        </p>
+
+        <div class="sec-card">
+          <div class="sec-card-title">New Announcement</div>
+          <div class="form-row">
+            <div class="form-group"><label>Title</label><input type="text" id="ann-title"
+                placeholder="e.g. Q3 All-Hands Meeting" /></div>
+            <div class="form-group"><label>Audience</label>
+              <select id="ann-audience">
+                <option value="all">All Staff (Employees + HR)</option>
+                <option value="employees">Employees Only</option>
+                <option value="hr">HR Team Only</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group"><label>Message</label><textarea id="ann-body" rows="4"
+              placeholder="Write the full announcement…"></textarea></div>
+          <div class="form-row">
+            <div class="form-group"><label>Priority</label><select id="ann-priority">
+                <option>Normal</option>
+                <option>Important</option>
+                <option>Urgent</option>
+              </select></div>
+            <div class="form-group"><label>Valid Until</label><input type="date" id="ann-date" /></div>
+          </div>
+          <button class="act-btn" onclick="postAnnouncement()">📢 Post Announcement</button>
+        </div>
+
+        <div class="sec-card">
+          <div class="sec-card-title">Active Announcements</div>
+          <div id="announcement-list">
+            
+          
+          </div>
+        </div>
+      </div>
+
+      <!-- ── WEBSITE CONTENT ── -->
+      <div class="panel" id="p-website">
+        <h1 class="pg-title">Site Content</h1>
+        <p class="pg-sub">Assign website content change tasks to employees directly from here.</p>
+
+        <!-- Assignment Form -->
+        <div class="sec-card" id="wc-form-card">
+          <div class="sec-card-title" id="wc-form-label">New Website Change Assignment</div>
+          <input type="hidden" id="wc-edit-id" />
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Website / Portal</label>
+              <select id="wc-website">
+                <option value="">Select website…</option>
+                <option>Enovexa Main Website</option>
+                <option>Employee Portal</option>
+                <option>HR Admin Portal</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Where to Make Change</label>
+              <input type="text" id="wc-where" placeholder="e.g. Hero Section, About Us…" />
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label>What to Change</label>
+              <input type="text" id="wc-what" placeholder="e.g. Update headline text…" />
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:18px;">
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Assign To</label>
+              <select id="wc-assign">
+                <option value="">Select employee…</option>
+                <option>ENV-001 — Arjun Menon</option>
+                <option>ENV-002 — Priya Nair</option>
+                <option>ENV-003 — Rahul Das</option>
+                <option>ENV-004 — Sneha Pillai</option>
+                <option>ENV-005 — Karan Shah</option>
+                <option>ENV-006 — Divya Krishnan</option>
+                <option>ENV-007 — Amal Thomas</option>
+                <option>ENV-008 — Meera Iyer</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Due Date</label>
+              <input type="date" id="wc-due" />
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Priority</label>
+              <select id="wc-priority">
+                <option>Normal</option>
+                <option>High</option>
+                <option>Urgent</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;">
+            <button class="act-btn" id="wc-submit-btn" onclick="assignWebChange()">🌐 Assign Change</button>
+            <button class="act-btn outline" id="wc-cancel-btn" style="display:none;" onclick="cancelWCEdit()">✕
+              Cancel</button>
+          </div>
+        </div>
+
+        <!-- Assigned Tasks Table -->
+        <div class="sec-card">
+          <div
+            style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+            <div class="sec-card-title" style="margin-bottom:0;">Assigned Website Changes</div>
+            <span id="wc-count-label" style="font-size:.76rem;color:var(--muted);"></span>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Website</th>
+                  <th>Where to Change</th>
+                  <th>What to Change</th>
+                  <th>Assigned To</th>
+                  <th>Due Date</th>
+                  <th>Priority</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="wc-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- ══ EMPLOYEE MODAL ══ -->
+  <div id="emp-modal"
+    style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:3000;align-items:center;justify-content:center;">
+    <div
+      style="background:#fff;border-radius:18px;padding:32px 36px;width:580px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.25);position:relative;">
+      <button onclick="closeEmpModal()"
+        style="position:absolute;top:16px;right:18px;background:none;border:none;font-size:1.3rem;cursor:pointer;color:#aaa;">✕</button>
+      <div
+        style="font-size:.7rem;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:#c11212;margin-bottom:6px;">
+        Employee Directory</div>
+      <h2 id="emp-modal-title" style="font-size:1.3rem;font-weight:800;margin-bottom:22px;color:#1A1A1A;">Add New
+        Employee</h2>
+      <input type="hidden" id="emp-edit-row" value="" />
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div class="form-group"><label>Full Name *</label><input type="text" id="em-name"
+            placeholder="e.g. Priya Menon" /></div>
+        <div class="form-group"><label>Employee ID *</label><input type="text" id="em-id" placeholder="e.g. ENV-025" />
+        </div>
+        <div class="form-group"><label>Department *</label>
+          <select id="em-dept">
+            <option value="">— Select —</option>
+            <option>Engineering</option>
+            <option>Marketing</option>
+            <option>Design</option>
+            <option>Operations</option>
+            <option>Finance</option>
+            <option>HR</option>
+            <option>Sales</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Role / Designation *</label><input type="text" id="em-role"
+            placeholder="e.g. Software Dev" /></div>
+        <div class="form-group"><label>Date Joined</label><input type="month" id="em-joined" /></div>
+        <div class="form-group"><label>Status</label>
+          <select id="em-status">
+            <option value="Active">Active</option>
+            <option value="Review">Review</option>
+            <option value="New">New</option>
+            <option value="Inactive">Inactive</option>
+          </select>
+        </div>
+        <div class="form-group" style="grid-column:1/-1;"><label>Email</label><input type="email" id="em-email"
+            placeholder="employee@enovexa.com" /></div>
+        <div class="form-group" style="grid-column:1/-1;"><label>Phone</label><input type="tel" id="em-phone"
+            placeholder="+91 98XXX XXXXX" /></div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;">
+        <button class="act-btn" onclick="saveEmployee()">💾 Save Employee</button>
+        <button class="act-btn outline" onclick="closeEmpModal()">Cancel</button>
+        <button id="emp-delete-btn" class="act-btn danger" style="display:none;margin-left:auto;"
+          onclick="deleteEmployee()">🗑️ Remove Employee</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ HR ADMIN MODAL ══ -->
+  <div id="hradmin-modal"
+    style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:3000;align-items:center;justify-content:center;">
+    <div
+      style="background:#fff;border-radius:18px;padding:32px 36px;width:500px;max-width:95vw;box-shadow:0 24px 80px rgba(0,0,0,.25);position:relative;">
+      <button onclick="closeHRAdminModal()"
+        style="position:absolute;top:16px;right:18px;background:none;border:none;font-size:1.3rem;cursor:pointer;color:#aaa;">✕</button>
+      <div
+        style="font-size:.7rem;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:#c11212;margin-bottom:6px;">
+        HR Team</div>
+      <h2 id="hradmin-modal-title" style="font-size:1.3rem;font-weight:800;margin-bottom:22px;color:#1A1A1A;">Add HR
+        Admin</h2>
+      <input type="hidden" id="hradmin-edit-row" value="" />
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div class="form-group"><label>Full Name *</label><input type="text" id="hra-name"
+            placeholder="e.g. Anjali Sharma" /></div>
+        <div class="form-group"><label>HR ID *</label><input type="text" id="hra-id" placeholder="e.g. HR-003" /></div>
+        <div class="form-group"><label>Access Level</label>
+          <select id="hra-access">
+            <option value="Full HR Admin">Full HR Admin</option>
+            <option value="HR Viewer">HR Viewer (Read-only)</option>
+            <option value="HR Limited">HR Limited</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Status</label>
+          <select id="hra-status">
+            <option>Active</option>
+            <option>Inactive</option>
+          </select>
+        </div>
+        <div class="form-group" style="grid-column:1/-1;"><label>Email</label><input type="email" id="hra-email"
+            placeholder="hr@enovexa.com" /></div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;">
+        <button class="act-btn" onclick="saveHRAdmin()">💾 Save HR Admin</button>
+        <button class="act-btn outline" onclick="closeHRAdminModal()">Cancel</button>
+        <button id="hradmin-delete-btn" class="act-btn danger" style="display:none;margin-left:auto;"
+          onclick="deleteHRAdmin()">🗑️ Remove</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ USER ACCOUNT MODAL ══ -->
+  <div id="useracc-modal"
+    style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:3000;align-items:center;justify-content:center;">
+    <div
+      style="background:#fff;border-radius:18px;padding:32px 36px;width:480px;max-width:95vw;box-shadow:0 24px 80px rgba(0,0,0,.25);position:relative;">
+      <button onclick="closeUserModal()"
+        style="position:absolute;top:16px;right:18px;background:none;border:none;font-size:1.3rem;cursor:pointer;color:#aaa;">✕</button>
+      <div
+        style="font-size:.7rem;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:#c11212;margin-bottom:6px;">
+        User Accounts</div>
+      <h2 id="useracc-title" style="font-size:1.3rem;font-weight:800;margin-bottom:22px;color:#1A1A1A;">Add User Account
+      </h2>
+      <input type="hidden" id="useracc-type" value="employee" />
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div class="form-group"><label>Display Name *</label><input type="text" id="ua-name"
+            placeholder="e.g. Ravi Kumar" /></div>
+        <div class="form-group"><label>User ID *</label><input type="text" id="ua-id"
+            placeholder="e.g. ENV-025 or HR-003" /></div>
+        <div class="form-group"><label>Password *</label><input type="text" id="ua-pass"
+            placeholder="Set login password" /></div>
+        <div class="form-group"><label>Access Type</label><input type="text" id="ua-access"
+            placeholder="Portal access / Full HR" /></div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:20px;">
+        <button class="act-btn" onclick="saveUserAccount()">💾 Add Account</button>
+        <button class="act-btn outline" onclick="closeUserModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ── AUTH GUARD ──
+    const empId = sessionStorage.getItem('emp_id');
+    const empName = sessionStorage.getItem('emp_name');
+    const empRole = sessionStorage.getItem('emp_role');
+    if (!empId || empRole !== 'admin') {
+      window.location.href = 'portal.html';
+    }
+    document.getElementById('t-name').textContent = empName || 'Admin';
+    document.getElementById('t-empid').textContent = empId || 'ADM-001';
+
+    // ── PANEL SWITCH ──
+    function go(btn, id) {
+      document.querySelectorAll('.sb-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      const panel = document.getElementById(id);
+      if (panel) panel.classList.add('active');
+    }
+    // Quick action buttons use direct navigation
+    document.querySelectorAll('[onclick*="p-tasks"]').forEach(b => {
+      if (b.tagName === 'BUTTON' && b.closest('.main')) {
+        b.onclick = () => { document.querySelector('[onclick*=\'p-tasks\']').click(); };
+      }
+    });
+
+    // ── SIGN OUT ──
+    function signOut() { sessionStorage.clear(); window.location.href = 'portal.html'; }
+
+    // ══ ACTIVITY LOG ENGINE ══
+    // Each entry: { id, color, text, time (ISO string) }
+    function getActivityLog() {
+      return JSON.parse(localStorage.getItem('admin_activity_log') || '[]');
+    }
+    function saveActivityLog(log) {
+      localStorage.setItem('admin_activity_log', JSON.stringify(log));
+    }
+    function addActivityEntry(text, color) {
+      // color: 'green' | 'red' | 'blue' | '' (gold default)
+      const log = getActivityLog();
+      log.unshift({ id: Date.now() + Math.random(), color: color || '', text, time: new Date().toISOString() });
+      if (log.length > 200) log.length = 200; // cap
+      saveActivityLog(log);
+      renderActivityLog();
+      updateOverviewRecentActivity();
+      updateSidebarActivityCount();
+    }
+    function formatLogTime(iso) {
+      const d = new Date(iso);
+      const now = new Date();
+      const diff = now - d;
+      const mins = Math.floor(diff / 60000);
+      const hrs = Math.floor(diff / 3600000);
+      const days = Math.floor(diff / 86400000);
+      if (mins < 1) return 'Just now';
+      if (mins < 60) return mins + ' min ago';
+      if (hrs < 24) return hrs + ' hr ago';
+      if (days === 1) return 'Yesterday, ' + d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+      return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) + ', ' + d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+    }
+    function renderActivityLog() {
+      const log = getActivityLog();
+      const container = document.getElementById('activity-log-list');
+      if (!container) return;
+      if (log.length === 0) {
+        container.innerHTML = '<p style="color:var(--muted);font-size:.85rem;padding:24px 0;text-align:center;">No activity recorded yet. Actions like task assignments, announcements, leave approvals, and payroll updates will appear here.</p>';
+        return;
+      }
+      container.innerHTML = log.map(entry => `
+        <div class="log-item" data-log-id="${entry.id}">
+          <div class="log-dot ${entry.color}"></div>
+          <div class="log-text">${entry.text}</div>
+          <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
+            <div class="log-time">${formatLogTime(entry.time)}</div>
+            <button onclick="deleteActivityEntry('${entry.id}')" title="Delete entry"
+              style="background:none;border:none;cursor:pointer;color:#ccc;font-size:.85rem;padding:2px 4px;line-height:1;border-radius:4px;transition:color .15s;"
+              onmouseover="this.style.color='#b91c1c'" onmouseout="this.style.color='#ccc'">✕</button>
+          </div>
+        </div>`).join('');
+    }
+    function deleteActivityEntry(id) {
+      let log = getActivityLog();
+      log = log.filter(e => String(e.id) !== String(id));
+      saveActivityLog(log);
+      renderActivityLog();
+      updateOverviewRecentActivity();
+      updateSidebarActivityCount();
+    }
+    function clearAllActivityLog() {
+      if (!confirm('Clear all activity log entries?')) return;
+      saveActivityLog([]);
+      renderActivityLog();
+      updateOverviewRecentActivity();
+      updateSidebarActivityCount();
+      showToast('🗑️ Activity log cleared.');
+    }
+    function updateSidebarActivityCount() {
+      const log = getActivityLog();
+      const badge = document.getElementById('sb-activity-count');
+      if (!badge) return;
+      if (log.length > 0) { badge.textContent = log.length > 99 ? '99+' : log.length; badge.style.display = ''; }
+      else { badge.style.display = 'none'; }
+    }
+    function updateOverviewRecentActivity() {
+      const log = getActivityLog();
+      const container = document.getElementById('overview-recent-activity');
+      if (!container) return;
+      if (log.length === 0) {
+        container.innerHTML = '<p style="color:var(--muted);font-size:.85rem;padding:16px 0;text-align:center;">No recent activity yet.</p>';
+        return;
+      }
+      container.innerHTML = log.slice(0, 4).map(entry => `
+        <div class="log-item">
+          <div class="log-dot ${entry.color}"></div>
+          <div class="log-text">${entry.text}</div>
+          <div class="log-time">${formatLogTime(entry.time)}</div>
+        </div>`).join('');
+    }
+
+    // ══ OVERVIEW STATS — computed from real data ══
+    function updateOverviewStats() {
+      const today = new Date().toISOString().slice(0, 10);
+      // Total employees — use ADM_ATT_EMPLOYEES as single source of truth
+      // (matches exactly the employees tracked in attendance: present + absent = this total)
+      const totalEmp = ADM_ATT_EMPLOYEES.length;
+      const ovTotalEl = document.getElementById('ov-total-emp');
+      if (ovTotalEl) ovTotalEl.textContent = totalEmp;
+      // Overdue tasks
+      const tasks = JSON.parse(localStorage.getItem('admin_tasks') || '[]');
+      const overdue = tasks.filter(t => t.due && t.due < today && t.status !== 'Completed').length;
+      const ovEl = document.getElementById('ov-overdue');
+      if (ovEl) ovEl.textContent = overdue;
+      // Attendance: Present Today & Absent Today (On Leave status removed)
+      const attRec = JSON.parse(localStorage.getItem('attendance_' + today) || '[]');
+      const presentToday = attRec.filter(r => r.status === 'Present' || r.status === 'Half Day').length;
+      const absentToday  = attRec.filter(r => r.status === 'Absent').length;
+      const ptEl = document.getElementById('ov-present-today');
+      const ltEl = document.getElementById('ov-onleave-today'); // now shows Absent
+      if (ptEl) ptEl.textContent = attRec.length ? presentToday : '—';
+      if (ltEl) ltEl.textContent = attRec.length ? absentToday  : '—';
+      // Also sync the adm-att-* KPIs on the Attendance Reports page if visible
+      const admAttPresent = document.getElementById('adm-att-present');
+      const admAttAbsent  = document.getElementById('adm-att-absent');
+      const admAttRate    = document.getElementById('adm-att-rate');
+      if (admAttPresent) admAttPresent.textContent = attRec.length ? presentToday : '—';
+      if (admAttAbsent)  admAttAbsent.textContent  = attRec.length ? absentToday  : '—';
+      if (admAttRate) {
+        admAttRate.textContent = attRec.length ? Math.round((presentToday / totalEmp) * 100) + '%' : '—';
+      }
+      // Payroll is already handled by renderSalaryTables via adm-total-payroll
+    }
+
+    // ══ TASK BADGE — pending/in-progress count on sidebar ══
+    function updateTaskSidebarBadge() {
+      const tasks = JSON.parse(localStorage.getItem('admin_tasks') || '[]');
+      const active = tasks.filter(t => t.status === 'Pending' || t.status === 'In Progress').length;
+      const badge = document.getElementById('sb-task-count');
+      if (!badge) return;
+      if (active > 0) { badge.textContent = active > 99 ? '99+' : active; badge.style.display = ''; }
+      else { badge.style.display = 'none'; }
+    }
+
+    // ── TABLE FILTER ──
+    function filterTable(input, tbodyId) {
+      const q = input.value.toLowerCase();
+      document.querySelectorAll('#' + tbodyId + ' tr').forEach(r => {
+        r.style.display = r.textContent.toLowerCase().includes(q) ? '' : 'none';
+      });
+    }
+
+    // ── TASK DATA STORE ──
+    let adminTasks = JSON.parse(localStorage.getItem('admin_tasks') || '[]');
+
+    // Seed default tasks only on very first load ever (flag prevents re-seeding after deletion)
+    if (!localStorage.getItem('admin_tasks_seeded')) {
+      if (adminTasks.length === 0) {
+        adminTasks = [
+          { id: 1001, title: 'Website SEO Audit', assign: 'ENV-004 \u2014 Sneha Pillai', due: '2026-06-15', prio: 'High', category: 'Marketing', status: 'In Progress', desc: 'Audit the main website for SEO improvements and submit a report.' },
+          { id: 1002, title: 'Q3 Marketing Plan Draft', assign: 'ENV-002 \u2014 Priya Nair', due: '2026-06-20', prio: 'Normal', category: 'Marketing', status: 'In Progress', desc: 'Draft the Q3 marketing strategy and content calendar.' },
+          { id: 1003, title: 'Complete Q2 Appraisals', assign: 'HR Team', due: '2026-06-30', prio: 'High', category: 'HR / People', status: 'Pending', desc: 'Complete all Q2 performance appraisals and submit to admin.' },
+        ];
+        localStorage.setItem('admin_tasks', JSON.stringify(adminTasks));
+      }
+      localStorage.setItem('admin_tasks_seeded', '1');
+    }
+
+    // ── STATUS BADGE CLASS ──
+    function statusBadgeClass(status) {
+      if (status === 'Completed') return 'bg';
+      if (status === 'In Progress') return 'bb';
+      if (status === 'Review') return 'bgold';
+      return 'by'; // Pending
+    }
+
+    // ── PRIORITY ICON ──
+    function prioIcon(prio) {
+      if (prio === 'Urgent') return '🚨 ';
+      if (prio === 'High') return '🔴 ';
+      return '';
+    }
+
+    // ── ASSIGNEE TYPE ──
+    function assigneeType(assign) {
+      if (assign.startsWith('HR') || assign === 'HR Team') return 'HR';
+      return 'Employee';
+    }
+
+    // ── RENDER TASK LIST ──
+    function renderTaskList() {
+      const filterAssignee = document.getElementById('filter-assignee')?.value || '';
+      const filterStatus = document.getElementById('filter-status')?.value || '';
+      const filterPriority = document.getElementById('filter-priority')?.value || '';
+
+      let filtered = [...adminTasks];
+      if (filterAssignee) filtered = filtered.filter(t => assigneeType(t.assign) === filterAssignee);
+      if (filterStatus) filtered = filtered.filter(t => t.status === filterStatus);
+      if (filterPriority) filtered = filtered.filter(t => t.prio === filterPriority);
+
+      const list = document.getElementById('assigned-tasks-list');
+      if (!list) return;
+
+      if (filtered.length === 0) {
+        list.innerHTML = '<li style="color:var(--muted);font-size:.85rem;padding:18px 0;">No tasks match the current filters.</li>';
+      } else {
+        list.innerHTML = filtered.map(t => {
+          const typeTag = assigneeType(t.assign) === 'HR'
+            ? `<span class="badge bgold" style="margin-right:4px;">HR</span>`
+            : `<span class="badge bb" style="margin-right:4px;">EMP</span>`;
+          return `<li>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                ${typeTag}
+                <strong>${prioIcon(t.prio)}${t.title}</strong>
+                <span class="badge bgy" style="font-size:.64rem;">${t.category}</span>
+              </div>
+              <div style="font-size:.74rem;color:var(--muted);margin-top:3px;">
+                → ${t.assign}${t.due ? ' · Due ' + t.due : ''} · ${t.prio} Priority
+                ${t.desc ? `<br><em style="color:#888;">${t.desc.substring(0, 80)}${t.desc.length > 80 ? '…' : ''}</em>` : ''}
+              </div>
+            </div>
+            <div style="display:flex;gap:6px;align-items:center;flex-shrink:0;flex-wrap:wrap;">
+              <span class="badge ${t.status === 'Completed' ? 'bg' : t.status === 'In Progress' ? 'bb' : 'by'}" title="Updated by employee" style="font-size:.74rem;padding:5px 10px;">
+                ${t.status === 'Completed' ? '✅' : t.status === 'In Progress' ? '🔄' : '⏳'} ${t.status || 'Pending'}
+              </span>
+              <span style="font-size:.65rem;color:#bbb;font-style:italic;">Employee updates</span>
+              <button class="act-btn outline" style="padding:5px 12px;font-size:.74rem;" onclick="editTask(${t.id})">✏️ Edit</button>
+              <button class="act-btn danger" style="padding:5px 12px;font-size:.74rem;" onclick="deleteTask(${t.id})">🗑️</button>
+            </div>
+          </li>`;
+        }).join('');
+      }
+
+      // Update count label
+      const label = document.getElementById('task-count-label');
+      if (label) label.textContent = `Showing ${filtered.length} of ${adminTasks.length} task(s)`;
+
+      // Update stats
+      updateTaskStats();
+    }
+
+    // Task status is updated by employees only — admin dashboard auto-syncs
+    function refreshAdminTasksFromStorage() {
+      adminTasks = JSON.parse(localStorage.getItem('admin_tasks') || '[]');
+      renderTaskList();
+    }
+
+    function updateTaskStats() {
+      const total = adminTasks.length;
+      const pending = adminTasks.filter(t => t.status === 'Pending').length;
+      const inprogress = adminTasks.filter(t => t.status === 'In Progress' || t.status === 'Review').length;
+      const done = adminTasks.filter(t => t.status === 'Completed').length;
+      const ts = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+      ts('ts-total', total); ts('ts-pending', pending); ts('ts-inprogress', inprogress); ts('ts-done', done);
+    }
+
+    // ── ASSIGN / UPDATE TASK ──
+    function assignTask() {
+      const editId = document.getElementById('t-edit-id').value;
+      const title = document.getElementById('t-title').value.trim();
+      const assign = document.getElementById('t-assign').value;
+      const due = document.getElementById('t-due').value;
+      const prio = document.getElementById('t-priority').value;
+      const category = document.getElementById('t-category').value;
+      const status = document.getElementById('t-status').value;
+      const desc = document.getElementById('t-desc').value.trim();
+      if (!title || !assign) { showToast('⚠️ Please fill in task title and assignee.'); return; }
+
+      if (editId) {
+        // UPDATE existing task
+        const idx = adminTasks.findIndex(t => t.id == editId);
+        if (idx !== -1) {
+          adminTasks[idx] = { ...adminTasks[idx], title, assign, due, prio, category, status, desc };
+          showToast('✅ Task updated successfully!');
+          addActivityEntry(`<strong>Admin</strong> updated task "<em>${title}</em>" → assigned to ${assign}`, 'blue');
+        }
+      } else {
+        // CREATE new task
+        adminTasks.unshift({ id: Date.now(), title, assign, due, prio, category, status: status || 'Pending', desc });
+        showToast('📋 Task assigned to ' + assign + '!');
+        addActivityEntry(`<strong>Admin</strong> assigned new task "<em>${title}</em>" to ${assign}`, 'green');
+      }
+
+      localStorage.setItem('admin_tasks', JSON.stringify(adminTasks));
+      clearTaskForm();
+      renderTaskList();
+      updateTaskSidebarBadge();
+      updateOverviewStats();
+    }
+
+    // ── EDIT TASK ──
+    function editTask(id) {
+      const t = adminTasks.find(t => t.id === id);
+      if (!t) return;
+      document.getElementById('t-edit-id').value = t.id;
+      document.getElementById('t-title').value = t.title;
+      document.getElementById('t-assign').value = t.assign;
+      document.getElementById('t-due').value = t.due || '';
+      document.getElementById('t-priority').value = t.prio;
+      document.getElementById('t-category').value = t.category || 'General';
+      document.getElementById('t-status').value = t.status || 'Pending';
+      document.getElementById('t-desc').value = t.desc || '';
+      document.getElementById('task-form-label').textContent = '✏️ Edit Task';
+      document.getElementById('task-submit-btn').textContent = '💾 Save Changes';
+      document.getElementById('task-cancel-btn').style.display = 'inline-flex';
+      document.getElementById('task-form-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // ── DELETE TASK ──
+    function deleteTask(id) {
+      const t = adminTasks.find(t => t.id === id);
+      adminTasks = adminTasks.filter(t => t.id !== id);
+      localStorage.setItem('admin_tasks', JSON.stringify(adminTasks));
+      renderTaskList();
+      updateTaskSidebarBadge();
+      updateOverviewStats();
+      if (t) addActivityEntry(`<strong>Admin</strong> deleted task "<em>${t.title}</em>"`, 'red');
+      showToast('🗑️ Task deleted.');
+    }
+
+    // ── CANCEL EDIT ──
+    function cancelEditTask() {
+      clearTaskForm();
+      showToast('✕ Edit cancelled.');
+    }
+
+    function clearTaskForm() {
+      ['t-edit-id', 't-title', 't-due', 't-desc'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+      ['t-assign', 't-priority', 't-category', 't-status'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.selectedIndex = 0;
+      });
+      document.getElementById('task-form-label').textContent = 'New Task Assignment';
+      document.getElementById('task-submit-btn').textContent = '📋 Assign Task';
+      document.getElementById('task-cancel-btn').style.display = 'none';
+    }
+
+    // Render on load
+    renderTaskList();
+
+    // ── HR TASK FORM ──
+    function openHRTaskForm() {
+      document.getElementById('hr-task-form').style.display = 'block';
+    }
+    function submitHRTask() {
+      const title = document.getElementById('hrt-title').value.trim();
+      const who = document.getElementById('hrt-who').value;
+      const due = document.getElementById('hrt-due').value;
+      if (!title) { showToast('⚠️ Please enter a task title.'); return; }
+      // Save to localStorage with status field so HR can update it
+      const hrTasks = JSON.parse(localStorage.getItem('admin_hr_tasks') || '[]');
+      const newTask = { title, who, due, id: Date.now(), status: 'Pending', assignedAt: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) };
+      hrTasks.push(newTask);
+      localStorage.setItem('admin_hr_tasks', JSON.stringify(hrTasks));
+      localStorage.setItem('admin_tasks_updated', Date.now().toString());
+      document.getElementById('hr-task-form').style.display = 'none';
+      document.getElementById('hrt-title').value = '';
+      renderAdminHRTaskList();
+      addActivityEntry(`<strong>Admin</strong> assigned HR task "<em>${title}</em>" to ${who}`, 'green');
+      showToast('📋 Task assigned to ' + who + '!');
+    }
+
+    // ── RENDER ADMIN → HR TASK LIST (live from localStorage) ──
+    function renderAdminHRTaskList() {
+      const list = document.getElementById('hr-task-list');
+      if (!list) return;
+      const tasks = JSON.parse(localStorage.getItem('admin_hr_tasks') || '[]');
+      // Static seed tasks (show only if no stored tasks yet)
+      if (tasks.length === 0) {
+        list.innerHTML = `
+          <li><div><strong>Complete Q2 appraisals</strong><div style="font-size:.74rem;color:var(--muted);">Assigned to HR Team · Due June 30</div></div><span class="badge by">Pending</span></li>
+          <li><div><strong>Review pending leave requests</strong><div style="font-size:.74rem;color:var(--muted);">Assigned to HR-001 · Urgent</div></div><span class="badge by">Pending</span></li>`;
+        return;
+      }
+      list.innerHTML = tasks.slice().reverse().map(t => {
+        const stClass = t.status === 'Completed' ? 'bg' : t.status === 'In Progress' ? 'bb' : 'by';
+        const stIcon = t.status === 'Completed' ? '✅' : t.status === 'In Progress' ? '🔄' : '⏳';
+        const isCompleted = t.status === 'Completed';
+        return `<li style="${isCompleted ? 'background:rgba(5,150,105,.04);border-radius:10px;padding:10px 12px;' : ''}">
+          <div style="flex:1;min-width:0;"><strong>${t.title}</strong>
+            <div style="font-size:.74rem;color:var(--muted);">Assigned to ${t.who}${t.due ? ' · Due ' + t.due : ''}${t.assignedAt ? ' · Assigned ' + t.assignedAt : ''}</div>
+            ${isCompleted ? '<div style="font-size:.7rem;color:#059669;font-weight:700;margin-top:3px;">✅ HR has completed this task — you may now remove it.</div>' : ''}
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+            <span class="badge ${stClass}">${stIcon} ${t.status}</span>
+            ${isCompleted ? `<button class="act-btn danger" style="padding:5px 14px;font-size:.74rem;" onclick="deleteHRTask(${t.id})" title="Remove completed task">🗑️ Delete</button>` : ''}
+          </div>
+        </li>`;
+      }).join('');
+    }
+
+    // ── DELETE COMPLETED HR TASK (admin only) ──
+    function deleteHRTask(id) {
+      const tasks = JSON.parse(localStorage.getItem('admin_hr_tasks') || '[]');
+      const task = tasks.find(t => t.id === id);
+      if (!task) return;
+      if (task.status !== 'Completed') {
+        showToast('⚠️ Only completed tasks can be deleted.');
+        return;
+      }
+      const updated = tasks.filter(t => t.id !== id);
+      localStorage.setItem('admin_hr_tasks', JSON.stringify(updated));
+      localStorage.setItem('admin_tasks_updated', Date.now().toString());
+      try { new BroadcastChannel('enovexa_sync').postMessage({ type: 'tasks_updated' }); } catch (e) { }
+      renderAdminHRTaskList();
+      showToast('🗑️ Completed task removed successfully.');
+    }
+
+    // ── ANNOUNCEMENTS ──
+    function postAnnouncement() {
+      const title = document.getElementById('ann-title').value.trim();
+      const body = document.getElementById('ann-body').value.trim();
+      const audience = document.getElementById('ann-audience').value;
+      const prio = document.getElementById('ann-priority').value;
+      if (!title || !body) { showToast('⚠️ Please fill title and message.'); return; }
+      const annId = Date.now();
+      const today = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+      const newAnn = { id: annId, title, body, audience, prio, date: today };
+      // Save to localStorage first
+      const announcements = JSON.parse(localStorage.getItem('admin_announcements') || '[]');
+      announcements.push(newAnn);
+      localStorage.setItem('admin_announcements', JSON.stringify(announcements));
+      // Write a timestamp signal so HR/Employee polling detects the change reliably
+      localStorage.setItem('announcements_updated', Date.now().toString());
+      // Render in DOM
+      renderAnnouncementCard(newAnn, true);
+      document.getElementById('ann-title').value = '';
+      document.getElementById('ann-body').value = '';
+      const audLabel2 = audience === 'all' ? 'All Staff' : audience === 'hr' ? 'HR Team' : 'Employees';
+      addActivityEntry(`<strong>Admin</strong> posted announcement "<em>${title}</em>" → ${audLabel2}`, 'blue');
+      showToast('📢 Announcement posted to ' + (audience === 'all' ? 'all staff' : audience === 'hr' ? 'HR' : 'Employees') + '!');
+    }
+
+    function renderAnnouncementCard(ann, prepend) {
+      const list = document.getElementById('announcement-list');
+      const card = document.createElement('div');
+      card.className = 'announce-card';
+      card.dataset.annId = ann.id;
+      const icon = ann.prio === 'Urgent' ? '🚨' : ann.prio === 'Important' ? '⚠️' : '📢';
+      const audLabel = ann.audience === 'all' ? 'All Staff' : ann.audience === 'hr' ? 'HR Team' : 'Employees';
+      card.innerHTML = `
+        <div class="announce-title">${icon} ${ann.title}</div>
+        <div class="announce-meta">Posted by Admin · To: ${audLabel} · ${ann.date}</div>
+        <div class="announce-body">${ann.body}</div>
+        <div class="announce-actions">
+          <button class="act-btn danger" style="padding:5px 14px;font-size:.76rem;" onclick="deleteAnnouncement(${ann.id})">🗑️ Delete Everywhere</button>
+        </div>`;
+      if (prepend) list.prepend(card); else list.appendChild(card);
+    }
+
+    function deleteAnnouncement(id) {
+      // Remove from localStorage — this propagates to all other dashboards
+      let announcements = JSON.parse(localStorage.getItem('admin_announcements') || '[]');
+      const ann = announcements.find(a => a.id === id);
+      announcements = announcements.filter(a => a.id !== id);
+      localStorage.setItem('admin_announcements', JSON.stringify(announcements));
+      localStorage.setItem('announcements_updated', Date.now().toString());
+      // Remove from DOM
+      const card = document.querySelector(`.announce-card[data-ann-id="${id}"]`);
+      if (card) card.remove();
+      if (ann) addActivityEntry(`<strong>Admin</strong> deleted announcement "<em>${ann.title}</em>"`, 'red');
+      showToast('🗑️ Announcement deleted everywhere (HR + Employee portals).');
+    }
+
+    function loadAnnouncementsFromStorage() {
+      const list = document.getElementById('announcement-list');
+      const stored = JSON.parse(localStorage.getItem('admin_announcements') || '[]');
+      // Remove the static sample cards and replace with stored ones
+      // Keep static ones if no stored data yet
+      if (stored.length > 0) {
+        list.innerHTML = '';
+        stored.slice().reverse().forEach(ann => renderAnnouncementCard(ann, false));
+      } else {
+        // Add data-ann-id to the existing static cards so delete works
+        list.querySelectorAll('.announce-card').forEach((card, i) => {
+          const fakeId = 9000 + i;
+          card.dataset.annId = fakeId;
+          const delBtn = card.querySelector('.act-btn.danger');
+          if (delBtn) delBtn.setAttribute('onclick', `deleteAnnouncement(${fakeId})`);
+        });
+      }
+    }
+    loadAnnouncementsFromStorage();
+    renderAdminHRTaskList();
+
+    // ── RESET PASSWORD ──
+    function resetPassword() {
+      const id = document.getElementById('reset-id').value.trim().toUpperCase();
+      const pass = document.getElementById('reset-pass').value.trim();
+      if (!id || !pass) { showToast('⚠️ Enter user ID and new password.'); return; }
+      const resets = JSON.parse(localStorage.getItem('admin_resets') || '{}');
+      resets[id] = pass;
+      localStorage.setItem('admin_resets', JSON.stringify(resets));
+      showToast('🔑 Password reset for ' + id + '!');
+    }
+
+    // ── WEBSITE CHANGE ASSIGNMENTS ──
+    let wcTasks = JSON.parse(localStorage.getItem('admin_wc_tasks') || '[]');
+    // One-time cleanup: remove old demo seed data (ids 2001–2003)
+    if (!localStorage.getItem('admin_wc_seeded')) {
+      wcTasks = wcTasks.filter(t => t.id !== 2001 && t.id !== 2002 && t.id !== 2003);
+      localStorage.setItem('admin_wc_tasks', JSON.stringify(wcTasks));
+      localStorage.setItem('admin_wc_seeded', '1');
+    }
+
+    function renderWCTable() {
+      const tbody = document.getElementById('wc-tbody');
+      if (!tbody) return;
+      if (wcTasks.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:22px 0;font-size:.85rem;">No website change tasks assigned yet.</td></tr>';
+      } else {
+        tbody.innerHTML = wcTasks.map(t => {
+          const prioClass = t.priority === 'Urgent' ? 'br' : t.priority === 'High' ? 'bgold' : 'bgy';
+          const stClass = t.status === 'Completed' ? 'bg' : t.status === 'In Progress' ? 'bb' : 'by';
+          return `<tr>
+            <td><strong>${t.website}</strong></td>
+            <td>${t.where}</td>
+            <td style="max-width:200px;">${t.what}</td>
+            <td>${t.assign}</td>
+            <td style="white-space:nowrap;">${t.due || '—'}</td>
+            <td><span class="badge ${prioClass}">${t.priority}</span></td>
+            <td>
+              <span class="badge ${stClass}" title="Updated by employee">${t.status === 'Completed' ? '✅' : t.status === 'In Progress' ? '🔄' : '⏳'} ${t.status || 'Pending'}</span>
+            </td>
+            <td style="white-space:nowrap;">
+              <button class="act-btn outline" style="padding:4px 10px;font-size:.73rem;margin-right:4px;" onclick="editWCTask(${t.id})">✏️</button>
+              <button class="act-btn danger" style="padding:4px 10px;font-size:.73rem;" onclick="deleteWCTask(${t.id})">🗑️</button>
+            </td>
+          </tr>`;
+        }).join('');
+      }
+      const lbl = document.getElementById('wc-count-label');
+      if (lbl) lbl.textContent = `${wcTasks.length} task(s) assigned`;
+    }
+
+    function assignWebChange() {
+      const editId = document.getElementById('wc-edit-id').value;
+      const website = document.getElementById('wc-website').value;
+      const where = document.getElementById('wc-where').value.trim();
+      const what = document.getElementById('wc-what').value.trim();
+      const assign = document.getElementById('wc-assign').value;
+      const due = document.getElementById('wc-due').value;
+      const priority = document.getElementById('wc-priority').value;
+      if (!website || !where || !what || !assign) { showToast('⚠️ Please fill in all required fields.'); return; }
+      if (editId) {
+        const idx = wcTasks.findIndex(t => t.id == editId);
+        if (idx !== -1) { wcTasks[idx] = { ...wcTasks[idx], website, where, what, assign, due, priority }; showToast('✅ Task updated!'); }
+      } else {
+        wcTasks.unshift({ id: Date.now(), website, where, what, assign, due, priority, status: 'Pending' });
+        showToast('🌐 Change assigned to ' + assign.split('—')[1]?.trim() + '!');
+      }
+      localStorage.setItem('admin_wc_tasks', JSON.stringify(wcTasks));
+      clearWCForm();
+      renderWCTable();
+    }
+
+    function editWCTask(id) {
+      const t = wcTasks.find(t => t.id === id);
+      if (!t) return;
+      document.getElementById('wc-edit-id').value = t.id;
+      document.getElementById('wc-website').value = t.website;
+      document.getElementById('wc-where').value = t.where;
+      document.getElementById('wc-what').value = t.what;
+      document.getElementById('wc-assign').value = t.assign;
+      document.getElementById('wc-due').value = t.due || '';
+      document.getElementById('wc-priority').value = t.priority;
+      document.getElementById('wc-form-label').textContent = '✏️ Edit Website Change Task';
+      document.getElementById('wc-submit-btn').textContent = '💾 Save Changes';
+      document.getElementById('wc-cancel-btn').style.display = 'inline-flex';
+      document.getElementById('wc-form-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function deleteWCTask(id) {
+      wcTasks = wcTasks.filter(t => t.id !== id);
+      localStorage.setItem('admin_wc_tasks', JSON.stringify(wcTasks));
+      renderWCTable();
+      showToast('🗑️ Task deleted.');
+    }
+
+    function updateWCStatus(id, status) {
+      const t = wcTasks.find(t => t.id === id);
+      if (t) { t.status = status; localStorage.setItem('admin_wc_tasks', JSON.stringify(wcTasks)); showToast('✅ Status updated to ' + status); }
+    }
+
+    function cancelWCEdit() { clearWCForm(); showToast('✕ Edit cancelled.'); }
+
+    function clearWCForm() {
+      ['wc-edit-id', 'wc-where', 'wc-what'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+      ['wc-website', 'wc-assign', 'wc-priority'].forEach(id => { const el = document.getElementById(id); if (el) el.selectedIndex = 0; });
+      document.getElementById('wc-due').value = '';
+      document.getElementById('wc-form-label').textContent = 'New Website Change Assignment';
+      document.getElementById('wc-submit-btn').textContent = '🌐 Assign Change';
+      document.getElementById('wc-cancel-btn').style.display = 'none';
+    }
+
+    renderWCTable();
+    renderAdminLeave();
+
+    // ── ADMIN LEAVE OVERVIEW ──
+    function renderAdminLeave() {
+      const all = JSON.parse(localStorage.getItem('leave_requests') || '[]');
+      const pending = all.filter(r => r.status === 'Pending');
+      const approved = all.filter(r => r.status === 'Approved');
+      const rejected = all.filter(r => r.status === 'Rejected');
+      const elP = document.getElementById('adm-lv-pending');
+      const elA = document.getElementById('adm-lv-approved');
+      const elR = document.getElementById('adm-lv-rejected');
+      if (elP) elP.textContent = pending.length;
+      if (elA) elA.textContent = approved.length;
+      if (elR) elR.textContent = rejected.length;
+      const elRate = document.getElementById('adm-lv-rate');
+      if (elRate) {
+        const decided = approved.length + rejected.length;
+        elRate.textContent = decided > 0 ? Math.round((approved.length / decided) * 100) + '%' : '—';
+      }
+      const list = document.getElementById('adm-leave-list');
+      if (!list) return;
+      if (all.length === 0) {
+        list.innerHTML = '<li style="color:var(--muted);font-size:.84rem;padding:16px 0;text-align:center;">No employee leave requests yet.</li>';
+        return;
+      }
+      list.innerHTML = all.map(r => {
+        const dateStr = r.from === r.to ? r.from : r.from + ' → ' + r.to;
+        const sc = r.status === 'Approved' ? 'bg' : r.status === 'Rejected' ? 'br' : 'by';
+        const btns = r.status === 'Pending'
+          ? `<div style="display:flex;gap:8px;flex-shrink:0;">
+               <button class="act-btn" style="padding:5px 14px;font-size:.76rem;" onclick="adminLeaveAction('${r.id}','Approved')">Approve</button>
+               <button class="act-btn danger" style="padding:5px 14px;font-size:.76rem;" onclick="adminLeaveAction('${r.id}','Rejected')">Reject</button>
+             </div>`
+          : `<span class="badge ${sc}">${r.status}</span>`;
+        return `<li>
+          <div>
+            <strong>${r.empName} (${r.empId})</strong>
+            <div style="font-size:.74rem;color:var(--muted);">${dateStr} · ${r.type} · ${r.days} day${r.days > 1 ? 's' : ''}</div>
+            <div style="font-size:.72rem;color:#bbb;">Applied: ${r.appliedOn}${r.actionBy ? ' · Actioned by: ' + r.actionBy : ''}</div>
+          </div>
+          ${btns}
+        </li>`;
+      }).join('');
+    }
+
+    function adminLeaveAction(id, action) {
+      const all = JSON.parse(localStorage.getItem('leave_requests') || '[]');
+      const idx = all.findIndex(r => r.id === id);
+      if (idx !== -1) {
+        all[idx].status = action;
+        all[idx].actionBy = sessionStorage.getItem('emp_id') || 'Admin';
+        all[idx].actionOn = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+        localStorage.setItem('leave_requests', JSON.stringify(all));
+        localStorage.setItem('leave_requests_updated', Date.now().toString());
+        try { new BroadcastChannel('enovexa_sync').postMessage({ type: 'leave_actioned', id, action }); } catch (e) { }
+      }
+      renderAdminLeave();
+      showToast(action === 'Approved' ? '✅ Leave approved!' : '❌ Leave rejected.');
+    }
+
+    // ── POLLING SYNC: leave requests ──
+    let _admLeaveSig = localStorage.getItem('leave_requests_updated') || '';
+    let _admHRTaskSig = localStorage.getItem('admin_hr_tasks_updated') || '';
+    let _admAttSig = localStorage.getItem('attendance_updated') || '';
+    setInterval(function () {
+      const sig = localStorage.getItem('leave_requests_updated') || '';
+      if (sig !== _admLeaveSig) { _admLeaveSig = sig; renderAdminLeave(); showToast('📩 New leave request received!'); }
+      const hrSig = localStorage.getItem('admin_hr_tasks_updated') || '';
+      if (hrSig !== _admHRTaskSig) { _admHRTaskSig = hrSig; renderAdminHRTaskList(); showToast('🔄 HR updated a task status!'); }
+      const attSig = localStorage.getItem('attendance_updated') || '';
+      if (attSig !== _admAttSig) {
+        _admAttSig = attSig;
+        if (document.getElementById('p-attendance-report').classList.contains('active')) {
+          renderAdminAttendance();
+        }
+        updateOverviewStats();
+        showToast('📋 Attendance updated by HR!');
+      }
+    }, 3000);
+    window.addEventListener('storage', function (e) {
+      if (e.key === 'leave_requests' || e.key === 'leave_requests_updated') { renderAdminLeave(); }
+      if (e.key === 'admin_hr_tasks' || e.key === 'admin_hr_tasks_updated') { renderAdminHRTaskList(); }
+      if (e.key === 'attendance_updated') {
+        _admAttSig = localStorage.getItem('attendance_updated') || '';
+        if (document.getElementById('p-attendance-report').classList.contains('active')) {
+          renderAdminAttendance();
+        }
+        updateOverviewStats();
+        showToast('📋 Attendance updated by HR!');
+      }
+    });
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'visible') { renderAdminLeave(); renderAdminHRTaskList(); renderAdminAttendance(); }
+    });
+    // BroadcastChannel: instant sync when HR marks task complete
+    // (merged with employee task sync below)
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    // ══════════════════════════════════════
+    // EMPLOYEE MODAL
+    // ══════════════════════════════════════
+    const statusBadge = { Active: 'bg', Review: 'by', New: 'bb', Inactive: 'br' };
+
+    function openEmpModal() {
+      document.getElementById('emp-modal-title').textContent = 'Add New Employee';
+      document.getElementById('emp-edit-row').value = '';
+      ['em-name', 'em-id', 'em-role', 'em-email', 'em-phone'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('em-dept').selectedIndex = 0;
+      document.getElementById('em-status').selectedIndex = 0;
+      document.getElementById('em-joined').value = '';
+      document.getElementById('emp-delete-btn').style.display = 'none';
+      document.getElementById('emp-modal').style.display = 'flex';
+    }
+
+    function editEmpRow(btn) {
+      const row = btn.closest('tr');
+      const cells = row.querySelectorAll('td');
+      document.getElementById('emp-modal-title').textContent = 'Edit Employee';
+      document.getElementById('em-name').value = cells[0].textContent.trim();
+      document.getElementById('em-id').value = cells[1].textContent.trim();
+      const deptSel = document.getElementById('em-dept');
+      const deptVal = cells[2].textContent.trim();
+      [...deptSel.options].forEach(o => { if (o.value === deptVal) o.selected = true; });
+      document.getElementById('em-role').value = cells[3].textContent.trim();
+      document.getElementById('em-joined').value = '';
+      const statusSel = document.getElementById('em-status');
+      const statusVal = cells[5].querySelector('.badge').textContent.trim();
+      [...statusSel.options].forEach(o => { if (o.value === statusVal) o.selected = true; });
+      document.getElementById('em-email').value = '';
+      document.getElementById('em-phone').value = '';
+      document.getElementById('emp-edit-row').value = 'yes';
+      document.getElementById('emp-delete-btn').style.display = 'inline-flex';
+      document.getElementById('emp-delete-btn').dataset.row = [...document.getElementById('emp-tbody').rows].indexOf(row);
+      document.getElementById('emp-modal').style.display = 'flex';
+    }
+
+    function saveEmployee() {
+      const name = document.getElementById('em-name').value.trim();
+      const id = document.getElementById('em-id').value.trim();
+      const dept = document.getElementById('em-dept').value;
+      const role = document.getElementById('em-role').value.trim();
+      const status = document.getElementById('em-status').value;
+      const joinedRaw = document.getElementById('em-joined').value;
+      if (!name || !id || !dept || !role) { showToast('⚠️ Please fill in all required fields.'); return; }
+      const joined = joinedRaw ? new Date(joinedRaw + '-01').toLocaleDateString('en-IN', { month: 'short', year: 'numeric' }) : '—';
+      const tbody = document.getElementById('emp-tbody');
+      const editRow = document.getElementById('emp-edit-row').value;
+      const badgeClass = statusBadge[status] || 'bg';
+      if (editRow === 'yes') {
+        // find row by id cell
+        const rows = tbody.querySelectorAll('tr');
+        for (const row of rows) {
+          if (row.cells[1].textContent.trim() === id) {
+            row.cells[0].textContent = name;
+            row.cells[2].textContent = dept;
+            row.cells[3].textContent = role;
+            if (joinedRaw) row.cells[4].textContent = joined;
+            row.cells[5].innerHTML = `<span class="badge ${badgeClass}">${status}</span>`;
+            break;
+          }
+        }
+        showToast('✅ Employee ' + id + ' updated!');
+      } else {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${name}</td><td>${id}</td><td>${dept}</td><td>${role}</td><td>${joined}</td>
+          <td><span class="badge ${badgeClass}">${status}</span></td>
+          <td><button class="act-btn outline" style="padding:5px 12px;font-size:.75rem;" onclick="editEmpRow(this)">Edit</button></td>`;
+        tbody.appendChild(tr);
+        showToast('👤 ' + name + ' (' + id + ') added!');
+      }
+      closeEmpModal();
+    }
+
+    function deleteEmployee() {
+      const btn = document.getElementById('emp-delete-btn');
+      const id = document.getElementById('em-id').value.trim();
+      const tbody = document.getElementById('emp-tbody');
+      const rows = tbody.querySelectorAll('tr');
+      for (const row of rows) {
+        if (row.cells[1].textContent.trim() === id) { row.remove(); break; }
+      }
+      showToast('🗑️ Employee ' + id + ' removed.');
+      closeEmpModal();
+    }
+
+    function closeEmpModal() {
+      document.getElementById('emp-modal').style.display = 'none';
+    }
+
+    // close on backdrop click
+    document.getElementById('emp-modal').addEventListener('click', function (e) { if (e.target === this) closeEmpModal(); });
+
+    // ══════════════════════════════════════
+    // HR ADMIN MODAL
+    // ══════════════════════════════════════
+    function openHRAdminModal() {
+      document.getElementById('hradmin-modal-title').textContent = 'Add HR Admin';
+      document.getElementById('hradmin-edit-row').value = '';
+      ['hra-name', 'hra-id', 'hra-email'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('hra-access').selectedIndex = 0;
+      document.getElementById('hra-status').selectedIndex = 0;
+      document.getElementById('hradmin-delete-btn').style.display = 'none';
+      document.getElementById('hradmin-modal').style.display = 'flex';
+    }
+
+    function editHRAdmin(btn) {
+      const row = btn.closest('.user-row');
+      const name = row.querySelector('.user-name').textContent.trim();
+      const idText = row.querySelector('.user-id').textContent.split('·')[0].trim();
+      document.getElementById('hradmin-modal-title').textContent = 'Edit HR Admin';
+      document.getElementById('hra-name').value = name;
+      document.getElementById('hra-id').value = idText;
+      document.getElementById('hradmin-edit-row').value = name;
+      document.getElementById('hradmin-delete-btn').style.display = 'inline-flex';
+      document.getElementById('hradmin-modal').style.display = 'flex';
+    }
+
+    function saveHRAdmin() {
+      const name = document.getElementById('hra-name').value.trim();
+      const id = document.getElementById('hra-id').value.trim();
+      const access = document.getElementById('hra-access').value;
+      const status = document.getElementById('hra-status').value;
+      if (!name || !id) { showToast('⚠️ Name and HR ID are required.'); return; }
+      const editName = document.getElementById('hradmin-edit-row').value;
+      // Find the HR team section and update or add
+      const hrSection = document.querySelector('#p-hr-team .sec-card');
+      const addBtn = hrSection.querySelector('.act-btn:not(.outline)');
+      if (editName) {
+        // update existing row
+        const rows = hrSection.querySelectorAll('.user-row');
+        for (const row of rows) {
+          if (row.querySelector('.user-name').textContent.trim() === editName) {
+            row.querySelector('.user-name').textContent = name;
+            row.querySelector('.user-id').textContent = id + ' · ' + access;
+            row.querySelector('.badge').textContent = status;
+            row.querySelector('.badge').className = 'badge ' + (status === 'Active' ? 'bg' : 'br');
+            break;
+          }
+        }
+        showToast('✅ ' + name + ' updated!');
+      } else {
+        const initial = name.charAt(0).toUpperCase();
+        const newRow = document.createElement('div');
+        newRow.className = 'user-row';
+        newRow.innerHTML = `<div class="av-sm">${initial}</div>
+          <div class="user-info"><div class="user-name">${name}</div><div class="user-id">${id} · ${access}</div></div>
+          <span class="badge ${status === 'Active' ? 'bg' : 'br'}">${status}</span>
+          <button class="act-btn outline" style="padding:6px 14px;font-size:.77rem;" onclick="editHRAdmin(this)">Manage</button>`;
+        hrSection.insertBefore(newRow, addBtn);
+        showToast('🏢 ' + name + ' added as HR Admin!');
+      }
+      closeHRAdminModal();
+    }
+
+    function deleteHRAdmin() {
+      const name = document.getElementById('hradmin-edit-row').value;
+      const rows = document.querySelectorAll('#p-hr-team .sec-card .user-row');
+      for (const row of rows) {
+        if (row.querySelector('.user-name').textContent.trim() === name) { row.remove(); break; }
+      }
+      showToast('🗑️ HR Admin removed.');
+      closeHRAdminModal();
+    }
+
+    function closeHRAdminModal() {
+      document.getElementById('hradmin-modal').style.display = 'none';
+    }
+    document.getElementById('hradmin-modal').addEventListener('click', function (e) { if (e.target === this) closeHRAdminModal(); });
+
+    // ══════════════════════════════════════
+    // SALARY MANAGEMENT (Admin only)
+    // ══════════════════════════════════════
+
+    // Seed default salary data if empty
+    (function seedDefaultSalaries() {
+      const empData = JSON.parse(localStorage.getItem('employee_salary_data') || '{}');
+      if (Object.keys(empData).length === 0) {
+        const defaults = {
+          'ENV-001': { name: 'Arjun Menon', dept: 'Engineering', gross: 52000, deductions: 7000 },
+          'ENV-002': { name: 'Priya Nair', dept: 'Marketing', gross: 42000, deductions: 6000 },
+          'ENV-003': { name: 'Rahul Das', dept: 'Design', gross: 38000, deductions: 5500 },
+          'ENV-004': { name: 'Sneha Pillai', dept: 'Engineering', gross: 55000, deductions: 7500 },
+          'ENV-005': { name: 'Karan Shah', dept: 'Operations', gross: 48000, deductions: 6800 },
+          'ENV-006': { name: 'Divya Krishnan', dept: 'Marketing', gross: 36000, deductions: 5200 },
+          'ENV-007': { name: 'Amal Thomas', dept: 'Engineering', gross: 46000, deductions: 6500 },
+          'ENV-008': { name: 'Meera Iyer', dept: 'Design', gross: 35000, deductions: 5000 },
+          'ENV-009': { name: 'Rohan Verma', dept: 'Marketing', gross: 40000, deductions: 5800 },
+          'ENV-010': { name: 'Lakshmi Reddy', dept: 'Engineering', gross: 50000, deductions: 7200 },
+          'ENV-011': { name: 'Vikas Mehta', dept: 'Engineering', gross: 45000, deductions: 6400 },
+          'ENV-012': { name: 'Nisha George', dept: 'Marketing', gross: 38000, deductions: 5500 },
+        };
+        localStorage.setItem('employee_salary_data', JSON.stringify(defaults));
+      }
+      const hrData = JSON.parse(localStorage.getItem('hr_salary_data') || '{}');
+      if (Object.keys(hrData).length === 0) {
+        const hrDefaults = {
+          'HR-001': { name: 'David', dept: 'HR', gross: 65000, deductions: 9000 },
+          'HR-002': { name: 'Vikram Nair', dept: 'HR', gross: 62000, deductions: 8600 },
+        };
+        localStorage.setItem('hr_salary_data', JSON.stringify(hrDefaults));
+      }
+    })();
+
+    function updateSalFormPlaceholder() {
+      const t = document.getElementById('sal-type').value;
+      document.getElementById('sal-id').placeholder = t === 'hr' ? 'e.g. HR-001' : 'e.g. ENV-001';
+    }
+
+    function saveSalaryData() {
+      const type = document.getElementById('sal-type').value;
+      const id = document.getElementById('sal-id').value.trim().toUpperCase();
+      const name = document.getElementById('sal-name').value.trim();
+      const dept = document.getElementById('sal-dept').value.trim();
+      const gross = parseInt(document.getElementById('sal-gross').value) || 0;
+      const ded = parseInt(document.getElementById('sal-ded').value) || Math.round(gross * 0.135);
+      if (!id || !gross) { showToast('⚠️ Staff ID and Gross Salary are required.'); return; }
+      const key = type === 'hr' ? 'hr_salary_data' : 'employee_salary_data';
+      const data = JSON.parse(localStorage.getItem(key) || '{}');
+      data[id] = { name: name || data[id]?.name || id, dept: dept || data[id]?.dept || '—', gross, deductions: ded, updatedAt: new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) };
+      localStorage.setItem(key, JSON.stringify(data));
+      // Notify
+      localStorage.setItem('salary_updated', Date.now().toString());
+      ['sal-id', 'sal-name', 'sal-dept', 'sal-gross', 'sal-ded', 'sal-note'].forEach(i => { const el = document.getElementById(i); if (el) el.value = ''; });
+      renderSalaryTables();
+      addActivityEntry(`<strong>Admin</strong> updated salary for ${name || id} (${id}) — Net: ₹${(gross - ded).toLocaleString('en-IN')}`, 'green');
+      showToast('💰 Salary saved for ' + id + '!');
+    }
+
+    function editSalary(id, type) {
+      document.getElementById('sal-type').value = type;
+      document.getElementById('sal-id').value = id;
+      const key = type === 'hr' ? 'hr_salary_data' : 'employee_salary_data';
+      const data = JSON.parse(localStorage.getItem(key) || '{}');
+      const s = data[id];
+      if (s) {
+        document.getElementById('sal-name').value = s.name || '';
+        document.getElementById('sal-dept').value = s.dept || '';
+        document.getElementById('sal-gross').value = s.gross || '';
+        document.getElementById('sal-ded').value = s.deductions || '';
+      }
+      // Scroll to form
+      document.getElementById('p-payroll').querySelector('.sec-card').scrollIntoView({ behavior: 'smooth' });
+      showToast('✏️ Editing salary for ' + id + ' — update and save.');
+    }
+
+    function deleteSalary(id, type) {
+      if (!confirm('Remove salary record for ' + id + '?')) return;
+      const key = type === 'hr' ? 'hr_salary_data' : 'employee_salary_data';
+      const data = JSON.parse(localStorage.getItem(key) || '{}');
+      delete data[id];
+      localStorage.setItem(key, JSON.stringify(data));
+      renderSalaryTables();
+      addActivityEntry(`<strong>Admin</strong> removed salary record for ${id}`, 'red');
+      showToast('🗑️ Salary record for ' + id + ' removed.');
+    }
+
+    function renderSalaryTables() {
+      // Employee table
+      const empData = JSON.parse(localStorage.getItem('employee_salary_data') || '{}');
+      const empTbody = document.getElementById('emp-salary-tbody');
+      const empKeys = Object.keys(empData);
+      let totalPayroll = 0;
+      if (empKeys.length === 0) {
+        empTbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px;">No employee salary data yet.</td></tr>';
+      } else {
+        empTbody.innerHTML = empKeys.map(id => {
+          const s = empData[id];
+          const net = s.gross - s.deductions;
+          totalPayroll += net;
+          return `<tr>
+            <td><strong>${s.name || id}</strong></td>
+            <td>${id}</td>
+            <td>${s.dept || '—'}</td>
+            <td>₹${s.gross.toLocaleString('en-IN')}</td>
+            <td>₹${s.deductions.toLocaleString('en-IN')}</td>
+            <td><strong style="color:#059669;">₹${net.toLocaleString('en-IN')}</strong></td>
+            <td style="white-space:nowrap;">
+              <button class="act-btn outline" style="padding:4px 10px;font-size:.72rem;margin-right:4px;" onclick="editSalary('${id}','employee')">✏️ Edit</button>
+              <button class="act-btn danger" style="padding:4px 10px;font-size:.72rem;" onclick="deleteSalary('${id}','employee')">🗑️</button>
+            </td>
+          </tr>`;
+        }).join('');
+      }
+      // HR table
+      const hrData = JSON.parse(localStorage.getItem('hr_salary_data') || '{}');
+      const hrTbody = document.getElementById('hr-salary-tbody');
+      const hrKeys = Object.keys(hrData);
+      hrKeys.forEach(id => { totalPayroll += (hrData[id].gross - hrData[id].deductions); });
+      if (hrKeys.length === 0) {
+        hrTbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px;">No HR salary data yet.</td></tr>';
+      } else {
+        hrTbody.innerHTML = hrKeys.map(id => {
+          const s = hrData[id];
+          const net = s.gross - s.deductions;
+          return `<tr>
+            <td><strong>${s.name || id}</strong></td>
+            <td>${id}</td>
+            <td>₹${s.gross.toLocaleString('en-IN')}</td>
+            <td>₹${s.deductions.toLocaleString('en-IN')}</td>
+            <td><strong style="color:#059669;">₹${net.toLocaleString('en-IN')}</strong></td>
+            <td style="white-space:nowrap;">
+              <button class="act-btn outline" style="padding:4px 10px;font-size:.72rem;margin-right:4px;" onclick="editSalary('${id}','hr')">✏️ Edit</button>
+              <button class="act-btn danger" style="padding:4px 10px;font-size:.72rem;" onclick="deleteSalary('${id}','hr')">🗑️</button>
+            </td>
+          </tr>`;
+        }).join('');
+      }
+      // Total payroll stat
+      const tp = document.getElementById('adm-total-payroll');
+      if (tp) tp.textContent = totalPayroll >= 100000 ? '₹' + (totalPayroll / 100000).toFixed(1) + 'L' : '₹' + totalPayroll.toLocaleString('en-IN');
+    }
+
+    // Render salary tables when payroll panel activated
+    document.querySelector('.sb-btn[onclick*="p-payroll"]').addEventListener('click', renderSalaryTables);
+    // Initial seed render
+    renderSalaryTables();
+    function openAddUserModal(type) {
+      document.getElementById('useracc-type').value = type;
+      document.getElementById('useracc-title').textContent = type === 'hr' ? 'Add HR User Account' : 'Add Employee Account';
+      document.getElementById('ua-id').placeholder = type === 'hr' ? 'e.g. HR-003' : 'e.g. ENV-025';
+      document.getElementById('ua-access').value = type === 'hr' ? 'Full HR' : 'Portal access';
+      ['ua-name', 'ua-id', 'ua-pass'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('useracc-modal').style.display = 'flex';
+    }
+
+    function saveUserAccount() {
+      const name = document.getElementById('ua-name').value.trim();
+      const id = document.getElementById('ua-id').value.trim();
+      const pass = document.getElementById('ua-pass').value.trim();
+      const access = document.getElementById('ua-access').value.trim();
+      const type = document.getElementById('useracc-type').value;
+      if (!name || !id || !pass) { showToast('⚠️ Name, ID, and password are required.'); return; }
+      // Find the right section card in user accounts panel
+      const sections = document.querySelectorAll('#p-users .sec-card');
+      const targetSection = type === 'hr' ? sections[1] : sections[0];
+      const addBtn = targetSection.querySelector('.act-btn');
+      const newRow = document.createElement('div');
+      newRow.className = 'user-row';
+      newRow.innerHTML = `<div class="user-info">
+          <div class="user-name">${name} (${id})</div>
+          <div class="user-id">Pass: ${pass} · ${access || (type === 'hr' ? 'Full HR' : 'Portal access')}</div>
+        </div>
+        <div class="toggle-wrap"><label class="toggle"><input type="checkbox" checked
+          onchange="showToast('🔐 Access toggled for ${id}')"><span class="toggle-slider"></span></label></div>`;
+      targetSection.insertBefore(newRow, addBtn);
+      showToast('🔐 Account created for ' + name + ' (' + id + ')!');
+      closeUserModal();
+    }
+
+    function closeUserModal() {
+      document.getElementById('useracc-modal').style.display = 'none';
+    }
+    document.getElementById('useracc-modal').addEventListener('click', function (e) { if (e.target === this) closeUserModal(); });
+
+    // ── ADMIN PEER TASK REPORT ──
+    let _aprFilter = 'all';
+    function setAprFilter(f, btn) {
+      _aprFilter = f;
+      document.querySelectorAll('.apr-filter').forEach(b => {
+        b.className = b === btn ? 'apr-filter act-btn' : 'apr-filter act-btn outline';
+      });
+      renderAdminPeerReport();
+    }
+    function renderAdminPeerReport() {
+      const all = JSON.parse(localStorage.getItem('peer_tasks') || '[]');
+      const total = all.length, pending = all.filter(t => t.status === 'Pending').length, ongoing = all.filter(t => t.status === 'In Progress').length, done = all.filter(t => t.status === 'Completed').length;
+      const ts = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+      ts('apr-total', total); ts('apr-pending', pending); ts('apr-ongoing', ongoing); ts('apr-done', done);
+
+      const shown = _aprFilter === 'all' ? all : all.filter(t => t.status === _aprFilter);
+      const listEl = document.getElementById('apr-task-list');
+      if (!listEl) return;
+      if (shown.length === 0) {
+        listEl.innerHTML = '<p style="color:var(--muted);font-size:.85rem;padding:24px 0;text-align:center;">No peer tasks ' + ((_aprFilter === 'all') ? 'found.' : 'with this status.') + '</p>';
+      } else {
+        listEl.innerHTML = `<table class="data-table"><thead><tr><th>Task</th><th>From Employee</th><th>Assigned To</th><th>Due</th><th>Priority</th><th>Status</th><th>Date</th></tr></thead><tbody>` +
+          shown.map(t => {
+            const sc = t.status === 'Completed' ? 'bg' : t.status === 'In Progress' ? 'bb' : 'by';
+            const prio = (t.priority === 'Urgent') ? '🚨 Urgent' : (t.priority === 'High') ? '🔴 High' : 'Normal';
+            return `<tr>
+              <td><strong>${t.title}</strong>${t.desc ? '<div style="font-size:.72rem;color:var(--muted);margin-top:2px;">' + t.desc.substring(0, 55) + (t.desc.length > 55 ? '…' : '') + '</div>' : ''}</td>
+              <td><strong>${t.fromName}</strong><div style="font-size:.72rem;color:var(--muted);">${t.fromId}</div></td>
+              <td>${t.toRaw}</td>
+              <td>${t.due || '—'}</td>
+              <td style="white-space:nowrap;">${prio}</td>
+              <td><span class="badge ${sc}">${t.status}</span></td>
+              <td style="white-space:nowrap;font-size:.74rem;">${t.createdAt || '—'}</td>
+            </tr>`;
+          }).join('') + '</tbody></table>';
+      }
+
+      // By-employee summary
+      const byEmp = {};
+      all.forEach(t => {
+        if (!byEmp[t.fromId]) byEmp[t.fromId] = { name: t.fromName, id: t.fromId, given: 0, received: 0, pending: 0, inprog: 0, done: 0 };
+        byEmp[t.fromId].given++;
+        const toId = t.toRaw.split('—')[0].trim();
+        const toName = t.toRaw.split('—')[1]?.trim() || toId;
+        if (!byEmp[toId]) byEmp[toId] = { name: toName, id: toId, given: 0, received: 0, pending: 0, inprog: 0, done: 0 };
+        byEmp[toId].received++;
+        if (t.status === 'Pending') byEmp[toId].pending++;
+        else if (t.status === 'In Progress') byEmp[toId].inprog++;
+        else byEmp[toId].done++;
+      });
+      const byEmpEl = document.getElementById('apr-by-employee');
+      const keys = Object.keys(byEmp);
+      if (keys.length === 0) { byEmpEl.innerHTML = '<p style="color:var(--muted);font-size:.85rem;padding:18px 0;">No activity yet.</p>'; return; }
+      byEmpEl.innerHTML = `<table class="data-table"><thead><tr><th>Employee</th><th>ID</th><th>Tasks Given</th><th>Tasks Received</th><th>⏳ Pending</th><th>🔄 In Progress</th><th>✅ Done</th></tr></thead><tbody>` +
+        keys.map(k => { const e = byEmp[k]; const rate = e.received > 0 ? Math.round((e.done / e.received) * 100) + '%' : '—'; return `<tr><td><strong>${e.name}</strong></td><td><span style="font-size:.74rem;color:var(--muted);">${e.id}</span></td><td>${e.given}</td><td>${e.received}</td><td>${e.pending}</td><td>${e.inprog}</td><td>${e.done} <span style="font-size:.7rem;color:var(--muted);">(${rate})</span></td></tr>`; }).join('') + '</tbody></table>';
+    }
+
+    // Sync peer tasks in admin
+    let _admLastPeerSig = localStorage.getItem('peer_tasks_updated') || '';
+    setInterval(() => {
+      const ps = localStorage.getItem('peer_tasks_updated') || '';
+      if (ps !== _admLastPeerSig) { _admLastPeerSig = ps; if (document.getElementById('p-peer-report').classList.contains('active')) renderAdminPeerReport(); }
+    }, 3000);
+
+    // Auto-refresh admin task statuses when employees update them
+    let _admLastTaskSig = localStorage.getItem('admin_tasks_updated') || '';
+    setInterval(() => {
+      const ts = localStorage.getItem('admin_tasks_updated') || '';
+      if (ts !== _admLastTaskSig) {
+        _admLastTaskSig = ts;
+        refreshAdminTasksFromStorage();
+        showToast('🔄 Task status updated by employee!');
+      }
+    }, 2500);
+    try {
+      const bc = new BroadcastChannel('enovexa_sync');
+      bc.onmessage = e => {
+        if (e.data && (e.data.type === 'task_status_updated' || e.data.type === 'tasks_updated')) {
+          refreshAdminTasksFromStorage();
+        }
+        if (e.data && e.data.type === 'hr_task_status_updated') {
+          renderAdminHRTaskList();
+          showToast('🔄 HR updated a task status!');
+        }
+      };
+    } catch (e) { }
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') refreshAdminTasksFromStorage();
+    });
+
+    // ── ADMIN ATTENDANCE REPORTS ──
+    const ADM_ATT_EMPLOYEES = [
+      {id:'ENV-001',name:'Arjun Menon',dept:'Engineering'},
+      {id:'ENV-002',name:'Priya Nair',dept:'Marketing'},
+      {id:'ENV-003',name:'Rahul Das',dept:'Design'},
+      {id:'ENV-004',name:'Sneha Pillai',dept:'Engineering'},
+      {id:'ENV-005',name:'Karan Shah',dept:'Operations'},
+      {id:'ENV-006',name:'Divya Krishnan',dept:'Marketing'},
+      {id:'ENV-007',name:'Amal Thomas',dept:'Engineering'},
+      {id:'ENV-008',name:'Meera Iyer',dept:'Design'},
+      {id:'ENV-009',name:'Rohan Verma',dept:'Marketing'},
+      {id:'ENV-010',name:'Lakshmi Reddy',dept:'Engineering'},
+      {id:'ENV-011',name:'Vikas Mehta',dept:'Engineering'},
+      {id:'ENV-012',name:'Nisha George',dept:'Marketing'},
+    ];
+
+    function renderAdminAttendance() {
+      const today = new Date().toISOString().slice(0,10);
+      const dateEl = document.getElementById('adm-att-date');
+      if (!dateEl.value) dateEl.value = today;
+      const monthEl = document.getElementById('adm-att-month');
+      if (!monthEl.value) monthEl.value = today.slice(0,7);
+
+      // Today's KPIs
+      const todayRec = JSON.parse(localStorage.getItem('attendance_' + today) || '[]');
+      const present = todayRec.filter(r => r.status==='Present'||r.status==='Half Day').length;
+      const absent = todayRec.filter(r => r.status==='Absent').length;
+      const rate = ADM_ATT_EMPLOYEES.length > 0 ? Math.round((present / ADM_ATT_EMPLOYEES.length) * 100) : 0;
+      document.getElementById('adm-att-present').textContent = present || '—';
+      document.getElementById('adm-att-absent').textContent = absent || '—';
+      document.getElementById('adm-att-rate').textContent = todayRec.length ? rate + '%' : '—';
+
+      loadAdminDayView();
+      renderAdminMonthSummary();
+      renderAdminFullLog();
+    }
+
+    function loadAdminDayView() {
+      const date = document.getElementById('adm-att-date').value;
+      if (!date) return;
+      const records = JSON.parse(localStorage.getItem('attendance_' + date) || '[]');
+      const dayview = document.getElementById('adm-att-dayview');
+      const title = document.getElementById('adm-att-dayview-title');
+      const tbody = document.getElementById('adm-att-dayview-body');
+      dayview.style.display = 'block';
+      title.textContent = '📋 Day View — ' + date;
+      const statusBadge = s => {
+        if (s==='Present') return '<span class="badge bg">Present</span>';
+        if (s==='Absent')  return '<span class="badge br">Absent</span>';
+        if (s==='On Leave') return '<span class="badge by">On Leave</span>';
+        if (s==='Half Day') return '<span class="badge bb">Half Day</span>';
+        return `<span class="badge bgy">${s||'—'}</span>`;
+      };
+      if (records.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:24px;font-size:.85rem;">No attendance data for this date. HR must mark attendance first.</td></tr>';
+      } else {
+        tbody.innerHTML = records.map(r => `<tr>
+          <td><div style="display:flex;align-items:center;gap:8px;"><div class="av-sm" style="width:26px;height:26px;font-size:.7rem;border-radius:50%;background:linear-gradient(135deg,var(--red),var(--red-mid));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;">${r.name?r.name[0]:'?'}</div>${r.name||'—'}</div></td>
+          <td style="color:var(--muted);font-size:.8rem;">${r.id||'—'}</td>
+          <td><span class="badge bgy">${r.dept||'—'}</span></td>
+          <td>${statusBadge(r.status)}</td>
+          <td style="font-size:.78rem;color:var(--muted);">${r.note||'—'}</td>
+        </tr>`).join('');
+      }
+    }
+
+    function renderAdminMonthSummary() {
+      const monthEl = document.getElementById('adm-att-month');
+      if (!monthEl || !monthEl.value) return;
+      const month = monthEl.value;
+      const summary = {};
+      ADM_ATT_EMPLOYEES.forEach(e => { summary[e.id] = { name: e.name, dept: e.dept, present: 0, absent: 0, leave: 0, days: 0 }; });
+      let workingDaysSet = new Set();
+
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('attendance_' + month)) {
+          const date = key.replace('attendance_','');
+          workingDaysSet.add(date);
+          const records = JSON.parse(localStorage.getItem(key) || '[]');
+          records.forEach(r => {
+            if (summary[r.id]) {
+              if (r.status==='Present'||r.status==='Half Day') summary[r.id].present++;
+              else if (r.status==='Absent') summary[r.id].absent++;
+              else if (r.status==='On Leave') summary[r.id].leave++;
+            }
+          });
+        }
+      }
+      const wdays = workingDaysSet.size;
+      const tbody = document.getElementById('adm-att-summary-body');
+      if (wdays === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:24px;font-size:.85rem;">No records for this month yet.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = ADM_ATT_EMPLOYEES.map(e => {
+        const s = summary[e.id];
+        const rate = wdays > 0 ? Math.round((s.present / wdays) * 100) : 0;
+        const rateColor = rate >= 90 ? '#059669' : rate >= 70 ? '#d97706' : '#b91c1c';
+        return `<tr>
+          <td><div style="display:flex;align-items:center;gap:8px;"><div class="av-sm" style="width:26px;height:26px;font-size:.7rem;border-radius:50%;background:linear-gradient(135deg,var(--red),var(--red-mid));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;">${e.name[0]}</div>${e.name}</div></td>
+          <td style="color:var(--muted);font-size:.8rem;">${e.id}</td>
+          <td><span class="badge bgy">${e.dept}</span></td>
+          <td><span class="badge bg">${s.present}</span></td>
+          <td><span class="badge br">${s.absent}</span></td>
+          <td style="font-weight:600;">${wdays}</td>
+          <td><span style="font-weight:800;color:${rateColor};">${rate}%</span></td>
+        </tr>`;
+      }).join('');
+    }
+
+    let _admAttAllRows = [];
+    function renderAdminFullLog() {
+      _admAttAllRows = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('attendance_')) {
+          const date = key.replace('attendance_','');
+          const records = JSON.parse(localStorage.getItem(key) || '[]');
+          records.forEach(r => _admAttAllRows.push({ date, ...r }));
+        }
+      }
+      _admAttAllRows.sort((a,b) => b.date.localeCompare(a.date));
+      renderAdminAttLogFiltered(_admAttAllRows);
+    }
+
+    function renderAdminAttLogFiltered(rows) {
+      const tbody = document.getElementById('adm-att-log-body');
+      if (rows.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:24px;font-size:.85rem;">No records yet. HR must mark attendance first.</td></tr>';
+        return;
+      }
+      const statusBadge = s => {
+        if (s==='Present') return '<span class="badge bg">Present</span>';
+        if (s==='Absent')  return '<span class="badge br">Absent</span>';
+        if (s==='On Leave') return '<span class="badge by">On Leave</span>';
+        if (s==='Half Day') return '<span class="badge bb">Half Day</span>';
+        return `<span class="badge bgy">${s||'—'}</span>`;
+      };
+      tbody.innerHTML = rows.slice(0,200).map(r => `<tr>
+        <td style="font-size:.82rem;font-weight:600;">${r.date}</td>
+        <td><div style="display:flex;align-items:center;gap:7px;"><div class="av-sm" style="width:26px;height:26px;font-size:.7rem;border-radius:50%;background:linear-gradient(135deg,var(--red),var(--red-mid));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;">${r.name?r.name[0]:'?'}</div>${r.name||'—'}</div></td>
+        <td style="color:var(--muted);font-size:.8rem;">${r.id||'—'}</td>
+        <td><span class="badge bgy">${r.dept||'—'}</span></td>
+        <td>${statusBadge(r.status)}</td>
+        <td style="font-size:.78rem;color:var(--muted);">${r.note||'—'}</td>
+      </tr>`).join('');
+    }
+
+    function filterAdminAttLog(q) {
+      if (!q) { renderAdminAttLogFiltered(_admAttAllRows); return; }
+      const lq = q.toLowerCase();
+      renderAdminAttLogFiltered(_admAttAllRows.filter(r =>
+        (r.name||'').toLowerCase().includes(lq) ||
+        (r.id||'').toLowerCase().includes(lq) ||
+        (r.dept||'').toLowerCase().includes(lq)
+      ));
+    }
+
+    // ══ INIT: activity log, stats, badges ══
+    renderActivityLog();
+    updateOverviewRecentActivity();
+    updateSidebarActivityCount();
+    updateOverviewStats();
+    updateTaskSidebarBadge();
+    // Also update overview stats whenever salary renders
+    const _origRenderSalary = renderSalaryTables;
+    // Already hooked via renderSalaryTables which updates adm-total-payroll
+    // Refresh overview stats periodically (leaves may be approved by HR)
+    setInterval(() => { updateOverviewStats(); updateTaskSidebarBadge(); }, 5000);
+  </script>
+</body>
+
+</html>
