@@ -398,7 +398,12 @@
 
         <!-- Secondary stats -->
         <div class="stat-row" style="grid-template-columns: repeat(2,1fr);">
-          <div class="stat-card"><span class="sc-icon"></span><div class="sc-val">—</div><div class="sc-lbl">Avg Attendance</div></div>
+          <div class="stat-card">
+            <span class="sc-icon">📊</span>
+            <div class="sc-val" id="ov-avg-att">—</div>
+            <div class="sc-lbl">Avg Attendance (This Month)</div>
+            <div id="ov-avg-att-sub" style="font-size:.7rem;color:var(--muted);margin-top:5px;line-height:1.5;"></div>
+          </div>
           <div class="stat-card"><span class="sc-icon"></span><div class="sc-val">July 1</div><div class="sc-lbl">Next Payout Date</div></div>
         </div>
 
@@ -907,7 +912,10 @@
           const li = document.createElement('li');
           li.dataset.annId = a.id;
           const icon = a.prio === 'Urgent' ? '🚨' : a.prio === 'Important' ? '⚠️' : '';
-          li.innerHTML = `<div><strong>${icon} ${a.title}</strong><div style="font-size:.74rem;color:var(--muted);">${a.body.substring(0,90)}${a.body.length>90?'…':''}<br>To: ${a.audience==='all'?'All Staff':a.audience==='hr'?'HR Team':'Employees'} · ${a.date}</div></div><span class="badge by">${a.prio}</span>`;
+          const postedStr = a.postedAt
+            ? new Date(a.postedAt).toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })
+            : a.date || '—';
+          li.innerHTML = `<div><strong>${icon} ${a.title}</strong><div style="font-size:.74rem;color:var(--muted);">${a.body.substring(0,90)}${a.body.length>90?'…':''}<br>To: ${a.audience==='all'?'All Staff':a.audience==='hr'?'HR Team':'Employees'} ·  ${postedStr}</div></div><span class="badge by">${a.prio}</span>`;
           list.appendChild(li);
         });
       } else {
@@ -1451,6 +1459,56 @@
       const alertsList = document.getElementById('hr-alerts-list');
       if (alertsList) alertsList.innerHTML = alerts.length > 0 ? alerts.join('') : '<li style="color:var(--muted);font-size:.84rem;padding:8px 0;">No alerts at the moment.</li>';
       updateDeptHeadcount();
+
+      // ── Avg Attendance This Month ──
+      const avgAttEl  = document.getElementById('ov-avg-att');
+      const avgAttSub = document.getElementById('ov-avg-att-sub');
+      if (avgAttEl) {
+        const monthPrefix = today.slice(0, 7); // e.g. "2026-06"
+        // Collect all attendance keys for this month
+        const monthKeys = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (k && k.startsWith('attendance_' + monthPrefix)) monthKeys.push(k);
+        }
+        if (monthKeys.length === 0) {
+          avgAttEl.textContent = '—';
+          if (avgAttSub) avgAttSub.textContent = 'No attendance recorded this month';
+        } else {
+          // Per-employee: count present days / recorded days
+          const empStats = {}; // { id: { name, present, total } }
+          ATT_EMPLOYEES.forEach(e => { empStats[e.id] = { name: e.name, present: 0, total: 0 }; });
+          monthKeys.forEach(k => {
+            const recs = JSON.parse(localStorage.getItem(k) || '[]');
+            recs.forEach(r => {
+              if (empStats[r.id]) {
+                empStats[r.id].total++;
+                if (r.status === 'Present') empStats[r.id].present++;
+              }
+            });
+          });
+          // Only include employees who have at least 1 recorded day
+          const tracked = Object.values(empStats).filter(e => e.total > 0);
+          if (tracked.length === 0) {
+            avgAttEl.textContent = '—';
+            if (avgAttSub) avgAttSub.textContent = 'No records yet';
+          } else {
+            const avgPct = Math.round(tracked.reduce((s, e) => s + (e.present / e.total) * 100, 0) / tracked.length);
+            avgAttEl.textContent = avgPct + '%';
+            avgAttEl.style.color = avgPct >= 90 ? '#059669' : avgPct >= 75 ? '#a16207' : 'var(--red)';
+            if (avgAttSub) {
+              // Show top absentees (lowest attendance) for quick visibility
+              const sorted = tracked.slice().sort((a, b) => (a.present / a.total) - (b.present / b.total));
+              const low = sorted.filter(e => (e.present / e.total) < 0.75).slice(0, 3);
+              const daysText = monthKeys.length + ' day' + (monthKeys.length > 1 ? 's' : '') + ' recorded · ' + tracked.length + ' employees';
+              avgAttSub.innerHTML = daysText + (low.length > 0
+                ? '<br>⚠️ Low: ' + low.map(e => `${e.name} (${e.present}/${e.total})`).join(', ')
+                : '');
+            }
+          }
+        }
+      }
+
     }
 
     // ── TASK TRACKER: completion + overdue (dynamic) ──
@@ -1837,12 +1895,15 @@
         const isUnread = !readIds.includes(String(a.id));
         const icon = a.prio === 'Urgent' ? '🚨' : a.prio === 'Important' ? '⚠️' : '📢';
         const preview = a.body.length > 80 ? a.body.substring(0, 80) + '…' : a.body;
+        const postedStr = a.postedAt
+          ? new Date(a.postedAt).toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })
+          : a.date || '—';
         return `<div class="notif-item ${isUnread ? 'unread' : ''}" onclick="markNotifRead(${a.id})">
           <div class="notif-icon">${icon}</div>
           <div class="notif-text">
             <div class="notif-title">${a.title}</div>
             <div class="notif-body">${preview}</div>
-            <div class="notif-time">${a.date} · To: ${a.audience === 'all' ? 'All Staff' : 'HR Team'} · ${a.prio}</div>
+            <div class="notif-time">${postedStr} · ${a.prio}</div>
           </div>
           ${isUnread ? '<div class="notif-dot"></div>' : ''}
         </div>`;
