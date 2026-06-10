@@ -199,7 +199,7 @@
       <img src="logo.png" alt="Enovexa" style="height:38px;width:auto;object-fit:contain;" onerror="this.style.display='none'" />
       <div class="topbar-brand">Enovexa <span>Portal</span></div>
       <div class="topbar-divider"></div>
-      <div class="topbar-welcome">👋 Welcome back, <strong id="t-name">—</strong></div>
+      <div class="topbar-welcome"> <strong id="t-name">—</strong></div>
     </div>
     <div class="topbar-right">
       <span class="topbar-empid" id="t-empid"></span>
@@ -242,10 +242,27 @@
         <h1 class="pg-title">Dashboard</h1>
         <p class="pg-sub">Here's your quick overview for today.</p>
         <div class="stat-row">
-          <div class="stat-card"><span class="sc-icon"></span><div class="sc-val">12</div><div class="sc-lbl">Leave Balance</div></div>
+          <div class="stat-card"><span class="sc-icon"></span><div class="sc-val" id="dash-leave-bal">—</div><div class="sc-lbl">Leave Balance</div><div id="dash-leave-sub" style="font-size:.7rem;color:var(--muted);margin-top:4px;"></div></div>
           <div class="stat-card"><span class="sc-icon"></span><div class="sc-val" id="dash-pending">—</div><div class="sc-lbl">Pending Tasks</div></div>
           <div class="stat-card"><span class="sc-icon"></span><div class="sc-val" id="dash-ongoing">—</div><div class="sc-lbl">Ongoing Tasks</div></div>
           <div class="stat-card"><span class="sc-icon"></span><div class="sc-val" id="dash-done">—</div><div class="sc-lbl">Completed</div></div>
+        </div>
+        <!-- Attendance Summary Card -->
+        <div class="stat-card" id="dash-att-card" style="margin-bottom:20px;display:flex;align-items:center;gap:20px;padding:20px 24px;">
+          <span style="font-size:2rem;"></span>
+          <div style="flex:1;">
+            <div style="font-size:.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">Attendance This Month</div>
+            <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:8px;">
+              <span id="dash-att-present" style="font-family:var(--head);font-size:2rem;font-weight:800;color:var(--red);line-height:1;">—</span>
+              <span style="font-size:1rem;color:var(--muted);font-weight:600;">/</span>
+              <span id="dash-att-total" style="font-family:var(--head);font-size:1.3rem;font-weight:700;color:var(--dark);">—</span>
+              <span style="font-size:.78rem;color:var(--muted);font-weight:600;">days</span>
+              <span id="dash-att-pct" style="margin-left:8px;padding:3px 10px;border-radius:20px;font-size:.74rem;font-weight:800;background:#dcfce7;color:#15803d;">—%</span>
+            </div>
+            <div class="prog-track" style="height:6px;">
+              <div id="dash-att-bar" class="prog-fill" style="width:0%;"></div>
+            </div>
+          </div>
         </div>
         <div class="sec-card" id="admin-ann-box">
           <div class="sec-card-title"> Announcements</div>
@@ -260,9 +277,17 @@
         </div>
         <div class="sec-card">
           <div class="sec-card-title">Performance Overview</div>
-          <div class="prog-wrap"><div class="prog-label"><span>Task Completion</span><span>76%</span></div><div class="prog-track"><div class="prog-fill" style="width:76%"></div></div></div>
-          <div class="prog-wrap"><div class="prog-label"><span>Attendance</span><span>92%</span></div><div class="prog-track"><div class="prog-fill" style="width:92%"></div></div></div>
-          <div class="prog-wrap"><div class="prog-label"><span>Client Rating</span><span>96%</span></div><div class="prog-track"><div class="prog-fill" style="width:96%"></div></div></div>
+          <div class="prog-wrap">
+            <div class="prog-label"><span>Task Completion</span><span id="perf-task-pct">—</span></div>
+            <div class="prog-track"><div class="prog-fill" id="perf-task-bar" style="width:0%"></div></div>
+          </div>
+          <div class="prog-wrap">
+            <div class="prog-label"><span>Attendance (This Month)</span><span id="perf-att-pct">—</span></div>
+            <div class="prog-track"><div class="prog-fill" id="perf-att-bar" style="width:0%"></div></div>
+          </div>
+          <div style="margin-top:10px;font-size:.75rem;color:var(--muted);">
+            <span id="perf-task-detail"></span> &nbsp;·&nbsp; <span id="perf-att-detail"></span>
+          </div>
         </div>
       </div>
 
@@ -351,7 +376,7 @@
             <label>Description (optional)</label>
             <textarea id="pt-desc" placeholder="Brief description of the task..."></textarea>
           </div>
-          <button class="act-btn" onclick="assignPeerTask()">🤝 Assign to Colleague</button>
+          <button class="act-btn" onclick="assignPeerTask()"> Assign to Colleague</button>
         </div>
 
         <!-- Task views tabs -->
@@ -364,7 +389,7 @@
         <div class="sec-card" id="peer-tasks-list-card">
           <div class="sec-card-title" id="peer-list-title">All Team Tasks (Visible to All Employees)</div>
           <div id="peer-tasks-list">
-            <div class="empty-state"><div class="es-icon">🤝</div>No peer tasks yet. Assign a task above to get started.</div>
+            <div class="empty-state"><div class="es-icon"></div>No peer tasks yet. Assign a task above to get started.</div>
           </div>
         </div>
       </div>
@@ -503,6 +528,15 @@
       if(elTaken) elTaken.textContent = taken;
       if(elLeft)  { elLeft.textContent = left; elLeft.style.color = left===0 ? '#b91c1c' : '#059669'; }
 
+      // ── Dashboard Leave Balance card ──
+      const dashBal = document.getElementById('dash-leave-bal');
+      const dashSub = document.getElementById('dash-leave-sub');
+      if(dashBal) {
+        dashBal.textContent = left;
+        dashBal.style.color = left === 0 ? '#b91c1c' : left <= 1 ? '#a16207' : '#059669';
+      }
+      if(dashSub) dashSub.textContent = taken + ' day' + (taken !== 1 ? 's' : '') + ' taken · ' + TOTAL_QUOTA + ' total';
+
       if(!list)return;
       if(mine.length===0){list.innerHTML='<li style="color:var(--muted);font-size:.84rem;padding:8px 0;">No leave requests yet.</li>';return;}
       list.innerHTML=mine.map(r=>{const sc=r.status==='Approved'?'bg':r.status==='Rejected'?'br':'by';const ds=r.from===r.to?r.from:r.from+' → '+r.to;return`<li><div><strong>${r.type}</strong> <span style="font-size:.75rem;color:var(--muted);">${ds} · ${r.days} day${r.days>1?'s':''}</span></div><span class="badge ${sc}">${r.status}</span></li>`;}).join('');
@@ -542,10 +576,72 @@
           const src=t.type==='hr'?'<span style="font-size:.66rem;color:#7e22ce;font-weight:700;background:#f3e8ff;padding:1px 6px;border-radius:8px;margin-right:5px;">HR</span>':'<span style="font-size:.66rem;color:#b91c1c;font-weight:700;background:#fee2e2;padding:1px 6px;border-radius:8px;margin-right:5px;">ADMIN</span>';
           const sc=t.status==='In Progress'?'bb':t.status==='Completed'?'bg':'by';
           return`<li>${src}<strong>${t.title}</strong>${t.due?' <span style="font-size:.74rem;color:var(--muted);">· Due '+t.due+'</span>':''}<span class="badge ${sc}" style="margin-left:auto;">${t.status}</span></li>`;
-        }).join(''):'<li style="color:var(--muted);font-size:.84rem;padding:8px 0;">All caught up! No pending tasks. 🎉</li>';
+        }).join(''):'<li style="color:var(--muted);font-size:.84rem;padding:8px 0;">All caught up! No pending tasks. </li>';
       } else { dashBox.style.display='none'; }
 
       renderMyTasksList();
+      updatePerformanceOverview();
+    }
+
+    // ── PERFORMANCE OVERVIEW + ATTENDANCE CARD ──
+    function updatePerformanceOverview() {
+      // --- Task Completion ---
+      const total = _allMyTasks.length;
+      const done  = _allMyTasks.filter(t => t.status === 'Completed').length;
+      const taskPct = total > 0 ? Math.round((done / total) * 100) : 0;
+      const taskPctStr = total > 0 ? taskPct + '%' : 'No tasks';
+
+      const perf_task_pct = document.getElementById('perf-task-pct');
+      const perf_task_bar = document.getElementById('perf-task-bar');
+      const perf_task_detail = document.getElementById('perf-task-detail');
+      if (perf_task_pct) perf_task_pct.textContent = taskPctStr;
+      if (perf_task_bar) perf_task_bar.style.width = taskPct + '%';
+      if (perf_task_detail) perf_task_detail.textContent = total > 0 ? done + ' of ' + total + ' tasks completed' : 'No tasks assigned yet';
+
+      // --- Attendance from HR records (current month) ---
+      const today = new Date();
+      const monthPrefix = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0');
+      let presentDays = 0, totalDays = 0;
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('attendance_' + monthPrefix)) {
+          const records = JSON.parse(localStorage.getItem(key) || '[]');
+          const myRecord = records.find(r => r.id && r.id.toUpperCase() === empId.toUpperCase());
+          if (myRecord) {
+            totalDays++;
+            if (myRecord.status === 'Present') presentDays++;
+          }
+        }
+      }
+      const attPct = totalDays > 0 ? Math.round((presentDays / totalDays) * 100) : 0;
+      const attPctStr = totalDays > 0 ? attPct + '%' : '—';
+
+      // Performance bar
+      const perf_att_pct = document.getElementById('perf-att-pct');
+      const perf_att_bar = document.getElementById('perf-att-bar');
+      const perf_att_detail = document.getElementById('perf-att-detail');
+      if (perf_att_pct) perf_att_pct.textContent = attPctStr;
+      if (perf_att_bar) perf_att_bar.style.width = attPct + '%';
+      if (perf_att_detail) perf_att_detail.textContent = totalDays > 0 ? presentDays + ' present out of ' + totalDays + ' recorded days' : 'No attendance records this month';
+
+      // Attendance summary card
+      const attPresEl = document.getElementById('dash-att-present');
+      const attTotEl  = document.getElementById('dash-att-total');
+      const attPctEl  = document.getElementById('dash-att-pct');
+      const attBarEl  = document.getElementById('dash-att-bar');
+      if (attPresEl) attPresEl.textContent = totalDays > 0 ? presentDays : '—';
+      if (attTotEl)  attTotEl.textContent  = totalDays > 0 ? totalDays  : '—';
+      if (attPctEl) {
+        if (totalDays > 0) {
+          attPctEl.textContent = attPct + '%';
+          attPctEl.style.background = attPct >= 90 ? '#dcfce7' : attPct >= 75 ? '#fef9c3' : '#fee2e2';
+          attPctEl.style.color      = attPct >= 90 ? '#15803d' : attPct >= 75 ? '#a16207' : '#b91c1c';
+        } else {
+          attPctEl.textContent = 'No data';
+          attPctEl.style.background = '#f3f4f6'; attPctEl.style.color = '#6b7280';
+        }
+      }
+      if (attBarEl) attBarEl.style.width = attPct + '%';
     }
 
     function renderMyTasksList() {
@@ -664,7 +760,7 @@
       const task={id:'PT-'+Date.now(),title,fromId:empId,fromName:empName,toRaw,due,priority,desc,status:'Pending',assignedAt:_ptNow.toISOString(),completedAt:null,createdAt:_ptNow.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})};
       const all=JSON.parse(localStorage.getItem('peer_tasks')||'[]'); all.unshift(task); localStorage.setItem('peer_tasks',JSON.stringify(all)); localStorage.setItem('peer_tasks_updated',Date.now().toString());
       document.getElementById('pt-title').value=''; document.getElementById('pt-to').value=''; document.getElementById('pt-due').value=''; document.getElementById('pt-priority').value='Normal'; document.getElementById('pt-desc').value='';
-      renderPeerTasks(); showToast('🤝 Task assigned to colleague!');
+      renderPeerTasks(); showToast(' Task assigned to colleague!');
       try{new BroadcastChannel('enovexa_sync').postMessage({type:'peer_task_assigned',toRaw,fromName:empName});}catch(e){}
     }
 
@@ -722,7 +818,7 @@
             <span>📅 Created: ${t.createdAt}</span>
             ${(()=>{
               let s='';
-              if(t.assignedAt){try{const d=new Date(t.assignedAt);s='<span>🕐 <strong style="color:#888;">Assigned:</strong> '+d.toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})+'</span>';}catch(e){}}
+              if(t.assignedAt){try{const d=new Date(t.assignedAt);s='<span> <strong style="color:#888;">Assigned:</strong> '+d.toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})+'</span>';}catch(e){}}
               return s;
             })()}
             ${(()=>{
@@ -767,7 +863,7 @@
       const anns=JSON.parse(localStorage.getItem('admin_announcements')||'[]'), empAnn=anns.filter(a=>a.audience==='all'||a.audience==='employees'), list=document.getElementById('emp-announcements');
       list.querySelectorAll('[data-admin-ann],[data-empty-ann]').forEach(el=>el.remove());
       if(empAnn.length===0){const li=document.createElement('li');li.dataset.emptyAnn='1';li.style.cssText='color:var(--muted);font-size:.84rem;padding:10px 0;';li.textContent='No announcements yet.';list.appendChild(li);return;}
-      empAnn.slice().reverse().forEach(a=>{const li=document.createElement('li');li.dataset.adminAnn=a.id;const icon=a.prio==='Urgent'?'🚨':a.prio==='Important'?'⚠️':'';li.innerHTML=`<div><strong>${icon} ${a.title}</strong><div style="font-size:.74rem;color:var(--muted);">${a.body.substring(0,80)}${a.body.length>80?'…':''}</div></div><span class="badge by">${a.prio}</span>`;list.prepend(li);});
+      empAnn.slice().reverse().forEach(a=>{const li=document.createElement('li');li.dataset.adminAnn=a.id;const icon=a.prio==='Urgent'?'🚨':a.prio==='Important'?'⚠️':'';const postedStr=a.postedAt?new Date(a.postedAt).toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:true}):a.date||'—';li.innerHTML=`<div><strong>${icon} ${a.title}</strong><div style="font-size:.74rem;color:var(--muted);">${a.body.substring(0,80)}${a.body.length>80?'…':''}</div><div style="font-size:.71rem;color:#bbb;margin-top:3px;"> ${postedStr}</div></div><span class="badge by">${a.prio}</span>`;list.prepend(li);});
     }
 
     // ── MY SALARY ──
@@ -952,12 +1048,15 @@
         const isUnread = !readIds.includes(String(a.id));
         const icon = a.prio === 'Urgent' ? '🚨' : a.prio === 'Important' ? '⚠️' : '📢';
         const preview = a.body.length > 80 ? a.body.substring(0, 80) + '…' : a.body;
+        const postedStr = a.postedAt
+          ? new Date(a.postedAt).toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })
+          : a.date || '—';
         return `<div class="notif-item ${isUnread ? 'unread' : ''}" onclick="markEmpNotifRead(${a.id})">
           <div class="notif-icon">${icon}</div>
           <div class="notif-text">
             <div class="notif-title">${a.title}</div>
             <div class="notif-body">${preview}</div>
-            <div class="notif-time">${a.date} · ${a.prio}</div>
+            <div class="notif-time"> ${postedStr} · ${a.prio}</div>
           </div>
           ${isUnread ? '<div class="notif-dot"></div>' : ''}
         </div>`;
@@ -1029,10 +1128,11 @@
     renderEmpAnnouncements(); renderEmpAdminTasks(); renderMyLeaveRequests(); renderPeerTasks(); buildNotifList();
 
     // ── SYNC ──
-    let _lastTaskSig=localStorage.getItem('admin_tasks_updated')||'', _lastAnnSig=(JSON.parse(localStorage.getItem('admin_announcements')||'[]')).length+'', _lastAnnTs=localStorage.getItem('announcements_updated')||'', _lastPeerSig=localStorage.getItem('peer_tasks_updated')||'', _lastLeaveSig=localStorage.getItem('leave_requests_updated')||'';
+    let _lastTaskSig=localStorage.getItem('admin_tasks_updated')||'', _lastAnnSig=(JSON.parse(localStorage.getItem('admin_announcements')||'[]')).length+'', _lastAnnTs=localStorage.getItem('announcements_updated')||'', _lastPeerSig=localStorage.getItem('peer_tasks_updated')||'', _lastLeaveSig=localStorage.getItem('leave_requests_updated')||'', _lastAttSig=localStorage.getItem('attendance_updated')||'';
     setInterval(()=>{
-      const ts=localStorage.getItem('admin_tasks_updated')||'', ans=(JSON.parse(localStorage.getItem('admin_announcements')||'[]')).length+'', annTs=localStorage.getItem('announcements_updated')||'', ps=localStorage.getItem('peer_tasks_updated')||'', ls=localStorage.getItem('leave_requests_updated')||'';
+      const ts=localStorage.getItem('admin_tasks_updated')||'', ans=(JSON.parse(localStorage.getItem('admin_announcements')||'[]')).length+'', annTs=localStorage.getItem('announcements_updated')||'', ps=localStorage.getItem('peer_tasks_updated')||'', ls=localStorage.getItem('leave_requests_updated')||'', attSig=localStorage.getItem('attendance_updated')||'';
       if(ts!==_lastTaskSig){_lastTaskSig=ts;renderEmpAdminTasks();showToast('🔄 Tasks updated!');}
+      if(attSig!==_lastAttSig){_lastAttSig=attSig;updatePerformanceOverview();}
       if(ans!==_lastAnnSig||annTs!==_lastAnnTs){
         const changed=ans!==_lastAnnSig||annTs!==_lastAnnTs;
         _lastAnnSig=ans;_lastAnnTs=annTs;
