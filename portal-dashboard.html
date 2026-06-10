@@ -3,1158 +3,250 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard — Enovexa Employee Portal</title>
+  <title>Staff Login — Enovexa Solutions</title>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
       --red: #C8102E; --red-mid: #A50D25; --accent: #E8314D;
       --dark: #1A1A1A; --muted: #6B6B6B; --off-white: #F4F6FB;
-      --card: #FFFFFF; --border: rgba(0,0,0,0.07);
+      --gold:  #C8102E; --gold-light: #A50D25;
       --head: Arial, sans-serif; --body: Arial, sans-serif;
-      --shadow-sm: 0 2px 12px rgba(0,0,0,0.07);
-      --shadow-md: 0 8px 40px rgba(0,0,0,0.11);
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body { font-family: var(--body); background: var(--off-white); color: var(--dark); min-height: 100vh; display: flex; flex-direction: column; }
-    .topbar { height: 66px; background: var(--dark); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; position: sticky; top: 0; z-index: 200; box-shadow: 0 2px 24px rgba(0,0,0,0.22); }
-    .topbar-left { display: flex; align-items: center; gap: 16px; }
-    .topbar-left img { height: 38px; width: auto; object-fit: contain; }
-    .topbar-brand { font-family: var(--head); font-size: 1rem; font-weight: 800; color: #fff; letter-spacing: -.3px; }
-    .topbar-brand span { color: var(--accent); }
-    .topbar-divider { width: 1px; height: 24px; background: rgba(255,255,255,.14); }
-    .topbar-welcome { font-size: .82rem; color: rgba(255,255,255,.5); }
-    .topbar-welcome strong { color: rgba(255,255,255,.88); }
-    .topbar-right { display: flex; align-items: center; gap: 12px; }
-    .topbar-empid { font-size: .75rem; font-weight: 700; letter-spacing: .5px; color: rgba(255,255,255,.35); }
-    .signout-btn { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.16); color: rgba(255,255,255,.7); padding: 7px 18px; border-radius: 8px; font-family: var(--body); font-size: .82rem; cursor: pointer; transition: all .2s; }
-    .signout-btn:hover { background: rgba(255,255,255,.16); color: #fff; }
-    /* ── NOTIFICATION BELL ── */
-    .notif-bell-wrap { position: relative; }
-    .notif-bell { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.16); color: rgba(255,255,255,.75); width: 38px; height: 38px; border-radius: 9px; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .2s; position: relative; }
-    .notif-bell:hover { background: rgba(255,255,255,.18); color: #fff; }
-    .notif-badge { position: absolute; top: -5px; right: -5px; background: #E8314D; color: #fff; font-size: .62rem; font-weight: 800; min-width: 18px; height: 18px; border-radius: 20px; display: none; align-items: center; justify-content: center; padding: 0 4px; border: 2px solid #1A1A1A; animation: badgePop .3s cubic-bezier(.22,1,.36,1); }
-    @keyframes badgePop { from{transform:scale(0)} to{transform:scale(1)} }
-
-    /* ── BELL RING ANIMATION ── */
-    @keyframes bellRing {
-      0%   { transform: rotate(0deg); }
-      5%   { transform: rotate(18deg); }
-      15%  { transform: rotate(-16deg); }
-      25%  { transform: rotate(14deg); }
-      35%  { transform: rotate(-12deg); }
-      45%  { transform: rotate(10deg); }
-      55%  { transform: rotate(-8deg); }
-      65%  { transform: rotate(6deg); }
-      75%  { transform: rotate(-4deg); }
-      85%  { transform: rotate(2deg); }
-      100% { transform: rotate(0deg); }
+    body {
+      font-family: var(--body); min-height: 100vh; display: flex;
+      background:
+        radial-gradient(ellipse 70% 60% at 80% 10%, rgba(200,16,46,0.10) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 50% at 10% 90%, rgba(200,16,46,0.06) 0%, transparent 60%),
+        #F4F6FB;
+      align-items: center; justify-content: center; padding: 24px;
     }
-    .notif-bell.ringing {
-      animation: bellRing 0.9s ease-in-out infinite;
-      transform-origin: top center;
+    .card {
+      background: #fff; border-radius: 22px; padding: 48px 44px 40px;
+      width: 100%; max-width: 460px;
+      box-shadow: 0 12px 60px rgba(0,0,0,0.10);
+      border: 1px solid rgba(200,16,46,0.09);
+      animation: up .55s cubic-bezier(.22,1,.36,1) both;
     }
-    .notif-bell.ringing .bell-icon {
-      display: inline-block;
-      transform-origin: top center;
+    @keyframes up { from { opacity:0; transform:translateY(28px) scale(.97); } to { opacity:1; transform:none; } }
+    .logo-wrap { text-align: center; margin-bottom: 28px; }
+    .logo-wrap img { height: 54px; width: auto; object-fit: contain; }
+    .logo-wrap .fallback { display:none; font-family:var(--head); font-size:1.5rem; font-weight:800; color:var(--red); }
+
+    .role-tabs { display: flex; gap: 8px; margin-bottom: 24px; }
+    .role-tab {
+      flex: 1; padding: 11px 8px; border: 1.5px solid rgba(0,0,0,0.11);
+      border-radius: 10px; font-family: var(--body); font-size: .83rem;
+      font-weight: 600; cursor: pointer; background: #fafafa;
+      color: var(--muted); transition: all .2s; text-align: center;
     }
-    .notif-dropdown { position: absolute; top: calc(100% + 10px); right: 0; width: 320px; background: #fff; border-radius: 14px; box-shadow: 0 12px 48px rgba(0,0,0,.18); border: 1px solid rgba(0,0,0,.07); z-index: 500; display: none; overflow: hidden; animation: dropIn .22s cubic-bezier(.22,1,.36,1); }
-    @keyframes dropIn { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:none} }
-    .notif-dropdown.open { display: block; }
-    .notif-header { padding: 14px 18px 10px; border-bottom: 1px solid #f2f2f2; display: flex; align-items: center; justify-content: space-between; }
-    .notif-header-title { font-size: .8rem; font-weight: 800; color: #1A1A1A; }
-    .notif-mark-read { font-size: .72rem; color: #C8102E; font-weight: 700; background: none; border: none; cursor: pointer; padding: 0; }
-    .notif-mark-read:hover { text-decoration: underline; }
-    .notif-list { max-height: 320px; overflow-y: auto; }
-    .notif-item { padding: 12px 18px; border-bottom: 1px solid #f8f8f8; display: flex; gap: 12px; align-items: flex-start; cursor: pointer; transition: background .15s; }
-    .notif-item:hover { background: #fafafa; }
-    .notif-item.unread { background: rgba(200,16,46,.04); }
-    .notif-item.unread:hover { background: rgba(200,16,46,.08); }
-    .notif-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
-    .notif-text { flex: 1; }
-    .notif-title { font-size: .82rem; font-weight: 700; color: #1A1A1A; margin-bottom: 2px; }
-    .notif-body { font-size: .74rem; color: #6B6B6B; line-height: 1.5; }
-    .notif-time { font-size: .68rem; color: #bbb; margin-top: 3px; }
-    .notif-dot { width: 7px; height: 7px; border-radius: 50%; background: #E8314D; flex-shrink: 0; margin-top: 6px; }
-    .notif-empty { padding: 28px 18px; text-align: center; color: #aaa; font-size: .82rem; }
-    .ann-alert-banner { position: fixed; top: 76px; right: 20px; z-index: 1000; background: #fff; border-radius: 14px; padding: 14px 18px; box-shadow: 0 8px 36px rgba(0,0,0,.16); border-left: 4px solid #C8102E; max-width: 340px; display: flex; gap: 12px; align-items: flex-start; animation: slideInRight .35s cubic-bezier(.22,1,.36,1); }
-    @keyframes slideInRight { from{opacity:0;transform:translateX(60px)} to{opacity:1;transform:none} }
-    .ann-al-icon { font-size: 1.4rem; flex-shrink: 0; }
-    .ann-al-body { flex: 1; }
-    .ann-al-title { font-size: .84rem; font-weight: 800; color: #1A1A1A; margin-bottom: 3px; }
-    .ann-al-text { font-size: .77rem; color: #555; line-height: 1.5; }
-    .ann-al-close { background: none; border: none; color: #bbb; font-size: 1rem; cursor: pointer; flex-shrink: 0; padding: 0; }
-    .ann-al-close:hover { color: #666; }
-    .layout { display: flex; flex: 1; }
-    .sidebar { width: 224px; flex-shrink: 0; background: var(--card); border-right: 1px solid var(--border); padding: 28px 12px; position: sticky; top: 66px; height: calc(100vh - 66px); overflow-y: auto; }
-    .sb-section-label { font-size: .67rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #c0c0c0; padding: 0 10px; margin-bottom: 5px; margin-top: 22px; }
-    .sb-section-label:first-child { margin-top: 0; }
-    .sb-btn { display: flex; align-items: center; gap: 11px; width: 100%; padding: 10px 12px; border: none; background: none; border-radius: 9px; font-family: var(--body); font-size: .875rem; font-weight: 500; color: #555; cursor: pointer; text-align: left; transition: all .18s; margin-bottom: 2px; }
-    .sb-btn .icon { font-size: 1.05rem; width: 22px; text-align: center; flex-shrink: 0; }
-    .sb-btn:hover { background: rgba(200,16,46,0.07); color: var(--red); }
-    .sb-btn.active { background: rgba(200,16,46,0.11); color: var(--red); font-weight: 700; }
-    .sb-count { margin-left: auto; background: var(--red); color: #fff; font-size: .64rem; font-weight: 800; border-radius: 20px; padding: 1px 7px; min-width: 20px; text-align: center; }
-    .main { flex: 1; padding: 38px 44px; max-width: 960px; }
-    .panel { display: none; animation: panelIn .3s ease both; }
-    .panel.active { display: block; }
-    @keyframes panelIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
-    .pg-title { font-family: var(--head); font-size: 1.6rem; font-weight: 800; color: var(--dark); letter-spacing: -.5px; margin-bottom: 4px; }
-    .pg-sub { font-size: .84rem; color: var(--muted); margin-bottom: 30px; }
-    .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 16px; margin-bottom: 28px; }
-    .stat-card { background: var(--card); border-radius: 16px; padding: 22px 20px; box-shadow: var(--shadow-sm); border: 1px solid rgba(0,0,0,0.05); transition: transform .2s, box-shadow .2s; position: relative; overflow: hidden; }
-    .stat-card::after { content:''; position:absolute; top:0; left:0; right:0; height:3px; background: var(--red); transform: scaleX(0); transform-origin: left; transition: transform .25s ease; }
-    .stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
-    .stat-card:hover::after { transform: scaleX(1); }
-    .sc-icon { font-size: 1.4rem; margin-bottom: 10px; display: block; }
-    .sc-val { font-family: var(--head); font-size: 2.1rem; font-weight: 800; color: var(--red); line-height: 1; margin-bottom: 5px; }
-    .sc-lbl { font-size: .75rem; color: var(--muted); font-weight: 600; }
-    .sec-card { background: var(--card); border-radius: 16px; padding: 26px 28px; box-shadow: var(--shadow-sm); border: 1px solid rgba(0,0,0,0.05); margin-bottom: 20px; }
-    .sec-card-title { font-size: .7rem; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; color: var(--muted); margin-bottom: 18px; display: flex; align-items: center; gap: 9px; }
-    .sec-card-title::before { content:''; width:14px; height:2px; background:var(--red); border-radius:2px; flex-shrink:0; }
-    .p-list { list-style: none; }
-    .p-list li { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f2f2f2; font-size: .875rem; color: var(--dark); gap: 10px; }
-    .p-list li:last-child { border-bottom: none; }
-    .badge { padding: 3px 11px; border-radius: 20px; font-size: .7rem; font-weight: 700; flex-shrink: 0; }
-    .bg  { background:#dcfce7; color:#15803d; }
-    .by  { background:#fef9c3; color:#a16207; }
-    .br  { background:#fee2e2; color:#b91c1c; }
-    .bb  { background:#dbeafe; color:#1d4ed8; }
-    .bgy { background:#f3f4f6; color:#4b5563; }
-    .bpurp { background:#f3e8ff; color:#7e22ce; }
-    .prog-wrap { margin-bottom: 14px; }
-    .prog-label { display: flex; justify-content: space-between; font-size: .78rem; color: var(--muted); margin-bottom: 5px; }
-    .prog-track { height: 7px; background: #f0f0f0; border-radius: 20px; overflow: hidden; }
-    .prog-fill { height: 100%; border-radius: 20px; background: linear-gradient(90deg, var(--red) 0%, var(--accent) 100%); transition: width 1.1s cubic-bezier(.22,1,.36,1); }
-    .act-btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 24px; background: var(--red); color: #fff; border: none; border-radius: 10px; font-family: var(--body); font-size: .875rem; font-weight: 700; cursor: pointer; transition: all .2s; letter-spacing: .2px; }
-    .act-btn:hover { background: var(--red-mid); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(200,16,46,.22); }
-    .act-btn.outline { background: transparent; color: var(--red); border: 1.5px solid var(--red); }
-    .act-btn.outline:hover { background: rgba(200,16,46,.07); box-shadow: none; transform: none; }
-    .task-item { display: flex; align-items: flex-start; gap: 13px; padding: 14px 0; border-bottom: 1px solid #f2f2f2; }
-    .task-item:last-child { border-bottom: none; }
-    .task-info { flex: 1; }
-    .task-name { font-size: .88rem; font-weight: 600; margin-bottom: 4px; }
-    .task-meta { font-size: .74rem; color: #aaa; }
-    .pay-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid #f2f2f2; }
-    .pay-row:last-child { border-bottom: none; }
-    .pay-month { font-weight: 600; font-size: .9rem; }
-    .pay-date  { font-size: .74rem; color: var(--muted); margin-top: 2px; }
-    .pay-amt   { font-family: var(--head); font-size: 1.05rem; font-weight: 800; }
-    .pay-right { display: flex; align-items: center; gap: 14px; }
-    .dl-link { font-size: .8rem; color: var(--red); font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: opacity .2s; }
-    .dl-link:hover { opacity: .65; }
-    .leave-form { display: none; margin-top: 18px; padding-top: 18px; border-top: 1px solid #f2f2f2; }
-    .leave-form.open { display: block; animation: panelIn .25s ease both; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
-    .form-row label, .form-full label { display: block; font-size: .72rem; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
-    .form-row input, .form-row select, .form-full textarea, .form-full input, .form-full select { width: 100%; padding: 10px 13px; border: 1.5px solid rgba(0,0,0,0.11); border-radius: 8px; font-family: var(--body); font-size: .875rem; color: var(--dark); background: #fafafa; outline: none; transition: border-color .2s; }
-    .form-row input:focus, .form-row select:focus, .form-full textarea:focus, .form-full input:focus, .form-full select:focus { border-color: var(--red); background: #fff; }
-    .form-full { margin-bottom: 14px; }
-    .form-full textarea { resize: vertical; min-height: 80px; }
-    .form-actions { display: flex; gap: 10px; margin-top: 4px; flex-wrap: wrap; }
-    .profile-hero { display: flex; align-items: center; gap: 22px; margin-bottom: 28px; }
-    .avatar { width: 76px; height: 76px; border-radius: 50%; background: linear-gradient(135deg, var(--red) 0%, var(--red-mid) 100%); display: flex; align-items: center; justify-content: center; font-family: var(--head); font-size: 1.8rem; font-weight: 800; color: #fff; flex-shrink: 0; }
-    .pinfo h2 { font-family: var(--head); font-size: 1.3rem; font-weight: 800; letter-spacing: -.3px; margin-bottom: 3px; }
-    .pinfo p  { font-size: .84rem; color: var(--muted); }
-    .emp-tag  { display: inline-block; background: rgba(200,16,46,.09); color: var(--red); font-size: .72rem; font-weight: 700; border-radius: 6px; padding: 2px 9px; letter-spacing: .5px; margin-top: 5px; }
-    .prow     { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #f2f2f2; font-size: .875rem; gap: 10px; }
-    .prow:last-child { border-bottom: none; }
-    .prow-lbl { width: 140px; flex-shrink: 0; color: var(--muted); font-size: .8rem; }
-    .prow-val { font-weight: 600; }
-    .toast { position: fixed; bottom: 28px; right: 28px; background: var(--dark); color: #fff; padding: 12px 22px; border-radius: 12px; font-size: .85rem; font-weight: 600; box-shadow: 0 8px 32px rgba(0,0,0,0.2); z-index: 9999; transform: translateY(20px); opacity: 0; transition: all .3s cubic-bezier(.22,1,.36,1); pointer-events: none; }
-    .toast.show { transform: translateY(0); opacity: 1; }
+    .role-tab .tab-icon { display: block; font-size: 1.3rem; margin-bottom: 3px; }
+    .role-tab.active { border-color: var(--red); background: rgba(200,16,46,.06); color: var(--red); }
+    .role-tab.admin-tab.active { border-color: var(--gold); background: rgba(184,134,11,.08); color: var(--gold); }
 
-    /* ── STATUS SELECT ── */
-    .status-sel { padding: 4px 9px; border-radius: 8px; border: 1.5px solid rgba(0,0,0,0.12); font-size: .75rem; font-weight: 700; cursor: pointer; outline: none; background: #fafafa; font-family: var(--body); }
-    .status-sel.pending  { background: #fef9c3; color: #a16207; border-color: #fde047; }
-    .status-sel.ongoing  { background: #dbeafe; color: #1d4ed8; border-color: #93c5fd; }
-    .status-sel.completed { background: #dcfce7; color: #15803d; border-color: #86efac; }
+    h2 { font-family: var(--head); font-size: 1.5rem; font-weight: 800; text-align: center; color: var(--dark); letter-spacing: -.5px; margin-bottom: 5px; }
+    .sub { text-align: center; color: var(--muted); font-size: .83rem; margin-bottom: 28px; line-height: 1.6; }
 
-    /* ── PEER TASK CARD ── */
-    .peer-task-card { border: 1px solid rgba(0,0,0,0.07); border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; background: #fafafa; transition: box-shadow .2s; }
-    .peer-task-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
-    .peer-task-card:last-child { margin-bottom: 0; }
-    .ptc-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 6px; }
-    .ptc-title { font-weight: 700; font-size: .9rem; color: var(--dark); }
-    .ptc-meta { font-size: .74rem; color: var(--muted); margin-top: 2px; line-height: 1.6; }
-    .ptc-desc { font-size: .78rem; color: #888; margin-top: 5px; font-style: italic; }
-    .ptc-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
-    .ptc-tag { font-size: .67rem; font-weight: 700; padding: 2px 8px; border-radius: 8px; letter-spacing: .4px; }
-    .tag-peer { background: #ede9fe; color: #6d28d9; }
-    .tag-from { background: #f0fdf4; color: #166534; }
-    .tag-to { background: #fdf4ff; color: #86198f; }
-    .tab-filters { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
-    .tab-filter { padding: 7px 16px; border-radius: 20px; border: 1.5px solid rgba(0,0,0,0.1); background: #fafafa; font-size: .78rem; font-weight: 600; cursor: pointer; transition: all .18s; color: #555; }
-    .tab-filter.active { background: var(--red); color: #fff; border-color: var(--red); }
-    .empty-state { text-align: center; padding: 36px 20px; color: var(--muted); font-size: .88rem; }
-    .empty-state .es-icon { font-size: 2.5rem; margin-bottom: 10px; }
+    .role-badge { display: none; text-align: center; margin-bottom: 18px; }
+    .role-badge-inner {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 7px 18px; border-radius: 100px;
+      font-size: .75rem; font-weight: 700; letter-spacing: .8px;
+    }
+    .role-badge-inner.hr-style { background: linear-gradient(135deg, #1A1A1A, #2d0a10); border: 1px solid rgba(200,16,46,.35); color: #fff; }
+    .role-badge-inner.hr-style span { color: var(--accent); }
+    .role-badge-inner.admin-style { background: linear-gradient(135deg, #1A1A1A, #2a1f00); border: 1px solid rgba(184,134,11,.45); color: #fff; }
+    .role-badge-inner.admin-style span { color: var(--gold-light); }
 
-    @media (max-width: 768px) { .sidebar { display: none; } .main { padding: 24px 18px; } .stat-row { grid-template-columns: 1fr 1fr; } .form-row { grid-template-columns: 1fr; } .topbar { padding: 0 16px; } }
-    @media (max-width: 500px) { .topbar-divider, .topbar-welcome { display: none; } .topbar-empid { display: none; } }
+    .error {
+      background: #fee2e2; color: #b91c1c; border-radius: 8px;
+      padding: 11px 14px; font-size: .83rem; font-weight: 600;
+      margin-bottom: 18px; display: none; animation: shake .3s ease;
+    }
+    @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+
+    .field { margin-bottom: 18px; }
+    .field label { display: block; font-size: .74rem; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--muted); margin-bottom: 7px; }
+    .field input {
+      width: 100%; padding: 13px 16px;
+      border: 1.5px solid rgba(0,0,0,0.12); border-radius: 10px;
+      font-family: var(--body); font-size: .93rem; color: var(--dark);
+      background: #fafafa; outline: none; transition: border-color .2s, box-shadow .2s;
+    }
+    .field input:focus { border-color: var(--red); background: #fff; box-shadow: 0 0 0 3px rgba(200,16,46,.10); }
+    .field input.admin-focus:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(184,134,11,.12); }
+    .field input::placeholder { color: #bbb; }
+
+    .btn {
+      width: 100%; padding: 14px; background: var(--red); color: #fff;
+      border: none; border-radius: 10px; font-family: var(--body);
+      font-size: .96rem; font-weight: 700; cursor: pointer; margin-top: 6px;
+      letter-spacing: .3px; transition: background .2s, transform .18s, box-shadow .2s;
+    }
+    .btn:hover { background: var(--red-mid); transform: translateY(-2px); box-shadow: 0 10px 28px rgba(200,16,46,.25); }
+    .btn:disabled { opacity: .65; cursor: not-allowed; transform: none; }
+    .btn.hr-mode { background: linear-gradient(135deg, #1A1A1A, #2d0a10); border: 1px solid rgba(200,16,46,.4); }
+    .btn.hr-mode:hover { background: linear-gradient(135deg, #2d0a10, #1A1A1A); }
+    .btn.admin-mode { background: linear-gradient(135deg, #1A1A1A, #2a1f00); border: 1px solid rgba(184,134,11,.5); }
+    .btn.admin-mode:hover { background: linear-gradient(135deg, #2a1f00, #1A1A1A); box-shadow: 0 10px 28px rgba(184,134,11,.2); }
+
+    .demo-box { margin-top: 16px; background: #f8f8f8; border: 1px solid rgba(0,0,0,0.08); border-radius: 10px; padding: 12px 16px; }
+    .demo-label { font-size: .65rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #bbb; margin-bottom: 7px; }
+    .demo-row { font-size: .77rem; color: var(--muted); margin-bottom: 3px; line-height: 1.8; }
+    .demo-row strong { color: var(--dark); }
+
+    .back-link { text-align: center; margin-top: 16px; }
+    .back-link a { color: var(--red); font-size: .82rem; font-weight: 600; text-decoration: none; }
+    .back-link a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
-
-  <header class="topbar">
-    <div class="topbar-left">
-      <img src="logo.png" alt="Enovexa" style="height:38px;width:auto;object-fit:contain;" onerror="this.style.display='none'" />
-      <div class="topbar-brand">Enovexa <span>Portal</span></div>
-      <div class="topbar-divider"></div>
-      <div class="topbar-welcome"> <strong id="t-name">—</strong></div>
+  <div class="card">
+    <div class="logo-wrap">
+      <img src="logo.png" alt="Enovexa" onerror="this.style.display='none';document.querySelector('.fallback').style.display='block'" />
+      <span class="fallback">ENOVEXA</span>
     </div>
-    <div class="topbar-right">
-      <span class="topbar-empid" id="t-empid"></span>
-      <div class="notif-bell-wrap" id="notif-bell-wrap">
-        <button class="notif-bell" id="notif-bell-btn" onclick="toggleNotifDropdown()" title="Announcements">
-          <span class="bell-icon" id="bell-icon">🔔</span>
-          <span class="notif-badge" id="notif-badge"></span>
-        </button>
-        <div class="notif-dropdown" id="notif-dropdown">
-          <div class="notif-header">
-            <span class="notif-header-title">Announcements</span>
-            <button class="notif-mark-read" onclick="markAllNotifsRead()">Mark all read</button>
-          </div>
-          <div class="notif-list" id="notif-list">
-            <div class="notif-empty">No announcements yet.</div>
-          </div>
-        </div>
-      </div>
-      <button class="signout-btn" onclick="signOut()">Sign Out</button>
+
+    <div class="role-tabs">
+      <button class="role-tab active" id="tab-emp" onclick="setRole('employee')">
+        <span class="tab-icon"></span> Employee
+      </button>
+      <button class="role-tab" id="tab-hr" onclick="setRole('hr')">
+        <span class="tab-icon"></span> HR 
+      </button>
+      <button class="role-tab admin-tab" id="tab-admin" onclick="setRole('admin')">
+        <span class="tab-icon"></span> Admin
+      </button>
     </div>
-  </header>
 
-  <div class="layout">
-    <aside class="sidebar">
-      <div class="sb-section-label">Main</div>
-      <button class="sb-btn active" onclick="go(this,'p-dash')"><span class="icon"></span> Dashboard</button>
-      <button class="sb-btn" onclick="go(this,'p-tasks')"><span class="icon"></span> My Tasks <span class="sb-count" id="sb-mytasks-count"></span></button>
-      <button class="sb-btn" onclick="go(this,'p-peer-tasks')"><span class="icon"></span> Team Tasks <span class="sb-count" id="sb-peer-count"></span></button>
-      <button class="sb-btn" onclick="go(this,'p-leave')"><span class="icon"></span> Leave</button>
-      <button class="sb-btn" onclick="go(this,'p-payslip')"><span class="icon"></span> Payslip</button>
-      <div class="sb-section-label">Account</div>
-      <button class="sb-btn" onclick="go(this,'p-profile')"><span class="icon"></span> My Profile</button>
-      <button class="sb-btn" onclick="signOut()"><span class="icon"></span> Sign Out</button>
-    </aside>
+    <div class="role-badge" id="role-badge">
+      <div class="role-badge-inner hr-style" id="badge-inner"> HR Admin &nbsp;·&nbsp; <span>Restricted Access</span></div>
+    </div>
 
-    <main class="main">
+    <h2 id="login-title">Employee Portal</h2>
+    <p class="sub" id="login-sub">Enovexa staff access only. Enter your credentials below.</p>
 
-      <!-- ── DASHBOARD ── -->
-      <div class="panel active" id="p-dash">
-        <h1 class="pg-title">Dashboard</h1>
-        <p class="pg-sub">Here's your quick overview for today.</p>
-        <div class="stat-row">
-          <div class="stat-card"><span class="sc-icon"></span><div class="sc-val" id="dash-leave-bal">—</div><div class="sc-lbl">Leave Balance</div><div id="dash-leave-sub" style="font-size:.7rem;color:var(--muted);margin-top:4px;"></div></div>
-          <div class="stat-card"><span class="sc-icon"></span><div class="sc-val" id="dash-pending">—</div><div class="sc-lbl">Pending Tasks</div></div>
-          <div class="stat-card"><span class="sc-icon"></span><div class="sc-val" id="dash-ongoing">—</div><div class="sc-lbl">Ongoing Tasks</div></div>
-          <div class="stat-card"><span class="sc-icon"></span><div class="sc-val" id="dash-done">—</div><div class="sc-lbl">Completed</div></div>
-        </div>
-        <!-- Attendance Summary Card -->
-        <div class="stat-card" id="dash-att-card" style="margin-bottom:20px;display:flex;align-items:center;gap:20px;padding:20px 24px;">
-          <span style="font-size:2rem;"></span>
-          <div style="flex:1;">
-            <div style="font-size:.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">Attendance This Month</div>
-            <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:8px;">
-              <span id="dash-att-present" style="font-family:var(--head);font-size:2rem;font-weight:800;color:var(--red);line-height:1;">—</span>
-              <span style="font-size:1rem;color:var(--muted);font-weight:600;">/</span>
-              <span id="dash-att-total" style="font-family:var(--head);font-size:1.3rem;font-weight:700;color:var(--dark);">—</span>
-              <span style="font-size:.78rem;color:var(--muted);font-weight:600;">days</span>
-              <span id="dash-att-pct" style="margin-left:8px;padding:3px 10px;border-radius:20px;font-size:.74rem;font-weight:800;background:#dcfce7;color:#15803d;">—%</span>
-            </div>
-            <div class="prog-track" style="height:6px;">
-              <div id="dash-att-bar" class="prog-fill" style="width:0%;"></div>
-            </div>
-          </div>
-        </div>
-        <div class="sec-card" id="admin-ann-box">
-          <div class="sec-card-title"> Announcements</div>
-          <ul class="p-list" id="emp-announcements"></ul>
-        </div>
-        <div class="sec-card" id="admin-tasks-emp-box" style="display:none;">
-          <div class="sec-card-title" style="justify-content:space-between;">
-            <span> My Assigned Tasks</span>
-            <button onclick="go(document.querySelector('.sb-btn[onclick*=p-tasks]'),'p-tasks')" style="font-size:.74rem;color:var(--red);font-weight:700;background:none;border:none;cursor:pointer;padding:0;">View All →</button>
-          </div>
-          <ul class="p-list" id="emp-admin-tasks-summary"></ul>
-        </div>
-        <div class="sec-card">
-          <div class="sec-card-title">Performance Overview</div>
-          <div class="prog-wrap">
-            <div class="prog-label"><span>Task Completion</span><span id="perf-task-pct">—</span></div>
-            <div class="prog-track"><div class="prog-fill" id="perf-task-bar" style="width:0%"></div></div>
-          </div>
-          <div class="prog-wrap">
-            <div class="prog-label"><span>Attendance (This Month)</span><span id="perf-att-pct">—</span></div>
-            <div class="prog-track"><div class="prog-fill" id="perf-att-bar" style="width:0%"></div></div>
-          </div>
-          <div style="margin-top:10px;font-size:.75rem;color:var(--muted);">
-            <span id="perf-task-detail"></span> &nbsp;·&nbsp; <span id="perf-att-detail"></span>
-          </div>
-        </div>
-      </div>
+    <div class="error" id="err">❌ Invalid credentials. Please try again.</div>
 
-      <!-- ── MY TASKS (from Admin/HR) ── -->
-      <div class="panel" id="p-tasks">
-        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:4px;">
-          <h1 class="pg-title" style="margin-bottom:0;">My Tasks</h1>
-          <button onclick="renderEmpAdminTasks();showToast('🔄 Tasks refreshed!');" style="background:var(--red);color:#fff;border:none;border-radius:9px;padding:8px 18px;font-size:.82rem;font-weight:700;cursor:pointer;">↻ Refresh</button>
-        </div>
-        <p class="pg-sub">Tasks assigned to you by Admin and HR — update your progress below.</p>
-        <div class="stat-row">
-          <div class="stat-card"><span class="sc-icon"></span><div class="sc-val" id="ts-total">—</div><div class="sc-lbl">Total Tasks</div></div>
-          <div class="stat-card"><span class="sc-icon"></span><div class="sc-val" id="ts-pending">—</div><div class="sc-lbl">Pending</div></div>
-          <div class="stat-card"><span class="sc-icon"></span><div class="sc-val" id="ts-inprogress">—</div><div class="sc-lbl">In Progress</div></div>
-          <div class="stat-card"><span class="sc-icon"></span><div class="sc-val" id="ts-done">—</div><div class="sc-lbl">Completed</div></div>
-        </div>
-        <div class="tab-filters">
-          <button class="tab-filter active" onclick="filterMyTasks('all',this)">All</button>
-          <button class="tab-filter" onclick="filterMyTasks('Pending',this)">⏳ Pending</button>
-          <button class="tab-filter" onclick="filterMyTasks('In Progress',this)">🔄 In Progress</button>
-          <button class="tab-filter" onclick="filterMyTasks('Completed',this)">✅ Completed</button>
-        </div>
-        <div class="sec-card" id="assigned-tasks-card">
-          <div class="sec-card-title">Tasks Assigned to You</div>
-          <div id="my-assigned-tasks-wrap">
-            <div class="empty-state"><div class="es-icon">📭</div>No tasks assigned yet. Check back later.</div>
-          </div>
-        </div>
-      </div>
+    <div class="field">
+      <label id="id-label">Employee ID</label>
+      <input type="text" id="emp-id" placeholder="e.g. ENV-001" autocomplete="username" />
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="emp-pass" placeholder="••••••••" autocomplete="current-password" />
+    </div>
 
-      <!-- ── TEAM / PEER TASKS ── -->
-      <div class="panel" id="p-peer-tasks">
-        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:4px;">
-          <h1 class="pg-title" style="margin-bottom:0;">Team Tasks</h1>
-          <button onclick="renderPeerTasks();showToast('Team tasks refreshed!');" style="background:var(--red);color:#fff;border:none;border-radius:9px;padding:8px 18px;font-size:.82rem;font-weight:700;cursor:pointer;">↻ Refresh</button>
-        </div>
-        <p class="pg-sub">Assign work to colleagues, track peer tasks, and see your team's progress in real time.</p>
+    <button class="btn" id="login-btn" onclick="doLogin()">Sign In to Portal →</button>
 
-        <div class="stat-row">
-          <div class="stat-card"><span class="sc-icon"></span><div class="sc-val" id="pt-assigned-out">—</div><div class="sc-lbl">Assigned by Me</div></div>
-          <div class="stat-card"><span class="sc-icon"></span><div class="sc-val" id="pt-assigned-in">—</div><div class="sc-lbl">Given to Me</div></div>
-          <div class="stat-card"><span class="sc-icon"></span><div class="sc-val" id="pt-pending">—</div><div class="sc-lbl">Pending</div></div>
-          <div class="stat-card"><span class="sc-icon"></span><div class="sc-val" id="pt-done">—</div><div class="sc-lbl">Completed</div></div>
-        </div>
+    <div class="demo-box">
+      <div class="demo-label">Demo Credentials</div>
+      <div class="demo-row" id="demo-creds">👤 Employee &nbsp;— ID: <strong>ENV-001</strong> · Pass: <strong>enovexa</strong></div>
+    </div>
 
-        <!-- Assign New Peer Task -->
-        <div class="sec-card">
-          <div class="sec-card-title">➕ Assign Task to a Colleague</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
-            <div class="form-full" style="margin-bottom:0;">
-              <label>Task Title *</label>
-              <input type="text" id="pt-title" placeholder="e.g. Prepare Q3 report" />
-            </div>
-            <div class="form-full" style="margin-bottom:0;">
-              <label>Assign To *</label>
-              <select id="pt-to">
-                <option value="">— Select Colleague —</option>
-                <option value="ENV-001 — Arjun Menon">ENV-001 — Arjun Menon</option>
-                <option value="ENV-002 — Priya Nair">ENV-002 — Priya Nair</option>
-                <option value="ENV-003 — Rahul Das">ENV-003 — Rahul Das</option>
-                <option value="ENV-004 — Sneha Pillai">ENV-004 — Sneha Pillai</option>
-                <option value="ENV-005 — Karan Shah">ENV-005 — Karan Shah</option>
-                <option value="ENV-006 — Divya Krishnan">ENV-006 — Divya Krishnan</option>
-                <option value="ENV-007 — Amal Thomas">ENV-007 — Amal Thomas</option>
-                <option value="ENV-008 — Meera Iyer">ENV-008 — Meera Iyer</option>
-                <option value="ENV-009 — Rohan Verma">ENV-009 — Rohan Verma</option>
-                <option value="ENV-010 — Lakshmi Reddy">ENV-010 — Lakshmi Reddy</option>
-                <option value="ENV-011 — Vikas Mehta">ENV-011 — Vikas Mehta</option>
-                <option value="ENV-012 — Nisha George">ENV-012 — Nisha George</option>
-              </select>
-            </div>
-            <div class="form-full" style="margin-bottom:0;">
-              <label>Due Date</label>
-              <input type="date" id="pt-due" />
-            </div>
-            <div class="form-full" style="margin-bottom:0;">
-              <label>Priority</label>
-              <select id="pt-priority">
-                <option value="Normal">Normal</option>
-                <option value="High">High</option>
-                <option value="Urgent">Urgent</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-full">
-            <label>Description (optional)</label>
-            <textarea id="pt-desc" placeholder="Brief description of the task..."></textarea>
-          </div>
-          <button class="act-btn" onclick="assignPeerTask()"> Assign to Colleague</button>
-        </div>
-
-        <!-- Task views tabs -->
-        <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
-          <button class="tab-filter active" id="peer-tab-all" onclick="setPeerView('all')">All Team Tasks</button>
-          <button class="tab-filter" id="peer-tab-out" onclick="setPeerView('out')">📤 Assigned by Me</button>
-          <button class="tab-filter" id="peer-tab-in" onclick="setPeerView('in')">📥 Assigned to Me</button>
-        </div>
-
-        <div class="sec-card" id="peer-tasks-list-card">
-          <div class="sec-card-title" id="peer-list-title">All Team Tasks (Visible to All Employees)</div>
-          <div id="peer-tasks-list">
-            <div class="empty-state"><div class="es-icon"></div>No peer tasks yet. Assign a task above to get started.</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ── LEAVE ── -->
-      <div class="panel" id="p-leave">
-        <h1 class="pg-title">Leave Management</h1>
-        <p class="pg-sub">View balance and apply for leave.</p>
-        <div class="stat-row" style="grid-template-columns:repeat(2,1fr);">
-          <div class="stat-card"><span class="sc-icon"></span><div class="sc-val" id="lv-taken">0</div><div class="sc-lbl">Leaves Taken</div></div>
-          <div class="stat-card"><span class="sc-icon"></span><div class="sc-val" id="lv-left" style="color:#059669;">5</div><div class="sc-lbl">Total Leave Left</div></div>
-        </div>
-        <div class="sec-card">
-          <div class="sec-card-title">Recent Requests</div>
-          <ul class="p-list" id="my-leave-list"></ul>
-          <button class="act-btn" style="margin-top:16px" onclick="toggleLeaveForm()">+ Apply for Leave</button>
-          <div class="leave-form" id="leave-form">
-            <div id="leave-form-err" style="display:none;background:#fee2e2;color:#b91c1c;border-radius:8px;padding:10px 14px;font-size:.82rem;font-weight:600;margin-bottom:12px;"></div>
-            <div class="form-row">
-              <div><label>Leave Type</label><select id="lf-type"><option>Casual Leave</option><option>Sick Leave</option><option>Emergency Leave</option></select></div>
-              <div><label>Number of Days</label><input type="number" id="lf-days" placeholder="e.g. 2" min="1" /></div>
-            </div>
-            <div class="form-row">
-              <div><label>From Date</label><input type="date" id="lf-from" /></div>
-              <div><label>To Date</label><input type="date" id="lf-to" /></div>
-            </div>
-            <div class="form-full"><label>Reason</label><textarea id="lf-reason" placeholder="Briefly describe reason..."></textarea></div>
-            <div class="form-actions">
-              <button class="act-btn" onclick="submitLeave()">Submit Application</button>
-              <button class="act-btn outline" onclick="toggleLeaveForm()">Cancel</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ── PAYSLIP ── -->
-      <div class="panel" id="p-payslip">
-        <h1 class="pg-title">My Salary & Payslips</h1>
-        <p class="pg-sub">Your salary details set by Admin and downloadable monthly payslips.</p>
-
-        <div class="stat-row" style="grid-template-columns:repeat(3,1fr);">
-          <div class="stat-card"><span class="sc-icon"></span><div class="sc-val" id="my-sal-gross">—</div><div class="sc-lbl">Gross Salary</div></div>
-          <div class="stat-card"><span class="sc-icon"></span><div class="sc-val" id="my-sal-ded">—</div><div class="sc-lbl">Deductions</div></div>
-          <div class="stat-card"><span class="sc-icon"></span><div class="sc-val" id="my-sal-net" style="color:#059669;">—</div><div class="sc-lbl">Net Pay (Take Home)</div></div>
-        </div>
-
-        <div class="sec-card">
-          <div class="sec-card-title">Current Month Salary Slip</div>
-          <div id="my-slip-detail" style="font-size:.88rem;color:var(--muted);text-align:center;padding:24px 0;">Loading salary data…</div>
-          <div id="my-slip-actions" style="display:none;margin-top:18px;display:flex;gap:12px;flex-wrap:wrap;">
-            <button class="act-btn" onclick="downloadMySalarySlip()">⬇ Download Salary Slip</button>
-            <button class="act-btn outline" onclick="printMySalarySlip()">🖨 Print Payslip</button>
-          </div>
-        </div>
-
-        <div class="sec-card">
-          <div class="sec-card-title">Payslip History</div>
-          <div id="my-payslip-history">
-            <p style="font-size:.84rem;color:var(--muted);text-align:center;padding:20px 0;">Loading history…</p>
-          </div>
-          <p style="margin-top:12px;font-size:.78rem;color:var(--muted)">📧 Payslips are also emailed to your company email on the 1st of each month.</p>
-        </div>
-      </div>
-
-      <!-- ── PROFILE ── -->
-      <div class="panel" id="p-profile">
-        <h1 class="pg-title">My Profile</h1>
-        <p class="pg-sub">Your employee details and account info.</p>
-        <div class="sec-card">
-          <div class="profile-hero">
-            <div class="avatar" id="av">—</div>
-            <div class="pinfo"><h2 id="pf-name">—</h2><p>Software Developer · Enovexa Solutions Pvt. Ltd.</p><span class="emp-tag" id="pf-id">—</span></div>
-          </div>
-          <div class="sec-card-title">Details</div>
-          <div class="prow"><span class="prow-lbl">Employee ID</span><span class="prow-val" id="pf-id2">—</span></div>
-          <div class="prow"><span class="prow-lbl">Department</span><span class="prow-val">Technology</span></div>
-          <div class="prow"><span class="prow-lbl">Designation</span><span class="prow-val">Software Developer</span></div>
-          <div class="prow"><span class="prow-lbl">Joined</span><span class="prow-val">January 15, 2023</span></div>
-          <div class="prow"><span class="prow-lbl">Email</span><span class="prow-val">emp@enovexa.com</span></div>
-          <div class="prow"><span class="prow-lbl">Status</span><span class="badge bg">Active</span></div>
-        </div>
-      </div>
-
-    </main>
+    <div class="back-link"><a href="index.html">← Back to Website</a></div>
   </div>
 
-  <div class="toast" id="toast"></div>
-
   <script>
-    // ── AUTH GUARD ──
-    const empId   = sessionStorage.getItem('emp_id');
-    const empName = sessionStorage.getItem('emp_name');
-    if (!empId || !empName) { window.location.href = 'portal.html'; }
+    let currentRole = 'employee';
 
-    document.getElementById('t-name').textContent  = empName;
-    document.getElementById('t-empid').textContent = empId;
-    document.getElementById('pf-name').textContent = empName;
-    document.getElementById('pf-id').textContent   = empId;
-    document.getElementById('pf-id2').textContent  = empId;
-    document.getElementById('av').textContent      = empName.charAt(0).toUpperCase();
-
-    // ── PANEL SWITCH ──
-    function go(btn, id) {
-      document.querySelectorAll('.sb-btn').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById(id).classList.add('active');
-      if (id === 'p-tasks') renderEmpAdminTasks();
-      if (id === 'p-peer-tasks') renderPeerTasks();
-    }
-    function signOut() { sessionStorage.clear(); window.location.href = 'portal.html'; }
-
-    // ── LEAVE ──
-    function toggleLeaveForm() { document.getElementById('leave-form').classList.toggle('open'); document.getElementById('leave-form-err').style.display='none'; }
-    function submitLeave() {
-      const type=document.getElementById('lf-type').value, days=document.getElementById('lf-days').value, from=document.getElementById('lf-from').value, to=document.getElementById('lf-to').value, reason=document.getElementById('lf-reason').value.trim(), errBox=document.getElementById('leave-form-err');
-      if (!from||!to||!days||!reason){errBox.textContent='⚠️ Please fill all fields.';errBox.style.display='block';return;}
-      if(new Date(to)<new Date(from)){errBox.textContent='⚠️ "To" cannot be before "From".';errBox.style.display='block';return;}
-      errBox.style.display='none';
-      const req={id:'LR-'+Date.now(),empId,empName,type,days:parseInt(days),from,to,reason,status:'Pending',appliedOn:new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})};
-      const ex=JSON.parse(localStorage.getItem('leave_requests')||'[]'); ex.unshift(req); localStorage.setItem('leave_requests',JSON.stringify(ex)); localStorage.setItem('leave_requests_updated',Date.now().toString());
-      ['lf-days','lf-from','lf-to','lf-reason'].forEach(i=>document.getElementById(i).value='');
-      document.getElementById('leave-form').classList.remove('open');
-      renderMyLeaveRequests(); showToast('📩 Leave submitted to HR!');
-    }
-    function renderMyLeaveRequests() {
-      const TOTAL_QUOTA = 5;
-      const all=JSON.parse(localStorage.getItem('leave_requests')||'[]'), mine=all.filter(r=>r.empId&&r.empId.toUpperCase()===empId.toUpperCase()), list=document.getElementById('my-leave-list');
-
-      // Compute taken = sum of approved leave days
-      const taken = mine.filter(r=>r.status==='Approved').reduce((s,r)=>s+(parseInt(r.days)||0),0);
-      const left  = Math.max(0, TOTAL_QUOTA - taken);
-
-      const elTaken = document.getElementById('lv-taken');
-      const elLeft  = document.getElementById('lv-left');
-      if(elTaken) elTaken.textContent = taken;
-      if(elLeft)  { elLeft.textContent = left; elLeft.style.color = left===0 ? '#b91c1c' : '#059669'; }
-
-      // ── Dashboard Leave Balance card ──
-      const dashBal = document.getElementById('dash-leave-bal');
-      const dashSub = document.getElementById('dash-leave-sub');
-      if(dashBal) {
-        dashBal.textContent = left;
-        dashBal.style.color = left === 0 ? '#b91c1c' : left <= 1 ? '#a16207' : '#059669';
+    // Base credentials — can be extended via admin_resets in localStorage
+    const BASE_USERS = {
+      employee: {
+        'ENV-001': { password: 'enovexa',  name: 'Arjun Menon' },
+        'ENV-002': { password: 'enovexa2', name: 'Priya Nair' },
+      },
+      hr: {
+        'HR-001': { password: 'hrAdmin@2025', name: 'David' },
+        'HR-002': { password: 'hr@enovexa',   name: 'Vikram Nair' },
+      },
+      admin: {
+        'ADM-001': { password: 'admin@enovexa2025', name: 'Super Admin' },
       }
-      if(dashSub) dashSub.textContent = taken + ' day' + (taken !== 1 ? 's' : '') + ' taken · ' + TOTAL_QUOTA + ' total';
+    };
 
-      if(!list)return;
-      if(mine.length===0){list.innerHTML='<li style="color:var(--muted);font-size:.84rem;padding:8px 0;">No leave requests yet.</li>';return;}
-      list.innerHTML=mine.map(r=>{const sc=r.status==='Approved'?'bg':r.status==='Rejected'?'br':'by';const ds=r.from===r.to?r.from:r.from+' → '+r.to;return`<li><div><strong>${r.type}</strong> <span style="font-size:.75rem;color:var(--muted);">${ds} · ${r.days} day${r.days>1?'s':''}</span></div><span class="badge ${sc}">${r.status}</span></li>`;}).join('');
-    }
+    function setRole(role) {
+      currentRole = role;
+      const isHR = role === 'hr', isAdmin = role === 'admin', isEmp = role === 'employee';
 
-    // ── MY TASKS (from Admin/HR) ──
-    let _allMyTasks = [];
-    let _currentFilter = 'all';
+      document.getElementById('tab-emp').classList.toggle('active', isEmp);
+      document.getElementById('tab-hr').classList.toggle('active', isHR);
+      document.getElementById('tab-admin').classList.toggle('active', isAdmin);
 
-    function renderEmpAdminTasks() {
-      const adminTasks = JSON.parse(localStorage.getItem('admin_tasks')||'[]');
-      const myAdminTasks = adminTasks.filter(t=>t.assign==='All Employees'||t.assign.toUpperCase().includes(empId.toUpperCase()));
-      const hrTasks = JSON.parse(localStorage.getItem('hr_tasks')||'[]');
-      const myHRTasks = hrTasks.filter(t=>t.assign==='All Employees'||(t.assign&&t.assign.toUpperCase().includes(empId.toUpperCase())));
-      const wcTasks = JSON.parse(localStorage.getItem('admin_wc_tasks')||'[]');
-      const myWC = wcTasks.filter(t=>t.assign&&t.assign.toUpperCase().includes(empId.toUpperCase()));
-
-      _allMyTasks = [
-        ...myAdminTasks.map(t=>({type:'admin',source:'Admin',id:t.id,title:t.title,due:t.due,prio:t.prio,status:t.status||'Pending',desc:t.desc})),
-        ...myHRTasks.map(t=>({type:'hr',source:t.assignedBy||'HR',id:t.id,title:t.title,due:t.due,prio:t.priority,status:t.status||'Pending',desc:t.desc,assignedAt:t.assignedAt||null,completedAt:t.completedAt||null})),
-        ...myWC.map(t=>({type:'website',source:'Admin',id:t.id,title:t.what+'('+t.website+')',due:t.due,prio:t.priority,status:t.status||'Pending'}))
-      ];
-
-      const total=_allMyTasks.length, pending=_allMyTasks.filter(t=>t.status==='Pending').length, inprog=_allMyTasks.filter(t=>t.status==='In Progress').length, done=_allMyTasks.filter(t=>t.status==='Completed').length;
-      const ts=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
-      ts('ts-total',total);ts('ts-pending',pending);ts('ts-inprogress',inprog);ts('ts-done',done);
-      ts('dash-pending',pending);ts('dash-ongoing',inprog);ts('dash-done',done);
-
-      const sbCount=document.getElementById('sb-mytasks-count'); if(sbCount)sbCount.textContent=(pending+inprog)||'';
-
-      // Dashboard summary
-      const dashBox=document.getElementById('admin-tasks-emp-box');
-      if(_allMyTasks.length>0){
-        dashBox.style.display='block';
-        const notDone=_allMyTasks.filter(t=>t.status!=='Completed').slice(0,3);
-        document.getElementById('emp-admin-tasks-summary').innerHTML=notDone.length>0?notDone.map(t=>{
-          const src=t.type==='hr'?'<span style="font-size:.66rem;color:#7e22ce;font-weight:700;background:#f3e8ff;padding:1px 6px;border-radius:8px;margin-right:5px;">HR</span>':'<span style="font-size:.66rem;color:#b91c1c;font-weight:700;background:#fee2e2;padding:1px 6px;border-radius:8px;margin-right:5px;">ADMIN</span>';
-          const sc=t.status==='In Progress'?'bb':t.status==='Completed'?'bg':'by';
-          return`<li>${src}<strong>${t.title}</strong>${t.due?' <span style="font-size:.74rem;color:var(--muted);">· Due '+t.due+'</span>':''}<span class="badge ${sc}" style="margin-left:auto;">${t.status}</span></li>`;
-        }).join(''):'<li style="color:var(--muted);font-size:.84rem;padding:8px 0;">All caught up! No pending tasks. </li>';
-      } else { dashBox.style.display='none'; }
-
-      renderMyTasksList();
-      updatePerformanceOverview();
-    }
-
-    // ── PERFORMANCE OVERVIEW + ATTENDANCE CARD ──
-    function updatePerformanceOverview() {
-      // --- Task Completion ---
-      const total = _allMyTasks.length;
-      const done  = _allMyTasks.filter(t => t.status === 'Completed').length;
-      const taskPct = total > 0 ? Math.round((done / total) * 100) : 0;
-      const taskPctStr = total > 0 ? taskPct + '%' : 'No tasks';
-
-      const perf_task_pct = document.getElementById('perf-task-pct');
-      const perf_task_bar = document.getElementById('perf-task-bar');
-      const perf_task_detail = document.getElementById('perf-task-detail');
-      if (perf_task_pct) perf_task_pct.textContent = taskPctStr;
-      if (perf_task_bar) perf_task_bar.style.width = taskPct + '%';
-      if (perf_task_detail) perf_task_detail.textContent = total > 0 ? done + ' of ' + total + ' tasks completed' : 'No tasks assigned yet';
-
-      // --- Attendance from HR records (current month) ---
-      const today = new Date();
-      const monthPrefix = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0');
-      let presentDays = 0, totalDays = 0;
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key && key.startsWith('attendance_' + monthPrefix)) {
-          const records = JSON.parse(localStorage.getItem(key) || '[]');
-          const myRecord = records.find(r => r.id && r.id.toUpperCase() === empId.toUpperCase());
-          if (myRecord) {
-            totalDays++;
-            if (myRecord.status === 'Present') presentDays++;
-          }
-        }
+      const badge = document.getElementById('role-badge');
+      const badgeInner = document.getElementById('badge-inner');
+      badge.style.display = (isHR || isAdmin) ? 'block' : 'none';
+      if (isHR) {
+        badgeInner.className = 'role-badge-inner hr-style';
+        badgeInner.innerHTML = ' HR Admin &nbsp;·&nbsp; <span>Restricted Access</span>';
+      } else if (isAdmin) {
+        badgeInner.className = 'role-badge-inner admin-style';
+        badgeInner.innerHTML = ' Admin &nbsp;·&nbsp; <span>Full System Access</span>';
       }
-      const attPct = totalDays > 0 ? Math.round((presentDays / totalDays) * 100) : 0;
-      const attPctStr = totalDays > 0 ? attPct + '%' : '—';
 
-      // Performance bar
-      const perf_att_pct = document.getElementById('perf-att-pct');
-      const perf_att_bar = document.getElementById('perf-att-bar');
-      const perf_att_detail = document.getElementById('perf-att-detail');
-      if (perf_att_pct) perf_att_pct.textContent = attPctStr;
-      if (perf_att_bar) perf_att_bar.style.width = attPct + '%';
-      if (perf_att_detail) perf_att_detail.textContent = totalDays > 0 ? presentDays + ' present out of ' + totalDays + ' recorded days' : 'No attendance records this month';
+      document.getElementById('login-title').textContent =
+        isAdmin ? ' Admin Control Panel' : isHR ? ' HR Admin Portal' : '🔐 Employee Portal';
+      document.getElementById('login-sub').textContent = isAdmin
+        ? 'Master administrator access. Full system control.'
+        : isHR ? 'HR access only. Statistics & management dashboard.'
+        : 'Enovexa staff access only. Enter your credentials below.';
+      document.getElementById('id-label').textContent =
+        isAdmin ? 'Admin ID' : isHR ? 'HR Admin ID' : 'Employee ID';
+      document.getElementById('emp-id').placeholder =
+        isAdmin ? 'e.g. ADM-001' : isHR ? 'e.g. HR-001' : 'e.g. ENV-001';
 
-      // Attendance summary card
-      const attPresEl = document.getElementById('dash-att-present');
-      const attTotEl  = document.getElementById('dash-att-total');
-      const attPctEl  = document.getElementById('dash-att-pct');
-      const attBarEl  = document.getElementById('dash-att-bar');
-      if (attPresEl) attPresEl.textContent = totalDays > 0 ? presentDays : '—';
-      if (attTotEl)  attTotEl.textContent  = totalDays > 0 ? totalDays  : '—';
-      if (attPctEl) {
-        if (totalDays > 0) {
-          attPctEl.textContent = attPct + '%';
-          attPctEl.style.background = attPct >= 90 ? '#dcfce7' : attPct >= 75 ? '#fef9c3' : '#fee2e2';
-          attPctEl.style.color      = attPct >= 90 ? '#15803d' : attPct >= 75 ? '#a16207' : '#b91c1c';
+      const empIdInput = document.getElementById('emp-id');
+      const empPassInput = document.getElementById('emp-pass');
+      empIdInput.classList.toggle('admin-focus', isAdmin);
+      empPassInput.classList.toggle('admin-focus', isAdmin);
+
+      const btn = document.getElementById('login-btn');
+      btn.className = isAdmin ? 'btn admin-mode' : isHR ? 'btn hr-mode' : 'btn';
+      btn.textContent = isAdmin ? 'Access Admin Panel →' : isHR ? 'Access HR Dashboard →' : 'Sign In to Portal →';
+
+      document.getElementById('demo-creds').innerHTML = isAdmin
+        ? '⚙️ Admin &nbsp;— ID: <strong>ADM-001</strong> · Pass: <strong>admin@enovexa2025</strong>'
+        : isHR
+        ? '🏢 HR Admin &nbsp;— ID: <strong>HR-001</strong> · Pass: <strong>hrAdmin@2025</strong>'
+        : '👤 Employee &nbsp;— ID: <strong>ENV-001</strong> · Pass: <strong>enovexa</strong>';
+
+      document.getElementById('emp-id').value = '';
+      document.getElementById('emp-pass').value = '';
+      document.getElementById('err').style.display = 'none';
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+    function doLogin() {
+      const id   = document.getElementById('emp-id').value.trim().toUpperCase();
+      const pass = document.getElementById('emp-pass').value.trim();
+      const btn  = document.getElementById('login-btn');
+      const err  = document.getElementById('err');
+      btn.textContent = 'Verifying...';
+      btn.disabled = true;
+
+      setTimeout(() => {
+        const pool = BASE_USERS[currentRole];
+        // Check admin-reset passwords first
+        const resets = JSON.parse(localStorage.getItem('admin_resets') || '{}');
+        const effectivePass = resets[id] || (pool[id] ? pool[id].password : null);
+
+        if (pool[id] && effectivePass === pass) {
+          sessionStorage.setItem('emp_id',   id);
+          sessionStorage.setItem('emp_name', pool[id].name);
+          sessionStorage.setItem('emp_role', currentRole);
+          if (currentRole === 'admin')         window.location.href = 'admin-dashboard.html';
+          else if (currentRole === 'hr')       window.location.href = 'hr-dashboard.html';
+          else                                 window.location.href = 'portal-dashboard.html';
         } else {
-          attPctEl.textContent = 'No data';
-          attPctEl.style.background = '#f3f4f6'; attPctEl.style.color = '#6b7280';
+          err.style.display = 'block';
+          btn.textContent = currentRole === 'admin' ? 'Access Admin Panel →' : currentRole === 'hr' ? 'Access HR Dashboard →' : 'Sign In to Portal →';
+          btn.disabled = false;
+          document.getElementById('emp-pass').value = '';
+          document.getElementById('emp-pass').focus();
         }
-      }
-      if (attBarEl) attBarEl.style.width = attPct + '%';
+      }, 700);
     }
-
-    function renderMyTasksList() {
-      const wrap=document.getElementById('my-assigned-tasks-wrap'); if(!wrap)return;
-      const filtered=_currentFilter==='all'?_allMyTasks:_allMyTasks.filter(t=>t.status===_currentFilter);
-      if(filtered.length===0){wrap.innerHTML='<div class="empty-state"><div class="es-icon">📭</div>'+((_allMyTasks.length===0)?'No tasks assigned yet.':'No tasks in this category.')+' </div>';return;}
-      wrap.innerHTML=filtered.map(t=>{
-        const src=t.type==='hr'?'<span class="ptc-tag tag-peer">HR</span>':t.type==='website'?'<span class="ptc-tag" style="background:#dbeafe;color:#1d4ed8;">WEB</span>':'<span class="ptc-tag" style="background:#fee2e2;color:#b91c1c;">ADMIN</span>';
-        const prio=(t.prio==='Urgent')?'🚨 ':(t.prio==='High')?'🔴 ':'';
-        const selClass=t.status==='Completed'?'completed':t.status==='In Progress'?'ongoing':'pending';
-        // Format assigned time
-        let assignedDisplay = '';
-        if (t.assignedAt) {
-          try { const d = new Date(t.assignedAt); assignedDisplay = isNaN(d) ? t.assignedAt : d.toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}); } catch(e){}
-        }
-        // Format completed time
-        let completedDisplay = '';
-        if (t.status === 'Completed' && t.completedAt) {
-          try { const d = new Date(t.completedAt); completedDisplay = isNaN(d) ? t.completedAt : d.toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}); } catch(e){}
-        }
-        return`<div class="peer-task-card">
-          <div class="ptc-header">
-            <div><div class="ptc-title">${prio}${t.title}</div><div class="ptc-meta">From: ${t.source}${t.due?' · Due: '+t.due:''}${t.prio?' · '+t.prio+' Priority':''}</div>${t.desc?'<div class="ptc-desc">'+t.desc.substring(0,100)+(t.desc.length>100?'…':'')+'</div>':''}
-            ${assignedDisplay ? '<div style="font-size:.71rem;color:#aaa;margin-top:4px;display:flex;flex-wrap:wrap;gap:10px;"><span> <strong>Assigned:</strong> '+assignedDisplay+'</span>'+(completedDisplay?'<span style="color:#059669;">✅ <strong>Completed:</strong> '+completedDisplay+'</span>':'')+'</div>' : ''}
-            </div>
-            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
-              ${src}
-              <select class="status-sel ${selClass}" data-taskid="${t.id}" data-tasktype="${t.type}" onchange="updateMyTaskStatus(this)">
-                <option value="Pending" ${t.status==='Pending'?'selected':''}>⏳ Pending</option>
-                <option value="In Progress" ${t.status==='In Progress'?'selected':''}>🔄 In Progress</option>
-                <option value="Completed" ${t.status==='Completed'?'selected':''}>✅ Completed</option>
-              </select>
-            </div>
-          </div>
-        </div>`;
-      }).join('');
-    }
-
-    function filterMyTasks(filter, btn) {
-      _currentFilter = filter;
-      document.querySelectorAll('.tab-filter').forEach(b=>b.classList.remove('active')); btn.classList.add('active');
-      renderMyTasksList();
-    }
-
-    function updateMyTaskStatus(sel) {
-      const taskId=sel.dataset.taskid, taskType=sel.dataset.tasktype, newStatus=sel.value;
-      // Update the right localStorage key
-      const keys={admin:'admin_tasks',hr:'hr_tasks',website:'admin_wc_tasks'};
-      const key=keys[taskType]||'admin_tasks';
-      const tasks=JSON.parse(localStorage.getItem(key)||'[]');
-      const idx=tasks.findIndex(t=>String(t.id)===String(taskId));
-      if(idx!==-1){
-        tasks[idx].status=newStatus;
-        // Record completion timestamp
-        if(newStatus==='Completed') {
-          tasks[idx].completedAt = new Date().toISOString();
-          // Write HR notification for task completion
-          if(taskType==='hr') {
-            const t = tasks[idx];
-            const compNotifs = JSON.parse(localStorage.getItem('hr_task_completions')||'[]');
-            compNotifs.push({
-              id: Date.now(),
-              taskId: String(taskId),
-              taskTitle: t.title || '(Untitled)',
-              empId: empId,
-              empName: empName,
-              completedAt: tasks[idx].completedAt
-            });
-            localStorage.setItem('hr_task_completions', JSON.stringify(compNotifs));
-            localStorage.setItem('hr_task_completions_updated', Date.now().toString());
-          }
-        } else if(tasks[idx].completedAt && newStatus !== 'Completed') {
-          // If re-opened, clear completedAt
-          tasks[idx].completedAt = null;
-        }
-        localStorage.setItem(key,JSON.stringify(tasks));
-        // Write the right timestamp so HR/Admin auto-refresh
-        if(taskType==='hr') {
-          localStorage.setItem('hr_tasks_updated', Date.now().toString());
-        } else {
-          localStorage.setItem('admin_tasks_updated', Date.now().toString());
-        }
-      }
-      // Update style
-      sel.className='status-sel '+(newStatus==='Completed'?'completed':newStatus==='In Progress'?'ongoing':'pending');
-      // Update local cache
-      const t=_allMyTasks.find(t=>String(t.id)===String(taskId)); if(t)t.status=newStatus;
-      showToast('✅ Task marked as '+newStatus+'!');
-      renderEmpAdminTasks();
-      // Notify other tabs
-      try{new BroadcastChannel('enovexa_sync').postMessage({type:'task_status_updated',taskId,newStatus,empId,taskType});}catch(e){}
-    }
-
-    // ── PEER TASKS ──
-    let _peerView = 'all';
-
-    function setPeerView(view) {
-      _peerView = view;
-      ['all','out','in'].forEach(v=>document.getElementById('peer-tab-'+v).classList.toggle('active',v===view));
-      const titles={all:'All Team Tasks (Visible to All Employees)',out:'Tasks Assigned by Me',in:'Tasks Assigned to Me'};
-      document.getElementById('peer-list-title').textContent=titles[view];
-      renderPeerTasks();
-    }
-
-    function assignPeerTask() {
-      const title=document.getElementById('pt-title').value.trim();
-      const toRaw=document.getElementById('pt-to').value;
-      const due=document.getElementById('pt-due').value;
-      const priority=document.getElementById('pt-priority').value;
-      const desc=document.getElementById('pt-desc').value.trim();
-      if(!title){showToast('⚠️ Please enter a task title!');return;}
-      if(!toRaw){showToast('⚠️ Please select a colleague!');return;}
-      // Can't assign to self
-      if(toRaw.toUpperCase().startsWith(empId.toUpperCase())){showToast('⚠️ You cannot assign a task to yourself!');return;}
-      const _ptNow=new Date();
-      const task={id:'PT-'+Date.now(),title,fromId:empId,fromName:empName,toRaw,due,priority,desc,status:'Pending',assignedAt:_ptNow.toISOString(),completedAt:null,createdAt:_ptNow.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})};
-      const all=JSON.parse(localStorage.getItem('peer_tasks')||'[]'); all.unshift(task); localStorage.setItem('peer_tasks',JSON.stringify(all)); localStorage.setItem('peer_tasks_updated',Date.now().toString());
-      document.getElementById('pt-title').value=''; document.getElementById('pt-to').value=''; document.getElementById('pt-due').value=''; document.getElementById('pt-priority').value='Normal'; document.getElementById('pt-desc').value='';
-      renderPeerTasks(); showToast(' Task assigned to colleague!');
-      try{new BroadcastChannel('enovexa_sync').postMessage({type:'peer_task_assigned',toRaw,fromName:empName});}catch(e){}
-    }
-
-    function renderPeerTasks() {
-      const all=JSON.parse(localStorage.getItem('peer_tasks')||'[]');
-      let shown;
-      if(_peerView==='out') shown=all.filter(t=>t.fromId===empId);
-      else if(_peerView==='in') shown=all.filter(t=>t.toRaw&&t.toRaw.toUpperCase().includes(empId.toUpperCase()));
-      else shown=all;
-
-      // Stats — always based on current emp's tasks
-      const myOut=all.filter(t=>t.fromId===empId).length;
-      const myIn=all.filter(t=>t.toRaw&&t.toRaw.toUpperCase().includes(empId.toUpperCase())).length;
-      const involved=all.filter(t=>t.fromId===empId||(t.toRaw&&t.toRaw.toUpperCase().includes(empId.toUpperCase())));
-      const pt=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
-      pt('pt-assigned-out',myOut); pt('pt-assigned-in',myIn);
-      pt('pt-pending',involved.filter(t=>t.status==='Pending').length);
-      pt('pt-done',involved.filter(t=>t.status==='Completed').length);
-      const sbC=document.getElementById('sb-peer-count');
-      if(sbC){
-        const pendingIn=all.filter(t=>t.toRaw&&t.toRaw.toUpperCase().includes(empId.toUpperCase())&&t.status!=='Completed').length;
-        sbC.textContent=pendingIn||'';
-        sbC.style.display=pendingIn>0?'inline-block':'none';
-      }
-
-      const wrap=document.getElementById('peer-tasks-list');
-      if(shown.length===0){wrap.innerHTML='<div class="empty-state"><div class="es-icon">🤝</div>No tasks here yet.</div>';return;}
-      wrap.innerHTML=shown.map(t=>{
-        const isFromMe=t.fromId===empId;
-        const isToMe=t.toRaw&&t.toRaw.toUpperCase().includes(empId.toUpperCase());
-        const selClass=t.status==='Completed'?'completed':t.status==='In Progress'?'ongoing':'pending';
-        const prio=(t.priority==='Urgent')?'🚨 ':(t.priority==='High')?'🔴 ':'';
-        return`<div class="peer-task-card">
-          <div class="ptc-header">
-            <div style="flex:1;min-width:0;">
-              <div class="ptc-title">${prio}${t.title}</div>
-              <div class="ptc-meta"> From: <strong>${t.fromName}</strong> &nbsp;→&nbsp; 📥 To: <strong>${t.toRaw.split('—')[1]||t.toRaw}</strong>${t.due?' &nbsp;·&nbsp; Due: '+t.due:''}</div>
-              ${t.desc?'<div class="ptc-desc">'+t.desc.substring(0,100)+(t.desc.length>100?'…':'')+'</div>':''}
-              <div class="ptc-tags">
-                ${isFromMe?'<span class="ptc-tag tag-to"> You assigned</span>':''}
-                ${isToMe?'<span class="ptc-tag tag-from">Assigned to you</span>':''}
-                ${t.priority&&t.priority!=='Normal'?'<span class="ptc-tag" style="background:#fef9c3;color:#a16207;">'+t.priority+'</span>':''}
-              </div>
-            </div>
-            <div style="flex-shrink:0;">
-              ${isToMe?`<select class="status-sel ${selClass}" data-ptid="${t.id}" onchange="updatePeerTaskStatus(this)">
-                <option value="Pending" ${t.status==='Pending'?'selected':''}>⏳ Pending</option>
-                <option value="In Progress" ${t.status==='In Progress'?'selected':''}>🔄 In Progress</option>
-                <option value="Completed" ${t.status==='Completed'?'selected':''}>✅ Completed</option>
-              </select>`:`<span class="badge ${t.status==='Completed'?'bg':t.status==='In Progress'?'bb':'by'}">${t.status}</span>`}
-              ${isFromMe&&!isToMe?'<button onclick="deletePeerTask(\''+t.id+'\')" style="margin-top:8px;display:block;font-size:.72rem;color:#b91c1c;background:none;border:none;cursor:pointer;font-weight:700;">🗑 Remove</button>':''}
-            </div>
-          </div>
-          <div style="font-size:.68rem;color:#bbb;margin-top:8px;display:flex;flex-wrap:wrap;gap:12px;">
-            <span>📅 Created: ${t.createdAt}</span>
-            ${(()=>{
-              let s='';
-              if(t.assignedAt){try{const d=new Date(t.assignedAt);s='<span> <strong style="color:#888;">Assigned:</strong> '+d.toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})+'</span>';}catch(e){}}
-              return s;
-            })()}
-            ${(()=>{
-              let s='';
-              if(t.status==='Completed'&&t.completedAt){try{const d=new Date(t.completedAt);s='<span style="color:#059669;">✅ <strong>Completed:</strong> '+d.toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})+'</span>';}catch(e){}}
-              return s;
-            })()}
-          </div>
-        </div>`;
-      }).join('');
-    }
-
-    function updatePeerTaskStatus(sel) {
-      const ptId=sel.dataset.ptid, newStatus=sel.value;
-      const all=JSON.parse(localStorage.getItem('peer_tasks')||'[]');
-      const idx=all.findIndex(t=>t.id===ptId);
-      if(idx!==-1){
-        all[idx].status=newStatus;
-        if(newStatus==='Completed'){
-          all[idx].completedAt=new Date().toISOString();
-        } else {
-          // Reset completedAt if task is re-opened
-          all[idx].completedAt=null;
-        }
-        localStorage.setItem('peer_tasks',JSON.stringify(all));
-        localStorage.setItem('peer_tasks_updated',Date.now().toString());
-      }
-      sel.className='status-sel '+(newStatus==='Completed'?'completed':newStatus==='In Progress'?'ongoing':'pending');
-      showToast('✅ Status updated to: '+newStatus);
-      renderPeerTasks();
-      try{new BroadcastChannel('enovexa_sync').postMessage({type:'peer_status_updated',ptId,newStatus});}catch(e){}
-    }
-
-    function deletePeerTask(id) {
-      if(!confirm('Remove this task?'))return;
-      const all=JSON.parse(localStorage.getItem('peer_tasks')||'[]').filter(t=>t.id!==id);
-      localStorage.setItem('peer_tasks',JSON.stringify(all)); localStorage.setItem('peer_tasks_updated',Date.now().toString());
-      renderPeerTasks(); showToast('🗑 Task removed.');
-    }
-
-    function renderEmpAnnouncements() {
-      const anns=JSON.parse(localStorage.getItem('admin_announcements')||'[]'), empAnn=anns.filter(a=>a.audience==='all'||a.audience==='employees'), list=document.getElementById('emp-announcements');
-      list.querySelectorAll('[data-admin-ann],[data-empty-ann]').forEach(el=>el.remove());
-      if(empAnn.length===0){const li=document.createElement('li');li.dataset.emptyAnn='1';li.style.cssText='color:var(--muted);font-size:.84rem;padding:10px 0;';li.textContent='No announcements yet.';list.appendChild(li);return;}
-      empAnn.slice().reverse().forEach(a=>{const li=document.createElement('li');li.dataset.adminAnn=a.id;const icon=a.prio==='Urgent'?'🚨':a.prio==='Important'?'⚠️':'';const postedStr=a.postedAt?new Date(a.postedAt).toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:true}):a.date||'—';li.innerHTML=`<div><strong>${icon} ${a.title}</strong><div style="font-size:.74rem;color:var(--muted);">${a.body.substring(0,80)}${a.body.length>80?'…':''}</div><div style="font-size:.71rem;color:#bbb;margin-top:3px;"> ${postedStr}</div></div><span class="badge by">${a.prio}</span>`;list.prepend(li);});
-    }
-
-    // ── MY SALARY ──
-    function loadMySalary() {
-      const salaryData = JSON.parse(localStorage.getItem('employee_salary_data') || '{}');
-      const mySal = salaryData[empId.toUpperCase()] || salaryData[empId];
-      const grossEl = document.getElementById('my-sal-gross');
-      const dedEl = document.getElementById('my-sal-ded');
-      const netEl = document.getElementById('my-sal-net');
-      const detailEl = document.getElementById('my-slip-detail');
-      const actEl = document.getElementById('my-slip-actions');
-      const histEl = document.getElementById('my-payslip-history');
-      if (mySal) {
-        const gross = mySal.gross || 0;
-        const ded = mySal.deductions || Math.round(gross * 0.135);
-        const net = gross - ded;
-        grossEl.textContent = '₹' + gross.toLocaleString('en-IN');
-        dedEl.textContent = '₹' + ded.toLocaleString('en-IN');
-        netEl.textContent = '₹' + net.toLocaleString('en-IN');
-        const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-        const now = new Date();
-        const monthName = months[now.getMonth()];
-        const year = now.getFullYear();
-        detailEl.innerHTML = `
-          <table style="width:100%;border-collapse:collapse;font-size:.87rem;text-align:left;">
-            <tr style="border-bottom:1px solid #f2f2f2;"><td style="padding:10px 0;color:var(--muted);width:160px;">Employee ID</td><td style="font-weight:600;">${empId}</td></tr>
-            <tr style="border-bottom:1px solid #f2f2f2;"><td style="padding:10px 0;color:var(--muted);">Name</td><td style="font-weight:600;">${empName}</td></tr>
-            <tr style="border-bottom:1px solid #f2f2f2;"><td style="padding:10px 0;color:var(--muted);">Department</td><td style="font-weight:600;">${mySal.dept || 'Technology'}</td></tr>
-            <tr style="border-bottom:1px solid #f2f2f2;"><td style="padding:10px 0;color:var(--muted);">Pay Period</td><td style="font-weight:600;">${monthName} ${year}</td></tr>
-            <tr style="border-bottom:1px solid #f2f2f2;"><td style="padding:10px 0;color:var(--muted);">Basic Salary</td><td style="font-weight:600;">₹${Math.round(gross*0.7).toLocaleString('en-IN')}</td></tr>
-            <tr style="border-bottom:1px solid #f2f2f2;"><td style="padding:10px 0;color:var(--muted);">HRA</td><td style="font-weight:600;">₹${Math.round(gross*0.2).toLocaleString('en-IN')}</td></tr>
-            <tr style="border-bottom:1px solid #f2f2f2;"><td style="padding:10px 0;color:var(--muted);">Special Allowance</td><td style="font-weight:600;">₹${Math.round(gross*0.1).toLocaleString('en-IN')}</td></tr>
-            <tr style="border-bottom:1px solid #f2f2f2;"><td style="padding:10px 0;color:#b91c1c;">PF Deduction</td><td style="font-weight:600;color:#b91c1c;">− ₹${Math.round(ded*0.6).toLocaleString('en-IN')}</td></tr>
-            <tr style="border-bottom:1px solid #f2f2f2;"><td style="padding:10px 0;color:#b91c1c;">Income Tax (TDS)</td><td style="font-weight:600;color:#b91c1c;">− ₹${Math.round(ded*0.4).toLocaleString('en-IN')}</td></tr>
-            <tr><td style="padding:12px 0;font-weight:800;font-size:.95rem;">Net Pay</td><td style="font-weight:800;font-size:1.1rem;color:#059669;">₹${net.toLocaleString('en-IN')}</td></tr>
-          </table>`;
-        actEl.style.display = 'flex';
-        histEl.innerHTML = [
-          {month:'May 2026', net: net},
-          {month:'April 2026', net: net},
-          {month:'March 2026', net: net - 500},
-          {month:'February 2026', net: net - 200},
-        ].map(h => `<div class="pay-row">
-          <div><div class="pay-month">${h.month}</div><div class="pay-date">Credited 1st of following month</div></div>
-          <div class="pay-right">
-            <div class="pay-amt">₹${h.net.toLocaleString('en-IN')}</div>
-            <span class="badge bg">Paid</span>
-            <div class="dl-link" onclick="downloadSlipForMonth('${h.month}',${h.net})">⬇ Download</div>
-          </div>
-        </div>`).join('');
-      } else {
-        grossEl.textContent = '—'; dedEl.textContent = '—'; netEl.textContent = '—';
-        detailEl.innerHTML = '<div style="text-align:center;padding:24px 0;"><div style="font-size:2rem;margin-bottom:10px;">💼</div><p style="color:var(--muted);font-size:.88rem;">Salary not configured yet. Please contact your HR or Admin.</p></div>';
-        actEl.style.display = 'none';
-        histEl.innerHTML = '<p style="font-size:.84rem;color:var(--muted);text-align:center;padding:20px 0;">No history available.</p>';
-      }
-    }
-
-    function generateSlipHTML(monthName, net) {
-      const salaryData = JSON.parse(localStorage.getItem('employee_salary_data') || '{}');
-      const mySal = salaryData[empId.toUpperCase()] || salaryData[empId] || {};
-      const gross = mySal.gross || 0;
-      const ded = mySal.deductions || Math.round(gross * 0.135);
-      return `<html><head><title>Salary Slip — ${monthName}</title>
-      <style>
-        body{font-family:Arial,sans-serif;padding:40px;color:#1A1A1A;max-width:680px;margin:0 auto;}
-        .header{background:#C8102E;color:#fff;padding:22px 28px;border-radius:12px 12px 0 0;}
-        .header h1{font-size:1.4rem;margin:0 0 3px;}
-        .header p{margin:0;font-size:.83rem;opacity:.82;}
-        .body{border:1px solid #ebebeb;border-top:none;padding:28px;border-radius:0 0 12px 12px;}
-        .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}
-        .info-block .label{font-size:.7rem;text-transform:uppercase;letter-spacing:.8px;color:#6B6B6B;margin-bottom:3px;}
-        .info-block .val{font-weight:700;font-size:.9rem;}
-        table{width:100%;border-collapse:collapse;}
-        td{padding:10px 12px;border-bottom:1px solid #f2f2f2;font-size:.87rem;}
-        td:last-child{text-align:right;font-weight:600;}
-        .section-hd td{background:#f8f8f8;font-weight:700;font-size:.74rem;text-transform:uppercase;letter-spacing:.8px;color:#6B6B6B;}
-        .net td{font-weight:800;font-size:1rem;background:#f0fdf4;color:#059669;border-bottom:none;}
-        .footer{margin-top:22px;font-size:.72rem;color:#aaa;text-align:center;line-height:1.7;}
-        .stamp{text-align:center;margin-top:20px;padding:10px;border:2px dashed #C8102E;border-radius:8px;color:#C8102E;font-weight:700;font-size:.8rem;letter-spacing:1px;}
-      </style></head>
-      <body>
-        <div class="header"><h1>Enovexa Solutions Pvt. Ltd.</h1><p>Employee Salary Slip — ${monthName}</p></div>
-        <div class="body">
-          <div class="info-grid">
-            <div class="info-block"><div class="label">Employee ID</div><div class="val">${empId}</div></div>
-            <div class="info-block"><div class="label">Name</div><div class="val">${empName}</div></div>
-            <div class="info-block"><div class="label">Department</div><div class="val">${mySal.dept || 'Technology'}</div></div>
-            <div class="info-block"><div class="label">Pay Period</div><div class="val">${monthName}</div></div>
-          </div>
-          <table>
-            <tr class="section-hd"><td colspan="2">Earnings</td></tr>
-            <tr><td>Basic Salary</td><td>₹${Math.round(gross*0.7).toLocaleString('en-IN')}</td></tr>
-            <tr><td>House Rent Allowance (HRA)</td><td>₹${Math.round(gross*0.2).toLocaleString('en-IN')}</td></tr>
-            <tr><td>Special Allowance</td><td>₹${Math.round(gross*0.1).toLocaleString('en-IN')}</td></tr>
-            <tr><td><strong>Gross Earnings</strong></td><td><strong>₹${gross.toLocaleString('en-IN')}</strong></td></tr>
-            <tr class="section-hd"><td colspan="2">Deductions</td></tr>
-            <tr><td>Provident Fund (PF)</td><td style="color:#b91c1c;">− ₹${Math.round(ded*0.6).toLocaleString('en-IN')}</td></tr>
-            <tr><td>Income Tax (TDS)</td><td style="color:#b91c1c;">− ₹${Math.round(ded*0.4).toLocaleString('en-IN')}</td></tr>
-            <tr><td><strong>Total Deductions</strong></td><td style="color:#b91c1c;"><strong>− ₹${ded.toLocaleString('en-IN')}</strong></td></tr>
-            <tr class="net"><td>Net Pay (Take Home)</td><td>₹${net.toLocaleString('en-IN')}</td></tr>
-          </table>
-          <div class="stamp">✓ PAID</div>
-          <div class="footer">
-            Generated: ${new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'})} &nbsp;·&nbsp;
-            This is a computer-generated salary slip and does not require a physical signature.<br>
-            Enovexa Solutions Pvt. Ltd. · For queries contact hr@enovexa.com
-          </div>
-        </div>
-      </body></html>`;
-    }
-
-    function downloadMySalarySlip() {
-      const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-      const now = new Date();
-      const salaryData = JSON.parse(localStorage.getItem('employee_salary_data') || '{}');
-      const mySal = salaryData[empId.toUpperCase()] || salaryData[empId] || {};
-      const gross = mySal.gross || 0;
-      const ded = mySal.deductions || Math.round(gross * 0.135);
-      const net = gross - ded;
-      const monthName = months[now.getMonth()] + ' ' + now.getFullYear();
-      const w = window.open('','_blank','width=750,height=900');
-      w.document.write(generateSlipHTML(monthName, net));
-      w.document.close();
-      w.print();
-      showToast('📄 Salary slip ready — print or save as PDF!');
-    }
-
-    function printMySalarySlip() { downloadMySalarySlip(); }
-
-    function downloadSlipForMonth(month, net) {
-      const w = window.open('','_blank','width=750,height=900');
-      w.document.write(generateSlipHTML(month, net));
-      w.document.close();
-      w.print();
-      showToast('📄 Downloading ' + month + ' slip…');
-    }
-
-    // Load salary when payslip panel opened
-    document.querySelector('.sb-btn[onclick*="p-payslip"]').addEventListener('click', loadMySalary);
-    // Also load on init in case user lands directly
-    loadMySalary();
-
-    // ── TOAST ──
-    function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
-
-    // ── NOTIFICATION BELL SYSTEM ──
-    const EMP_NOTIF_READ_KEY = 'emp_ann_read_ids_' + (sessionStorage.getItem('emp_id') || 'guest');
-
-    function getEmpReadIds() {
-      return JSON.parse(localStorage.getItem(EMP_NOTIF_READ_KEY) || '[]');
-    }
-    function saveEmpReadIds(ids) {
-      localStorage.setItem(EMP_NOTIF_READ_KEY, JSON.stringify(ids));
-    }
-
-    function buildNotifList() {
-      const announcements = JSON.parse(localStorage.getItem('admin_announcements') || '[]');
-      const relevant = announcements.filter(a => a.audience === 'all' || a.audience === 'employees');
-      const readIds = getEmpReadIds();
-      const list = document.getElementById('notif-list');
-      const badge = document.getElementById('notif-badge');
-
-      if (relevant.length === 0) {
-        list.innerHTML = '<div class="notif-empty">No announcements yet.</div>';
-        badge.style.display = 'none';
-        return;
-      }
-
-      const unreadCount = relevant.filter(a => !readIds.includes(String(a.id))).length;
-      const bellBtn = document.getElementById('notif-bell-btn');
-      if (unreadCount > 0) {
-        badge.style.display = 'flex';
-        badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
-        bellBtn.classList.add('ringing');
-      } else {
-        badge.style.display = 'none';
-        bellBtn.classList.remove('ringing');
-      }
-
-      list.innerHTML = relevant.slice().reverse().map(a => {
-        const isUnread = !readIds.includes(String(a.id));
-        const icon = a.prio === 'Urgent' ? '🚨' : a.prio === 'Important' ? '⚠️' : '📢';
-        const preview = a.body.length > 80 ? a.body.substring(0, 80) + '…' : a.body;
-        const postedStr = a.postedAt
-          ? new Date(a.postedAt).toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })
-          : a.date || '—';
-        return `<div class="notif-item ${isUnread ? 'unread' : ''}" onclick="markEmpNotifRead(${a.id})">
-          <div class="notif-icon">${icon}</div>
-          <div class="notif-text">
-            <div class="notif-title">${a.title}</div>
-            <div class="notif-body">${preview}</div>
-            <div class="notif-time"> ${postedStr} · ${a.prio}</div>
-          </div>
-          ${isUnread ? '<div class="notif-dot"></div>' : ''}
-        </div>`;
-      }).join('');
-    }
-
-    function markEmpNotifRead(id) {
-      const readIds = getEmpReadIds();
-      if (!readIds.includes(String(id))) {
-        readIds.push(String(id));
-        saveEmpReadIds(readIds);
-        buildNotifList();
-      }
-      // Navigate to dashboard to see announcements
-      const dashBtn = document.querySelector('.sb-btn[onclick*="p-dash"]');
-      if (dashBtn) go(dashBtn, 'p-dash');
-      closeNotifDropdown();
-    }
-
-    function markAllNotifsRead() {
-      const announcements = JSON.parse(localStorage.getItem('admin_announcements') || '[]');
-      const relevant = announcements.filter(a => a.audience === 'all' || a.audience === 'employees');
-      saveEmpReadIds(relevant.map(a => String(a.id)));
-      buildNotifList();
-      closeNotifDropdown();
-      showToast('✅ All announcements marked as read.');
-    }
-
-    function toggleNotifDropdown() {
-      const dd = document.getElementById('notif-dropdown');
-      if (dd.classList.contains('open')) {
-        closeNotifDropdown();
-      } else {
-        dd.classList.add('open');
-        buildNotifList();
-        // Stop ringing as soon as user opens the dropdown
-        document.getElementById('notif-bell-btn').classList.remove('ringing');
-      }
-    }
-
-    function closeNotifDropdown() {
-      document.getElementById('notif-dropdown').classList.remove('open');
-    }
-
-    document.addEventListener('click', function(e) {
-      const wrap = document.getElementById('notif-bell-wrap');
-      if (wrap && !wrap.contains(e.target)) closeNotifDropdown();
-    });
-
-    function showAnnouncementAlert(ann) {
-      const existing = document.getElementById('ann-alert-live');
-      if (existing) existing.remove();
-      const icon = ann.prio === 'Urgent' ? '🚨' : ann.prio === 'Important' ? '⚠️' : '📢';
-      const banner = document.createElement('div');
-      banner.className = 'ann-alert-banner';
-      banner.id = 'ann-alert-live';
-      banner.innerHTML = `
-        <div class="ann-al-icon">${icon}</div>
-        <div class="ann-al-body">
-          <div class="ann-al-title">New Announcement: ${ann.title}</div>
-          <div class="ann-al-text">${ann.body.substring(0, 100)}${ann.body.length > 100 ? '…' : ''}</div>
-        </div>
-        <button class="ann-al-close" onclick="this.closest('.ann-alert-banner').remove()">✕</button>`;
-      document.body.appendChild(banner);
-      setTimeout(() => { if (banner.parentNode) banner.remove(); }, 7000);
-    }
-
-    // ── INIT ──
-    renderEmpAnnouncements(); renderEmpAdminTasks(); renderMyLeaveRequests(); renderPeerTasks(); buildNotifList();
-
-    // ── SYNC ──
-    let _lastTaskSig=localStorage.getItem('admin_tasks_updated')||'', _lastAnnSig=(JSON.parse(localStorage.getItem('admin_announcements')||'[]')).length+'', _lastAnnTs=localStorage.getItem('announcements_updated')||'', _lastPeerSig=localStorage.getItem('peer_tasks_updated')||'', _lastLeaveSig=localStorage.getItem('leave_requests_updated')||'', _lastAttSig=localStorage.getItem('attendance_updated')||'';
-    setInterval(()=>{
-      const ts=localStorage.getItem('admin_tasks_updated')||'', ans=(JSON.parse(localStorage.getItem('admin_announcements')||'[]')).length+'', annTs=localStorage.getItem('announcements_updated')||'', ps=localStorage.getItem('peer_tasks_updated')||'', ls=localStorage.getItem('leave_requests_updated')||'', attSig=localStorage.getItem('attendance_updated')||'';
-      if(ts!==_lastTaskSig){_lastTaskSig=ts;renderEmpAdminTasks();showToast('🔄 Tasks updated!');}
-      if(attSig!==_lastAttSig){_lastAttSig=attSig;updatePerformanceOverview();}
-      if(ans!==_lastAnnSig||annTs!==_lastAnnTs){
-        const changed=ans!==_lastAnnSig||annTs!==_lastAnnTs;
-        _lastAnnSig=ans;_lastAnnTs=annTs;
-        if(changed){
-          const allAnns=JSON.parse(localStorage.getItem('admin_announcements')||'[]');
-          const relevant=allAnns.filter(a=>a.audience==='all'||a.audience==='employees');
-          const readIds=getEmpReadIds();
-          const newUnread=relevant.filter(a=>!readIds.includes(String(a.id)));
-          renderEmpAnnouncements();
-          buildNotifList();
-          if(newUnread.length>0){
-            const latest=newUnread[newUnread.length-1];
-            showAnnouncementAlert(latest);
-            showToast('📢 New announcement: '+latest.title);
-          }
-        }
-      }
-      if(ps!==_lastPeerSig){_lastPeerSig=ps;renderPeerTasks();showToast('🔄 Team task updated!');}
-      if(ls!==_lastLeaveSig){_lastLeaveSig=ls;renderMyLeaveRequests();showToast('🔄 Leave status updated!');}
-    },3000);
-    try{const bc=new BroadcastChannel('enovexa_sync');bc.onmessage=e=>{if(e.data){if(e.data.type==='tasks_updated'||e.data.type==='task_status_updated')renderEmpAdminTasks();if(e.data.type==='peer_task_assigned'||e.data.type==='peer_status_updated')renderPeerTasks();}};}catch(e){}
-    document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){renderEmpAdminTasks();renderEmpAnnouncements();renderPeerTasks();buildNotifList();}});
   </script>
 </body>
 </html>
