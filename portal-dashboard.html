@@ -35,6 +35,29 @@
     .notif-bell:hover { background: rgba(255,255,255,.18); color: #fff; }
     .notif-badge { position: absolute; top: -5px; right: -5px; background: #E8314D; color: #fff; font-size: .62rem; font-weight: 800; min-width: 18px; height: 18px; border-radius: 20px; display: none; align-items: center; justify-content: center; padding: 0 4px; border: 2px solid #1A1A1A; animation: badgePop .3s cubic-bezier(.22,1,.36,1); }
     @keyframes badgePop { from{transform:scale(0)} to{transform:scale(1)} }
+
+    /* ── BELL RING ANIMATION ── */
+    @keyframes bellRing {
+      0%   { transform: rotate(0deg); }
+      5%   { transform: rotate(18deg); }
+      15%  { transform: rotate(-16deg); }
+      25%  { transform: rotate(14deg); }
+      35%  { transform: rotate(-12deg); }
+      45%  { transform: rotate(10deg); }
+      55%  { transform: rotate(-8deg); }
+      65%  { transform: rotate(6deg); }
+      75%  { transform: rotate(-4deg); }
+      85%  { transform: rotate(2deg); }
+      100% { transform: rotate(0deg); }
+    }
+    .notif-bell.ringing {
+      animation: bellRing 0.9s ease-in-out infinite;
+      transform-origin: top center;
+    }
+    .notif-bell.ringing .bell-icon {
+      display: inline-block;
+      transform-origin: top center;
+    }
     .notif-dropdown { position: absolute; top: calc(100% + 10px); right: 0; width: 320px; background: #fff; border-radius: 14px; box-shadow: 0 12px 48px rgba(0,0,0,.18); border: 1px solid rgba(0,0,0,.07); z-index: 500; display: none; overflow: hidden; animation: dropIn .22s cubic-bezier(.22,1,.36,1); }
     @keyframes dropIn { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:none} }
     .notif-dropdown.open { display: block; }
@@ -182,12 +205,12 @@
       <span class="topbar-empid" id="t-empid"></span>
       <div class="notif-bell-wrap" id="notif-bell-wrap">
         <button class="notif-bell" id="notif-bell-btn" onclick="toggleNotifDropdown()" title="Announcements">
-          🔔
+          <span class="bell-icon" id="bell-icon">🔔</span>
           <span class="notif-badge" id="notif-badge"></span>
         </button>
         <div class="notif-dropdown" id="notif-dropdown">
           <div class="notif-header">
-            <span class="notif-header-title">📢 Announcements</span>
+            <span class="notif-header-title">Announcements</span>
             <button class="notif-mark-read" onclick="markAllNotifsRead()">Mark all read</button>
           </div>
           <div class="notif-list" id="notif-list">
@@ -202,14 +225,14 @@
   <div class="layout">
     <aside class="sidebar">
       <div class="sb-section-label">Main</div>
-      <button class="sb-btn active" onclick="go(this,'p-dash')"><span class="icon">📊</span> Dashboard</button>
-      <button class="sb-btn" onclick="go(this,'p-tasks')"><span class="icon">✅</span> My Tasks <span class="sb-count" id="sb-mytasks-count"></span></button>
-      <button class="sb-btn" onclick="go(this,'p-peer-tasks')"><span class="icon">🤝</span> Team Tasks <span class="sb-count" id="sb-peer-count"></span></button>
-      <button class="sb-btn" onclick="go(this,'p-leave')"><span class="icon">🗓️</span> Leave</button>
-      <button class="sb-btn" onclick="go(this,'p-payslip')"><span class="icon">💰</span> Payslip</button>
+      <button class="sb-btn active" onclick="go(this,'p-dash')"><span class="icon"></span> Dashboard</button>
+      <button class="sb-btn" onclick="go(this,'p-tasks')"><span class="icon"></span> My Tasks <span class="sb-count" id="sb-mytasks-count"></span></button>
+      <button class="sb-btn" onclick="go(this,'p-peer-tasks')"><span class="icon"></span> Team Tasks <span class="sb-count" id="sb-peer-count"></span></button>
+      <button class="sb-btn" onclick="go(this,'p-leave')"><span class="icon"></span> Leave</button>
+      <button class="sb-btn" onclick="go(this,'p-payslip')"><span class="icon"></span> Payslip</button>
       <div class="sb-section-label">Account</div>
-      <button class="sb-btn" onclick="go(this,'p-profile')"><span class="icon">👤</span> My Profile</button>
-      <button class="sb-btn" onclick="signOut()"><span class="icon">🚪</span> Sign Out</button>
+      <button class="sb-btn" onclick="go(this,'p-profile')"><span class="icon"></span> My Profile</button>
+      <button class="sb-btn" onclick="signOut()"><span class="icon"></span> Sign Out</button>
     </aside>
 
     <main class="main">
@@ -351,8 +374,8 @@
         <h1 class="pg-title">Leave Management</h1>
         <p class="pg-sub">View balance and apply for leave.</p>
         <div class="stat-row" style="grid-template-columns:repeat(2,1fr);">
-          <div class="stat-card"><span class="sc-icon">📤</span><div class="sc-val" id="lv-taken">0</div><div class="sc-lbl">Leaves Taken</div></div>
-          <div class="stat-card"><span class="sc-icon">✅</span><div class="sc-val" id="lv-left" style="color:#059669;">5</div><div class="sc-lbl">Total Leave Left</div></div>
+          <div class="stat-card"><span class="sc-icon"></span><div class="sc-val" id="lv-taken">0</div><div class="sc-lbl">Leaves Taken</div></div>
+          <div class="stat-card"><span class="sc-icon"></span><div class="sc-val" id="lv-left" style="color:#059669;">5</div><div class="sc-lbl">Total Leave Left</div></div>
         </div>
         <div class="sec-card">
           <div class="sec-card-title">Recent Requests</div>
@@ -499,7 +522,7 @@
 
       _allMyTasks = [
         ...myAdminTasks.map(t=>({type:'admin',source:'Admin',id:t.id,title:t.title,due:t.due,prio:t.prio,status:t.status||'Pending',desc:t.desc})),
-        ...myHRTasks.map(t=>({type:'hr',source:t.assignedBy||'HR',id:t.id,title:t.title,due:t.due,prio:t.priority,status:t.status||'Pending',desc:t.desc})),
+        ...myHRTasks.map(t=>({type:'hr',source:t.assignedBy||'HR',id:t.id,title:t.title,due:t.due,prio:t.priority,status:t.status||'Pending',desc:t.desc,assignedAt:t.assignedAt||null,completedAt:t.completedAt||null})),
         ...myWC.map(t=>({type:'website',source:'Admin',id:t.id,title:t.what+'('+t.website+')',due:t.due,prio:t.priority,status:t.status||'Pending'}))
       ];
 
@@ -533,9 +556,21 @@
         const src=t.type==='hr'?'<span class="ptc-tag tag-peer">HR</span>':t.type==='website'?'<span class="ptc-tag" style="background:#dbeafe;color:#1d4ed8;">WEB</span>':'<span class="ptc-tag" style="background:#fee2e2;color:#b91c1c;">ADMIN</span>';
         const prio=(t.prio==='Urgent')?'🚨 ':(t.prio==='High')?'🔴 ':'';
         const selClass=t.status==='Completed'?'completed':t.status==='In Progress'?'ongoing':'pending';
+        // Format assigned time
+        let assignedDisplay = '';
+        if (t.assignedAt) {
+          try { const d = new Date(t.assignedAt); assignedDisplay = isNaN(d) ? t.assignedAt : d.toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}); } catch(e){}
+        }
+        // Format completed time
+        let completedDisplay = '';
+        if (t.status === 'Completed' && t.completedAt) {
+          try { const d = new Date(t.completedAt); completedDisplay = isNaN(d) ? t.completedAt : d.toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}); } catch(e){}
+        }
         return`<div class="peer-task-card">
           <div class="ptc-header">
-            <div><div class="ptc-title">${prio}${t.title}</div><div class="ptc-meta">From: ${t.source}${t.due?' · Due: '+t.due:''}${t.prio?' · '+t.prio+' Priority':''}</div>${t.desc?'<div class="ptc-desc">'+t.desc.substring(0,100)+(t.desc.length>100?'…':'')+'</div>':''}</div>
+            <div><div class="ptc-title">${prio}${t.title}</div><div class="ptc-meta">From: ${t.source}${t.due?' · Due: '+t.due:''}${t.prio?' · '+t.prio+' Priority':''}</div>${t.desc?'<div class="ptc-desc">'+t.desc.substring(0,100)+(t.desc.length>100?'…':'')+'</div>':''}
+            ${assignedDisplay ? '<div style="font-size:.71rem;color:#aaa;margin-top:4px;display:flex;flex-wrap:wrap;gap:10px;"><span> <strong>Assigned:</strong> '+assignedDisplay+'</span>'+(completedDisplay?'<span style="color:#059669;">✅ <strong>Completed:</strong> '+completedDisplay+'</span>':'')+'</div>' : ''}
+            </div>
             <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
               ${src}
               <select class="status-sel ${selClass}" data-taskid="${t.id}" data-tasktype="${t.type}" onchange="updateMyTaskStatus(this)">
@@ -564,6 +599,28 @@
       const idx=tasks.findIndex(t=>String(t.id)===String(taskId));
       if(idx!==-1){
         tasks[idx].status=newStatus;
+        // Record completion timestamp
+        if(newStatus==='Completed') {
+          tasks[idx].completedAt = new Date().toISOString();
+          // Write HR notification for task completion
+          if(taskType==='hr') {
+            const t = tasks[idx];
+            const compNotifs = JSON.parse(localStorage.getItem('hr_task_completions')||'[]');
+            compNotifs.push({
+              id: Date.now(),
+              taskId: String(taskId),
+              taskTitle: t.title || '(Untitled)',
+              empId: empId,
+              empName: empName,
+              completedAt: tasks[idx].completedAt
+            });
+            localStorage.setItem('hr_task_completions', JSON.stringify(compNotifs));
+            localStorage.setItem('hr_task_completions_updated', Date.now().toString());
+          }
+        } else if(tasks[idx].completedAt && newStatus !== 'Completed') {
+          // If re-opened, clear completedAt
+          tasks[idx].completedAt = null;
+        }
         localStorage.setItem(key,JSON.stringify(tasks));
         // Write the right timestamp so HR/Admin auto-refresh
         if(taskType==='hr') {
@@ -603,7 +660,8 @@
       if(!toRaw){showToast('⚠️ Please select a colleague!');return;}
       // Can't assign to self
       if(toRaw.toUpperCase().startsWith(empId.toUpperCase())){showToast('⚠️ You cannot assign a task to yourself!');return;}
-      const task={id:'PT-'+Date.now(),title,fromId:empId,fromName:empName,toRaw,due,priority,desc,status:'Pending',createdAt:new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})};
+      const _ptNow=new Date();
+      const task={id:'PT-'+Date.now(),title,fromId:empId,fromName:empName,toRaw,due,priority,desc,status:'Pending',assignedAt:_ptNow.toISOString(),completedAt:null,createdAt:_ptNow.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})};
       const all=JSON.parse(localStorage.getItem('peer_tasks')||'[]'); all.unshift(task); localStorage.setItem('peer_tasks',JSON.stringify(all)); localStorage.setItem('peer_tasks_updated',Date.now().toString());
       document.getElementById('pt-title').value=''; document.getElementById('pt-to').value=''; document.getElementById('pt-due').value=''; document.getElementById('pt-priority').value='Normal'; document.getElementById('pt-desc').value='';
       renderPeerTasks(); showToast('🤝 Task assigned to colleague!');
@@ -625,7 +683,12 @@
       pt('pt-assigned-out',myOut); pt('pt-assigned-in',myIn);
       pt('pt-pending',involved.filter(t=>t.status==='Pending').length);
       pt('pt-done',involved.filter(t=>t.status==='Completed').length);
-      const sbC=document.getElementById('sb-peer-count'); if(sbC)sbC.textContent=myIn||'';
+      const sbC=document.getElementById('sb-peer-count');
+      if(sbC){
+        const pendingIn=all.filter(t=>t.toRaw&&t.toRaw.toUpperCase().includes(empId.toUpperCase())&&t.status!=='Completed').length;
+        sbC.textContent=pendingIn||'';
+        sbC.style.display=pendingIn>0?'inline-block':'none';
+      }
 
       const wrap=document.getElementById('peer-tasks-list');
       if(shown.length===0){wrap.innerHTML='<div class="empty-state"><div class="es-icon">🤝</div>No tasks here yet.</div>';return;}
@@ -655,7 +718,19 @@
               ${isFromMe&&!isToMe?'<button onclick="deletePeerTask(\''+t.id+'\')" style="margin-top:8px;display:block;font-size:.72rem;color:#b91c1c;background:none;border:none;cursor:pointer;font-weight:700;">🗑 Remove</button>':''}
             </div>
           </div>
-          <div style="font-size:.68rem;color:#bbb;margin-top:8px;">Created: ${t.createdAt}</div>
+          <div style="font-size:.68rem;color:#bbb;margin-top:8px;display:flex;flex-wrap:wrap;gap:12px;">
+            <span>📅 Created: ${t.createdAt}</span>
+            ${(()=>{
+              let s='';
+              if(t.assignedAt){try{const d=new Date(t.assignedAt);s='<span>🕐 <strong style="color:#888;">Assigned:</strong> '+d.toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})+'</span>';}catch(e){}}
+              return s;
+            })()}
+            ${(()=>{
+              let s='';
+              if(t.status==='Completed'&&t.completedAt){try{const d=new Date(t.completedAt);s='<span style="color:#059669;">✅ <strong>Completed:</strong> '+d.toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})+'</span>';}catch(e){}}
+              return s;
+            })()}
+          </div>
         </div>`;
       }).join('');
     }
@@ -664,7 +739,17 @@
       const ptId=sel.dataset.ptid, newStatus=sel.value;
       const all=JSON.parse(localStorage.getItem('peer_tasks')||'[]');
       const idx=all.findIndex(t=>t.id===ptId);
-      if(idx!==-1){all[idx].status=newStatus; localStorage.setItem('peer_tasks',JSON.stringify(all)); localStorage.setItem('peer_tasks_updated',Date.now().toString());}
+      if(idx!==-1){
+        all[idx].status=newStatus;
+        if(newStatus==='Completed'){
+          all[idx].completedAt=new Date().toISOString();
+        } else {
+          // Reset completedAt if task is re-opened
+          all[idx].completedAt=null;
+        }
+        localStorage.setItem('peer_tasks',JSON.stringify(all));
+        localStorage.setItem('peer_tasks_updated',Date.now().toString());
+      }
       sel.className='status-sel '+(newStatus==='Completed'?'completed':newStatus==='In Progress'?'ongoing':'pending');
       showToast('✅ Status updated to: '+newStatus);
       renderPeerTasks();
@@ -853,8 +938,15 @@
       }
 
       const unreadCount = relevant.filter(a => !readIds.includes(String(a.id))).length;
-      badge.style.display = unreadCount > 0 ? 'flex' : 'none';
-      badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+      const bellBtn = document.getElementById('notif-bell-btn');
+      if (unreadCount > 0) {
+        badge.style.display = 'flex';
+        badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+        bellBtn.classList.add('ringing');
+      } else {
+        badge.style.display = 'none';
+        bellBtn.classList.remove('ringing');
+      }
 
       list.innerHTML = relevant.slice().reverse().map(a => {
         const isUnread = !readIds.includes(String(a.id));
@@ -901,6 +993,8 @@
       } else {
         dd.classList.add('open');
         buildNotifList();
+        // Stop ringing as soon as user opens the dropdown
+        document.getElementById('notif-bell-btn').classList.remove('ringing');
       }
     }
 
