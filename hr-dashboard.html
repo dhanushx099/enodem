@@ -488,7 +488,7 @@
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; flex-wrap:wrap; gap:10px;">
             <div class="sec-card-title" style="margin-bottom:0;">Staff Directory</div>
             <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-              <input class="search-input" type="text" placeholder="Search name, ID, dept…" oninput="filterEmployees(this.value)" />
+              <input class="search-input" type="text" placeholder="🔍 Search name, ID, dept…" oninput="filterEmployees(this.value)" />
               <button onclick="renderEmployeeTable();showToast('🔄 Refreshed!');" style="background:var(--red);color:#fff;border:none;border-radius:9px;padding:8px 14px;font-size:.8rem;font-weight:700;cursor:pointer;">↻ Refresh</button>
             </div>
           </div>
@@ -970,6 +970,7 @@
               <button class="act-btn" style="padding:5px 12px;font-size:.76rem;" onclick="openPersonalData('${emp.id}','${emp.name}','${emp.dept}','${emp.role}')">
                 📄 Docs ${docCount > 0 ? '<span style=\'background:rgba(200,16,46,.15);color:var(--red);font-size:.65rem;padding:1px 6px;border-radius:10px;margin-left:3px;\'>' + docCount + '</span>' : ''}
               </button>
+              <button class="act-btn" style="padding:5px 12px;font-size:.76rem;background:#b91c1c;" onclick="hrRemoveEmployee('${emp.id}','${emp.name}')">🗑️ Remove</button>
             </div>
           </td>
         </tr>`;
@@ -1000,6 +1001,18 @@
       renderEmployeeTable();
       updateOverviewStats();
       showToast('👤 ' + name + ' (' + id + ') added successfully!');
+    }
+
+    // ── REMOVE EMPLOYEE (HR) ──
+    function hrRemoveEmployee(id, name) {
+      if (!confirm('Remove ' + name + ' (' + id + ') from the system?\n\nThis will also reflect in Admin dashboard.')) return;
+      const emps = getEmployees().filter(e => e.id !== id);
+      saveEmployees(emps);
+      refreshATTEmployees();
+      populateEmployeeDropdowns();
+      renderEmployeeTable();
+      updateOverviewStats();
+      showToast('🗑️ ' + name + ' (' + id + ') removed successfully.');
     }
 
     // ── PERSONAL DATA ──
