@@ -362,7 +362,7 @@
     <aside class="sidebar">
       <div class="sb-section-label">HR Overview</div>
       <button class="sb-btn active" onclick="go(this,'p-overview')"><span class="icon"></span> Overview</button>
-      <button class="sb-btn" onclick="go(this,'p-employees')"><span class="icon"></span> All Employees</button>
+      <button class="sb-btn" onclick="go(this,'p-employees')"><span class="icon"></span> Employee</button>
       <div class="sb-section-label">Management</div>
       <button class="sb-btn" onclick="go(this,'p-attendance');renderAttendance()"><span class="icon"></span> Attendance</button>
       <button class="sb-btn" onclick="go(this,'p-leaves')"><span class="icon"></span> Leave Requests <span class="sb-count">5</span></button>
@@ -399,7 +399,7 @@
         <!-- Secondary stats -->
         <div class="stat-row" style="grid-template-columns: repeat(2,1fr);">
           <div class="stat-card">
-            <span class="sc-icon">📊</span>
+            <span class="sc-icon"></span>
             <div class="sc-val" id="ov-avg-att">—</div>
             <div class="sc-lbl">Avg Attendance (This Month)</div>
             <div id="ov-avg-att-sub" style="font-size:.7rem;color:var(--muted);margin-top:5px;line-height:1.5;"></div>
@@ -442,32 +442,107 @@
       <!-- ── ALL EMPLOYEES ── -->
       <div class="panel" id="p-employees">
         <h1 class="pg-title">All Employees</h1>
-        <p class="pg-sub">View and search across all 24 staff members.</p>
+        <p class="pg-sub">View, search, and add employees. Personal documents and days worked are tracked here.</p>
+
+        <!-- Add Employee Form -->
+        <div class="sec-card" id="hr-add-emp-card">
+          <div class="sec-card-title">➕ Add New Employee</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+            <div>
+              <label style="display:block;font-size:.72rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">Full Name *</label>
+              <input id="hr-em-name" type="text" placeholder="e.g. Arun Kumar" style="width:100%;padding:10px 13px;border:1.5px solid rgba(0,0,0,0.11);border-radius:8px;font-family:var(--body);font-size:.875rem;color:var(--dark);background:#fafafa;outline:none;" />
+            </div>
+            <div>
+              <label style="display:block;font-size:.72rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">Employee ID *</label>
+              <input id="hr-em-id" type="text" placeholder="e.g. ENV-025" style="width:100%;padding:10px 13px;border:1.5px solid rgba(0,0,0,0.11);border-radius:8px;font-family:var(--body);font-size:.875rem;color:var(--dark);background:#fafafa;outline:none;" />
+            </div>
+            <div>
+              <label style="display:block;font-size:.72rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">Department *</label>
+              <select id="hr-em-dept" style="width:100%;padding:10px 13px;border:1.5px solid rgba(0,0,0,0.11);border-radius:8px;font-family:var(--body);font-size:.875rem;color:var(--dark);background:#fafafa;outline:none;">
+                <option value="">— Select —</option>
+                <option>Engineering</option><option>Marketing</option><option>Design</option>
+                <option>Operations</option><option>Finance</option><option>HR</option><option>Sales</option>
+              </select>
+            </div>
+            <div>
+              <label style="display:block;font-size:.72rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">Role / Designation *</label>
+              <input id="hr-em-role" type="text" placeholder="e.g. Software Developer" style="width:100%;padding:10px 13px;border:1.5px solid rgba(0,0,0,0.11);border-radius:8px;font-family:var(--body);font-size:.875rem;color:var(--dark);background:#fafafa;outline:none;" />
+            </div>
+            <div>
+              <label style="display:block;font-size:.72rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">Date Joined</label>
+              <input id="hr-em-joined" type="month" style="width:100%;padding:10px 13px;border:1.5px solid rgba(0,0,0,0.11);border-radius:8px;font-family:var(--body);font-size:.875rem;color:var(--dark);background:#fafafa;outline:none;" />
+            </div>
+            <div>
+              <label style="display:block;font-size:.72rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">Status</label>
+              <select id="hr-em-status" style="width:100%;padding:10px 13px;border:1.5px solid rgba(0,0,0,0.11);border-radius:8px;font-family:var(--body);font-size:.875rem;color:var(--dark);background:#fafafa;outline:none;">
+                <option value="Active">Active</option><option value="Review">Review</option>
+                <option value="New">New</option><option value="Inactive">Inactive</option>
+              </select>
+            </div>
+          </div>
+          <button class="act-btn" onclick="hrAddEmployee()">👤 Add Employee</button>
+        </div>
+
+        <!-- Employee Directory Table -->
         <div class="sec-card">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; flex-wrap:gap;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; flex-wrap:wrap; gap:10px;">
             <div class="sec-card-title" style="margin-bottom:0;">Staff Directory</div>
-            <input class="search-input" type="text" placeholder="🔍  Search name, ID, dept…" oninput="filterEmployees(this.value)" />
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <input class="search-input" type="text" placeholder="Search name, ID, dept…" oninput="filterEmployees(this.value)" />
+              <button onclick="renderEmployeeTable();showToast('🔄 Refreshed!');" style="background:var(--red);color:#fff;border:none;border-radius:9px;padding:8px 14px;font-size:.8rem;font-weight:700;cursor:pointer;">↻ Refresh</button>
+            </div>
           </div>
           <div style="overflow-x:auto;">
             <table class="data-table" id="emp-table">
               <thead><tr>
-                <th>Employee</th><th>ID</th><th>Department</th><th>Role</th><th>Status</th>
+                <th>Name</th><th>Employee ID</th><th>Department</th><th>Role</th><th>Personal Data</th>
               </tr></thead>
-              <tbody id="emp-tbody">
-                <tr><td><div style="display:flex;align-items:center;gap:10px"><div class="av-sm">A</div>Arjun Menon</div></td><td>ENV-001</td><td>Engineering</td><td>Sr. Developer</td><td><span class="badge bg">Active</span></td></tr>
-                <tr><td><div style="display:flex;align-items:center;gap:10px"><div class="av-sm">P</div>Priya Nair</div></td><td>ENV-002</td><td>Marketing</td><td>SEO Lead</td><td><span class="badge bg">Active</span></td></tr>
-                <tr><td><div style="display:flex;align-items:center;gap:10px"><div class="av-sm">R</div>Rahul Das</div></td><td>ENV-003</td><td>Design</td><td>UI/UX Designer</td><td><span class="badge by">On Leave</span></td></tr>
-                <tr><td><div style="display:flex;align-items:center;gap:10px"><div class="av-sm">S</div>Sneha Pillai</div></td><td>ENV-004</td><td>Engineering</td><td>Flutter Dev</td><td><span class="badge bg">Active</span></td></tr>
-                <tr><td><div style="display:flex;align-items:center;gap:10px"><div class="av-sm">K</div>Karan Shah</div></td><td>ENV-005</td><td>Operations</td><td>Project Manager</td><td><span class="badge bg">Active</span></td></tr>
-                <tr><td><div style="display:flex;align-items:center;gap:10px"><div class="av-sm">D</div>Divya Krishnan</div></td><td>ENV-006</td><td>Marketing</td><td>Content Writer</td><td><span class="badge bg">Active</span></td></tr>
-                <tr><td><div style="display:flex;align-items:center;gap:10px"><div class="av-sm">A</div>Amal Thomas</div></td><td>ENV-007</td><td>Engineering</td><td>Backend Dev</td><td><span class="badge bg">Active</span></td></tr>
-                <tr><td><div style="display:flex;align-items:center;gap:10px"><div class="av-sm">M</div>Meera Iyer</div></td><td>ENV-008</td><td>Design</td><td>Graphic Designer</td><td><span class="badge by">On Leave</span></td></tr>
-                <tr><td><div style="display:flex;align-items:center;gap:10px"><div class="av-sm">R</div>Rohan Verma</div></td><td>ENV-009</td><td>Marketing</td><td>PPC Analyst</td><td><span class="badge bg">Active</span></td></tr>
-                <tr><td><div style="display:flex;align-items:center;gap:10px"><div class="av-sm">L</div>Lakshmi Reddy</div></td><td>ENV-010</td><td>Engineering</td><td>React Developer</td><td><span class="badge bg">Active</span></td></tr>
-                <tr><td><div style="display:flex;align-items:center;gap:10px"><div class="av-sm">V</div>Vikas Mehta</div></td><td>ENV-011</td><td>Engineering</td><td>DevOps Engineer</td><td><span class="badge bg">Active</span></td></tr>
-                <tr><td><div style="display:flex;align-items:center;gap:10px"><div class="av-sm">N</div>Nisha George</div></td><td>ENV-012</td><td>Marketing</td><td>Social Media Mgr</td><td><span class="badge bg">Active</span></td></tr>
-              </tbody>
+              <tbody id="emp-tbody"></tbody>
             </table>
+          </div>
+          <p id="emp-count-lbl" style="font-size:.78rem;color:var(--muted);margin-top:14px;"></p>
+        </div>
+      </div>
+
+      <!-- ── PERSONAL DATA MODAL ── -->
+      <div id="personal-data-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:4000;align-items:center;justify-content:center;">
+        <div style="background:#fff;border-radius:18px;padding:32px 36px;width:560px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.28);position:relative;">
+          <button onclick="closePersonalDataModal()" style="position:absolute;top:16px;right:18px;background:none;border:none;font-size:1.3rem;cursor:pointer;color:#aaa;">✕</button>
+          <div style="font-size:.7rem;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--red);margin-bottom:6px;">Employee Profile</div>
+          <h2 id="pd-modal-name" style="font-size:1.2rem;font-weight:800;margin-bottom:4px;color:#1A1A1A;">—</h2>
+          <p id="pd-modal-meta" style="font-size:.8rem;color:var(--muted);margin-bottom:22px;">—</p>
+
+          <!-- Days Worked -->
+          <div style="background:linear-gradient(135deg,#C8102E,#A50D25);border-radius:14px;padding:18px 22px;margin-bottom:22px;color:#fff;display:flex;align-items:center;justify-content:space-between;">
+            <div>
+              <div style="font-size:.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;opacity:.75;margin-bottom:4px;">Days Worked (Attendance)</div>
+              <div style="font-size:2.4rem;font-weight:800;line-height:1;" id="pd-days-worked">—</div>
+              <div style="font-size:.74rem;opacity:.7;margin-top:4px;" id="pd-days-detail">out of 365 days target (1 year)</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;opacity:.75;margin-bottom:4px;">Progress</div>
+              <div style="font-size:1.4rem;font-weight:800;" id="pd-days-pct">—</div>
+              <div style="width:110px;height:8px;background:rgba(255,255,255,.25);border-radius:20px;margin-top:6px;overflow:hidden;">
+                <div id="pd-days-bar" style="height:100%;background:#fff;border-radius:20px;transition:width .8s;width:0%"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Upload Document -->
+          <div style="font-size:.7rem;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:8px;"><span style="width:14px;height:2px;background:var(--red);border-radius:2px;display:block;flex-shrink:0;"></span>Personal Documents</div>
+          <div style="background:#f8f8f8;border:1.5px dashed rgba(200,16,46,.3);border-radius:12px;padding:18px;margin-bottom:18px;text-align:center;">
+            <div style="font-size:1.5rem;margin-bottom:8px;">📄</div>
+            <div style="font-size:.84rem;font-weight:600;color:var(--dark);margin-bottom:4px;">Upload PDF Document</div>
+            <div style="font-size:.76rem;color:var(--muted);margin-bottom:14px;">Offer letter, certificates, ID proof, contracts, etc. Stored locally.</div>
+            <input type="file" id="pd-file-input" accept=".pdf" multiple style="display:none;" onchange="handlePDFUpload(event)" />
+            <button class="act-btn" onclick="document.getElementById('pd-file-input').click()" style="font-size:.82rem;padding:9px 20px;">📂 Choose PDF Files</button>
+          </div>
+
+          <!-- Stored Documents List -->
+          <div id="pd-docs-list" style="margin-bottom:18px;"></div>
+
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="act-btn outline" onclick="closePersonalDataModal()">Close</button>
           </div>
         </div>
       </div>
@@ -805,6 +880,35 @@
       window.location.href = 'portal.html';
     }
 
+    // ── SHARED EMPLOYEE STORE ──
+    const DEFAULT_EMPLOYEES = [
+      {id:'ENV-001',name:'Arjun Menon',dept:'Engineering',role:'Sr. Developer',joined:'Jan 2023',status:'Active'},
+      {id:'ENV-002',name:'Priya Nair',dept:'Marketing',role:'SEO Lead',joined:'Jan 2023',status:'Active'},
+      {id:'ENV-003',name:'Rahul Das',dept:'Design',role:'UI/UX Designer',joined:'Apr 2023',status:'Active'},
+      {id:'ENV-004',name:'Sneha Pillai',dept:'Engineering',role:'Flutter Dev',joined:'Feb 2022',status:'Active'},
+      {id:'ENV-005',name:'Karan Shah',dept:'Operations',role:'Project Manager',joined:'Jun 2023',status:'Active'},
+      {id:'ENV-006',name:'Divya Krishnan',dept:'Marketing',role:'Content Writer',joined:'Aug 2022',status:'Active'},
+      {id:'ENV-007',name:'Amal Thomas',dept:'Engineering',role:'Backend Dev',joined:'Nov 2022',status:'Active'},
+      {id:'ENV-008',name:'Meera Iyer',dept:'Design',role:'Graphic Designer',joined:'Jan 2024',status:'Active'},
+      {id:'ENV-009',name:'Rohan Verma',dept:'Marketing',role:'PPC Analyst',joined:'Jul 2023',status:'Active'},
+      {id:'ENV-010',name:'Lakshmi Reddy',dept:'Engineering',role:'React Developer',joined:'Mar 2022',status:'Active'},
+      {id:'ENV-011',name:'Vikas Mehta',dept:'Engineering',role:'DevOps Engineer',joined:'Sep 2022',status:'Active'},
+      {id:'ENV-012',name:'Nisha George',dept:'Marketing',role:'Social Media Mgr',joined:'Dec 2023',status:'Active'},
+    ];
+
+    function getEmployees() {
+      const stored = localStorage.getItem('enovexa_employees');
+      if (stored) return JSON.parse(stored);
+      // Seed defaults
+      localStorage.setItem('enovexa_employees', JSON.stringify(DEFAULT_EMPLOYEES));
+      return DEFAULT_EMPLOYEES;
+    }
+
+    function saveEmployees(list) {
+      localStorage.setItem('enovexa_employees', JSON.stringify(list));
+      localStorage.setItem('enovexa_employees_updated', Date.now().toString());
+    }
+
     // ── EMPLOYEE SEARCH ──
     function filterEmployees(q) {
       const rows = document.querySelectorAll('#emp-tbody tr');
@@ -812,6 +916,194 @@
         r.style.display = r.textContent.toLowerCase().includes(q.toLowerCase()) ? '' : 'none';
       });
     }
+
+    // ── RENDER EMPLOYEE TABLE ──
+    const statusBadge = { Active: 'bg', Review: 'by', New: 'bb', Inactive: 'br' };
+
+    function getDaysWorked(empId) {
+      let count = 0;
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('attendance_')) {
+          try {
+            const recs = JSON.parse(localStorage.getItem(key) || '[]');
+            const rec = recs.find(r => r.id === empId);
+            if (rec && rec.status === 'Present') count++;
+          } catch(e) {}
+        }
+      }
+      return count;
+    }
+
+    function renderEmployeeTable() {
+      const emps = getEmployees();
+      const tbody = document.getElementById('emp-tbody');
+      if (!tbody) return;
+      tbody.innerHTML = emps.map(emp => {
+        const initial = emp.name.charAt(0).toUpperCase();
+        const bc = statusBadge[emp.status] || 'bg';
+        const days = getDaysWorked(emp.id);
+        const pct = Math.min(100, Math.round((days / 365) * 100));
+        const docs = getPersonalDocs(emp.id);
+        const docCount = docs.length;
+        return `<tr>
+          <td>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="av-sm">${initial}</div>
+              <div>
+                <div style="font-weight:600;">${emp.name}</div>
+                <div style="font-size:.72rem;color:var(--muted);">${emp.joined || '—'} · <span class="badge ${bc}" style="font-size:.65rem;padding:2px 7px;">${emp.status}</span></div>
+              </div>
+            </div>
+          </td>
+          <td style="font-weight:600;color:var(--red);">${emp.id}</td>
+          <td><span class="badge bgy">${emp.dept}</span></td>
+          <td>${emp.role}</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+              <div style="min-width:100px;">
+                <div style="font-size:.72rem;color:var(--muted);margin-bottom:3px;">Days worked: <strong style="color:var(--dark);">${days}</strong> / 365</div>
+                <div style="height:5px;background:#f0f0f0;border-radius:20px;overflow:hidden;width:100px;">
+                  <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,var(--red),var(--accent));border-radius:20px;transition:width .6s;"></div>
+                </div>
+              </div>
+              <button class="act-btn" style="padding:5px 12px;font-size:.76rem;" onclick="openPersonalData('${emp.id}','${emp.name}','${emp.dept}','${emp.role}')">
+                📄 Docs ${docCount > 0 ? '<span style=\'background:rgba(200,16,46,.15);color:var(--red);font-size:.65rem;padding:1px 6px;border-radius:10px;margin-left:3px;\'>' + docCount + '</span>' : ''}
+              </button>
+            </div>
+          </td>
+        </tr>`;
+      }).join('');
+      const lbl = document.getElementById('emp-count-lbl');
+      if (lbl) lbl.textContent = emps.length + ' employee' + (emps.length !== 1 ? 's' : '') + ' on record.';
+    }
+
+    // ── ADD EMPLOYEE (HR) ──
+    function hrAddEmployee() {
+      const name   = document.getElementById('hr-em-name').value.trim();
+      const id     = document.getElementById('hr-em-id').value.trim().toUpperCase();
+      const dept   = document.getElementById('hr-em-dept').value;
+      const role   = document.getElementById('hr-em-role').value.trim();
+      const joinedRaw = document.getElementById('hr-em-joined').value;
+      const status = document.getElementById('hr-em-status').value;
+      if (!name || !id || !dept || !role) { showToast('⚠️ Please fill in all required fields.'); return; }
+      const emps = getEmployees();
+      if (emps.find(e => e.id === id)) { showToast('⚠️ Employee ID ' + id + ' already exists.'); return; }
+      const joined = joinedRaw ? new Date(joinedRaw + '-01').toLocaleDateString('en-IN', { month: 'short', year: 'numeric' }) : '—';
+      emps.push({ id, name, dept, role, joined, status });
+      saveEmployees(emps);
+      // Clear form
+      ['hr-em-name','hr-em-id','hr-em-role'].forEach(i => document.getElementById(i).value = '');
+      document.getElementById('hr-em-dept').selectedIndex = 0;
+      document.getElementById('hr-em-status').selectedIndex = 0;
+      document.getElementById('hr-em-joined').value = '';
+      renderEmployeeTable();
+      updateOverviewStats();
+      showToast('👤 ' + name + ' (' + id + ') added successfully!');
+    }
+
+    // ── PERSONAL DATA ──
+    let _pdCurrentEmpId = null;
+
+    function getPersonalDocs(empId) {
+      try { return JSON.parse(localStorage.getItem('emp_personal_docs_' + empId) || '[]'); } catch(e) { return []; }
+    }
+
+    function savePersonalDocs(empId, docs) {
+      localStorage.setItem('emp_personal_docs_' + empId, JSON.stringify(docs));
+    }
+
+    function openPersonalData(empId, name, dept, role) {
+      _pdCurrentEmpId = empId;
+      document.getElementById('pd-modal-name').textContent = name;
+      document.getElementById('pd-modal-meta').textContent = empId + ' · ' + dept + ' · ' + role;
+      // Days worked
+      const days = getDaysWorked(empId);
+      const pct  = Math.min(100, Math.round((days / 365) * 100));
+      document.getElementById('pd-days-worked').textContent = days;
+      document.getElementById('pd-days-detail').textContent = 'out of 365 days target · ' + pct + '% of year';
+      document.getElementById('pd-days-pct').textContent = pct + '%';
+      document.getElementById('pd-days-bar').style.width = pct + '%';
+      renderDocsList(empId);
+      document.getElementById('personal-data-modal').style.display = 'flex';
+    }
+
+    function closePersonalDataModal() {
+      document.getElementById('personal-data-modal').style.display = 'none';
+      _pdCurrentEmpId = null;
+      renderEmployeeTable(); // refresh doc count badges
+    }
+
+    document.getElementById('personal-data-modal').addEventListener('click', function(e) {
+      if (e.target === this) closePersonalDataModal();
+    });
+
+    function handlePDFUpload(event) {
+      const files = Array.from(event.target.files);
+      if (!_pdCurrentEmpId || files.length === 0) return;
+      const docs = getPersonalDocs(_pdCurrentEmpId);
+      let processed = 0;
+      files.forEach(file => {
+        if (file.type !== 'application/pdf') { showToast('⚠️ Only PDF files are supported.'); return; }
+        if (file.size > 3 * 1024 * 1024) { showToast('⚠️ ' + file.name + ' is too large (max 3MB per file).'); return; }
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          docs.push({
+            id: Date.now() + Math.random(),
+            name: file.name,
+            size: (file.size / 1024).toFixed(1) + ' KB',
+            uploadedAt: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
+            data: e.target.result // base64 data URL
+          });
+          savePersonalDocs(_pdCurrentEmpId, docs);
+          processed++;
+          renderDocsList(_pdCurrentEmpId);
+          showToast('✅ ' + file.name + ' uploaded!');
+        };
+        reader.readAsDataURL(file);
+      });
+      event.target.value = ''; // reset input
+    }
+
+    function renderDocsList(empId) {
+      const docs = getPersonalDocs(empId);
+      const container = document.getElementById('pd-docs-list');
+      if (!container) return;
+      if (docs.length === 0) {
+        container.innerHTML = '<p style="color:var(--muted);font-size:.83rem;text-align:center;padding:12px 0;">No documents uploaded yet.</p>';
+        return;
+      }
+      container.innerHTML = docs.map(doc => `
+        <div style="display:flex;align-items:center;gap:12px;padding:11px 14px;background:#fafafa;border:1px solid #ebebeb;border-radius:10px;margin-bottom:8px;">
+          <span style="font-size:1.4rem;flex-shrink:0;">📄</span>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:.85rem;font-weight:600;color:var(--dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${doc.name}</div>
+            <div style="font-size:.72rem;color:var(--muted);">${doc.size} · Uploaded ${doc.uploadedAt}</div>
+          </div>
+          <button onclick="downloadDoc('${empId}',${doc.id})" style="background:none;border:1.5px solid rgba(200,16,46,.3);color:var(--red);border-radius:8px;padding:5px 12px;font-size:.76rem;font-weight:700;cursor:pointer;" title="Download">⬇ Download</button>
+          <button onclick="deleteDoc('${empId}',${doc.id})" style="background:none;border:1.5px solid rgba(0,0,0,0.1);color:#b91c1c;border-radius:8px;padding:5px 10px;font-size:.76rem;cursor:pointer;" title="Delete">🗑️</button>
+        </div>`).join('');
+    }
+
+    function downloadDoc(empId, docId) {
+      const docs = getPersonalDocs(empId);
+      const doc = docs.find(d => String(d.id) === String(docId));
+      if (!doc) return;
+      const a = document.createElement('a');
+      a.href = doc.data;
+      a.download = doc.name;
+      a.click();
+    }
+
+    function deleteDoc(empId, docId) {
+      const docs = getPersonalDocs(empId).filter(d => String(d.id) !== String(docId));
+      savePersonalDocs(empId, docs);
+      renderDocsList(empId);
+      showToast('🗑️ Document deleted.');
+    }
+
+    // Initial render
+    renderEmployeeTable();
 
     // ── LEAVE REQUESTS ──
     function renderLeaveRequests() {
@@ -1101,6 +1393,10 @@
       if (newLeaveSig !== _hrLastLeaveSig) { _hrLastLeaveSig = newLeaveSig; renderLeaveRequests(); showToast('📩 New leave request received!'); }
       if (newPeerSig !== _hrLastPeerSig) { _hrLastPeerSig = newPeerSig; if(document.getElementById('p-peer-report').classList.contains('active')) renderPeerReport(); }
       if (newHRTaskSig !== _hrLastHRTaskSig) { _hrLastHRTaskSig = newHRTaskSig; refreshHRTasksFromStorage(); showToast('🔄 Task status updated by employee!'); }
+      // Sync employee list if updated by Admin
+      const empSig = localStorage.getItem('enovexa_employees_updated') || '';
+      if (!window._hrLastEmpSig) window._hrLastEmpSig = empSig;
+      if (empSig !== window._hrLastEmpSig) { window._hrLastEmpSig = empSig; refreshATTEmployees(); renderEmployeeTable(); updateOverviewStats(); }
     }, 3000);
 
     // ── VISIBILITY SYNC: re-read when user switches back to this tab ──
@@ -1565,20 +1861,13 @@
       });
     }
 
-    const ATT_EMPLOYEES = [
-      {id:'ENV-001',name:'Arjun Menon',dept:'Engineering'},
-      {id:'ENV-002',name:'Priya Nair',dept:'Marketing'},
-      {id:'ENV-003',name:'Rahul Das',dept:'Design'},
-      {id:'ENV-004',name:'Sneha Pillai',dept:'Engineering'},
-      {id:'ENV-005',name:'Karan Shah',dept:'Operations'},
-      {id:'ENV-006',name:'Divya Krishnan',dept:'Marketing'},
-      {id:'ENV-007',name:'Amal Thomas',dept:'Engineering'},
-      {id:'ENV-008',name:'Meera Iyer',dept:'Design'},
-      {id:'ENV-009',name:'Rohan Verma',dept:'Marketing'},
-      {id:'ENV-010',name:'Lakshmi Reddy',dept:'Engineering'},
-      {id:'ENV-011',name:'Vikas Mehta',dept:'Engineering'},
-      {id:'ENV-012',name:'Nisha George',dept:'Marketing'},
-    ];
+    // ATT_EMPLOYEES: dynamically from shared store for attendance module
+    let ATT_EMPLOYEES = getEmployees().map(e => ({id: e.id, name: e.name, dept: e.dept}));
+
+    // Sync ATT_EMPLOYEES when employees are updated
+    function refreshATTEmployees() {
+      ATT_EMPLOYEES = getEmployees().map(e => ({id: e.id, name: e.name, dept: e.dept}));
+    }
 
     // ── POPULATE EMPLOYEE DROPDOWNS DYNAMICALLY ──
     // When backend is ready, replace ATT_EMPLOYEES with fetch('/api/employees') and call this again
