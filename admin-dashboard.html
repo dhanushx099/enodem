@@ -1072,15 +1072,16 @@
       <!-- ── EMPLOYEES ── -->
       <div class="panel" id="p-employees">
         <h1 class="pg-title">All Employees</h1>
-        <p class="pg-sub">Full visibility and management of all 12 employees.</p>
+        <p class="pg-sub">Full visibility and management of all employees — synced with HR additions in real time.</p>
         <div class="sec-card">
           <div
             style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px;">
             <div class="sec-card-title" style="margin-bottom:0;">Employee Directory</div>
             <div style="display:flex;gap:10px;flex-wrap:wrap;">
-              <input type="text" placeholder="Search name / ID…" oninput="filterTable(this,'emp-tbody')"
+              <input type="text" placeholder="Search name / ID…" oninput="filterTable(this,'adm-emp-tbody')"
                 style="padding:8px 14px;border:1.5px solid rgba(0,0,0,.11);border-radius:9px;font-size:.83rem;outline:none;width:200px;" />
               <button class="act-btn" onclick="openEmpModal()">+ Add Employee</button>
+              <button onclick="renderAdminEmployeeTable();showToast('🔄 Refreshed!');" style="background:transparent;border:1.5px solid var(--red);color:var(--red);border-radius:9px;padding:8px 14px;font-size:.8rem;font-weight:700;cursor:pointer;">↻ Refresh</button>
             </div>
           </div>
           <div style="overflow-x:auto;">
@@ -1088,129 +1089,44 @@
               <thead>
                 <tr>
                   <th>Name</th>
-                  <th>ID</th>
+                  <th>Employee ID</th>
                   <th>Department</th>
                   <th>Role</th>
-                  <th>Joined</th>
-                  <th>Status</th>
+                  <th>Personal Data</th>
                   <th>Actions</th>
                 </tr>
               </thead>
-              <tbody id="emp-tbody">
-                <tr>
-                  <td>Arjun Menon</td>
-                  <td>ENV-001</td>
-                  <td>Engineering</td>
-                  <td>Software Dev</td>
-                  <td>Jan 2023</td>
-                  <td><span class="badge bg">Active</span></td>
-                  <td><button class="act-btn outline" style="padding:5px 12px;font-size:.75rem;"
-                      onclick="editEmpRow(this)">Edit</button></td>
-                </tr>
-                <tr>
-                  <td>Priya Nair</td>
-                  <td>ENV-002</td>
-                  <td>Marketing</td>
-                  <td>Marketing Exec</td>
-                  <td>Jan 2023</td>
-                  <td><span class="badge bg">Active</span></td>
-                  <td><button class="act-btn outline" style="padding:5px 12px;font-size:.75rem;"
-                      onclick="editEmpRow(this)">Edit</button></td>
-                </tr>
-                <tr>
-                  <td>Rahul Das</td>
-                  <td>ENV-003</td>
-                  <td>Design</td>
-                  <td>UI/UX Designer</td>
-                  <td>Apr 2023</td>
-                  <td><span class="badge bg">Active</span></td>
-                  <td><button class="act-btn outline" style="padding:5px 12px;font-size:.75rem;"
-                      onclick="editEmpRow(this)">Edit</button></td>
-                </tr>
-                <tr>
-                  <td>Sneha Pillai</td>
-                  <td>ENV-004</td>
-                  <td>Engineering</td>
-                  <td>Flutter Dev</td>
-                  <td>Feb 2022</td>
-                  <td><span class="badge bg">Active</span></td>
-                  <td><button class="act-btn outline" style="padding:5px 12px;font-size:.75rem;"
-                      onclick="editEmpRow(this)">Edit</button></td>
-                </tr>
-                <tr>
-                  <td>Karan Shah</td>
-                  <td>ENV-005</td>
-                  <td>Operations</td>
-                  <td>Ops Analyst</td>
-                  <td>Jun 2023</td>
-                  <td><span class="badge bg">Active</span></td>
-                  <td><button class="act-btn outline" style="padding:5px 12px;font-size:.75rem;"
-                      onclick="editEmpRow(this)">Edit</button></td>
-                </tr>
-                <tr>
-                  <td>Divya Krishnan</td>
-                  <td>ENV-006</td>
-                  <td>Marketing</td>
-                  <td>Content Lead</td>
-                  <td>Aug 2022</td>
-                  <td><span class="badge bg">Active</span></td>
-                  <td><button class="act-btn outline" style="padding:5px 12px;font-size:.75rem;"
-                      onclick="editEmpRow(this)">Edit</button></td>
-                </tr>
-                <tr>
-                  <td>Amal Thomas</td>
-                  <td>ENV-007</td>
-                  <td>Engineering</td>
-                  <td>Backend Dev</td>
-                  <td>Nov 2022</td>
-                  <td><span class="badge bg">Active</span></td>
-                  <td><button class="act-btn outline" style="padding:5px 12px;font-size:.75rem;"
-                      onclick="editEmpRow(this)">Edit</button></td>
-                </tr>
-                <tr>
-                  <td>Meera Iyer</td>
-                  <td>ENV-008</td>
-                  <td>Design</td>
-                  <td>Graphic Designer</td>
-                  <td>Jan 2024</td>
-                  <td><span class="badge by">Review</span></td>
-                  <td><button class="act-btn outline" style="padding:5px 12px;font-size:.75rem;"
-                      onclick="editEmpRow(this)">Edit</button></td>
-                </tr>
-                <tr>
-                  <td>Rohan Verma</td>
-                  <td>ENV-009</td>
-                  <td>Marketing</td>
-                  <td>Digital Marketer</td>
-                  <td>Jul 2023</td>
-                  <td><span class="badge bg">Active</span></td>
-                  <td><button class="act-btn outline" style="padding:5px 12px;font-size:.75rem;"
-                      onclick="editEmpRow(this)">Edit</button></td>
-                </tr>
-                <tr>
-                  <td>Lakshmi Reddy</td>
-                  <td>ENV-010</td>
-                  <td>Engineering</td>
-                  <td>QA Engineer</td>
-                  <td>Mar 2022</td>
-                  <td><span class="badge bg">Active</span></td>
-                  <td><button class="act-btn outline" style="padding:5px 12px;font-size:.75rem;"
-                      onclick="editEmpRow(this)">Edit</button></td>
-                </tr>
-                <tr>
-                  <td>Nisha George</td>
-                  <td>ENV-024</td>
-                  <td>Marketing</td>
-                  <td>SEO Specialist</td>
-                  <td>Jun 2026</td>
-                  <td><span class="badge bb">New</span></td>
-                  <td><button class="act-btn outline" style="padding:5px 12px;font-size:.75rem;"
-                      onclick="editEmpRow(this)">Edit</button></td>
-                </tr>
-              </tbody>
+              <tbody id="adm-emp-tbody"></tbody>
             </table>
           </div>
-          <p style="font-size:.78rem;color:var(--muted);margin-top:14px;">Showing 11 of 24 employees.</p>
+          <p id="adm-emp-count-lbl" style="font-size:.78rem;color:var(--muted);margin-top:14px;"></p>
+        </div>
+      </div>
+
+      <!-- ── PERSONAL DATA MODAL (Admin) ── -->
+      <div id="adm-personal-data-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:5000;align-items:center;justify-content:center;">
+        <div style="background:#fff;border-radius:18px;padding:32px 36px;width:560px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.28);position:relative;">
+          <button onclick="closeAdmPersonalData()" style="position:absolute;top:16px;right:18px;background:none;border:none;font-size:1.3rem;cursor:pointer;color:#aaa;">✕</button>
+          <div style="font-size:.7rem;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:#c11212;margin-bottom:6px;">Employee Profile</div>
+          <h2 id="adm-pd-name" style="font-size:1.2rem;font-weight:800;margin-bottom:4px;color:#1A1A1A;">—</h2>
+          <p id="adm-pd-meta" style="font-size:.8rem;color:var(--muted);margin-bottom:22px;">—</p>
+          <div style="background:linear-gradient(135deg,#c11212,#8b0000);border-radius:14px;padding:18px 22px;margin-bottom:22px;color:#fff;display:flex;align-items:center;justify-content:space-between;">
+            <div>
+              <div style="font-size:.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;opacity:.75;margin-bottom:4px;">Days Worked (Attendance)</div>
+              <div style="font-size:2.4rem;font-weight:800;line-height:1;" id="adm-pd-days">—</div>
+              <div style="font-size:.74rem;opacity:.7;margin-top:4px;" id="adm-pd-days-detail">out of 365 days target</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;opacity:.75;margin-bottom:4px;">Progress</div>
+              <div style="font-size:1.4rem;font-weight:800;" id="adm-pd-pct">—</div>
+              <div style="width:110px;height:8px;background:rgba(255,255,255,.25);border-radius:20px;margin-top:6px;overflow:hidden;">
+                <div id="adm-pd-bar" style="height:100%;background:#fff;border-radius:20px;transition:width .8s;width:0%"></div>
+              </div>
+            </div>
+          </div>
+          <div style="font-size:.7rem;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:8px;"><span style="width:14px;height:2px;background:#c11212;border-radius:2px;display:block;flex-shrink:0;"></span>Personal Documents</div>
+          <div id="adm-pd-docs-list"></div>
+          <button class="act-btn outline" onclick="closeAdmPersonalData()" style="margin-top:14px;">Close</button>
         </div>
       </div>
 
@@ -2093,11 +2009,14 @@
     // ══ OVERVIEW STATS — computed from real data ══
     function updateOverviewStats() {
       const today = new Date().toISOString().slice(0, 10);
-      // Total employees — use ADM_ATT_EMPLOYEES as single source of truth
-      // (matches exactly the employees tracked in attendance: present + absent = this total)
+      // Total employees — from shared store
+      ADM_ATT_EMPLOYEES = admGetEmployees().map(e => ({id: e.id, name: e.name, dept: e.dept}));
       const totalEmp = ADM_ATT_EMPLOYEES.length;
       const ovTotalEl = document.getElementById('ov-total-emp');
       if (ovTotalEl) ovTotalEl.textContent = totalEmp;
+      // Update payroll emp count
+      const admEmpCountEl = document.getElementById('adm-emp-count');
+      if (admEmpCountEl) admEmpCountEl.textContent = totalEmp;
       // Overdue tasks
       const tasks = JSON.parse(localStorage.getItem('admin_tasks') || '[]');
       const overdue = tasks.filter(t => t.due && t.due < today && t.status !== 'Completed').length;
@@ -2669,6 +2588,15 @@
         updateOverviewStats();
         showToast('📋 Attendance updated by HR!');
       }
+      // Sync employee list if updated by HR
+      const empSig = localStorage.getItem('enovexa_employees_updated') || '';
+      if (!window._admLastEmpSig) window._admLastEmpSig = empSig;
+      if (empSig !== window._admLastEmpSig) {
+        window._admLastEmpSig = empSig;
+        renderAdminEmployeeTable();
+        updateOverviewStats();
+        showToast('👤 Employee list updated by HR!');
+      }
     }, 3000);
     window.addEventListener('storage', function (e) {
       if (e.key === 'leave_requests' || e.key === 'leave_requests_updated') { renderAdminLeave(); }
@@ -2694,7 +2622,158 @@
     }
 
     // ══════════════════════════════════════
-    // EMPLOYEE MODAL
+    // SHARED EMPLOYEE STORE (synced with HR)
+    // ══════════════════════════════════════
+    const ADM_DEFAULT_EMPLOYEES = [
+      {id:'ENV-001',name:'Arjun Menon',dept:'Engineering',role:'Sr. Developer',joined:'Jan 2023',status:'Active'},
+      {id:'ENV-002',name:'Priya Nair',dept:'Marketing',role:'SEO Lead',joined:'Jan 2023',status:'Active'},
+      {id:'ENV-003',name:'Rahul Das',dept:'Design',role:'UI/UX Designer',joined:'Apr 2023',status:'Active'},
+      {id:'ENV-004',name:'Sneha Pillai',dept:'Engineering',role:'Flutter Dev',joined:'Feb 2022',status:'Active'},
+      {id:'ENV-005',name:'Karan Shah',dept:'Operations',role:'Project Manager',joined:'Jun 2023',status:'Active'},
+      {id:'ENV-006',name:'Divya Krishnan',dept:'Marketing',role:'Content Writer',joined:'Aug 2022',status:'Active'},
+      {id:'ENV-007',name:'Amal Thomas',dept:'Engineering',role:'Backend Dev',joined:'Nov 2022',status:'Active'},
+      {id:'ENV-008',name:'Meera Iyer',dept:'Design',role:'Graphic Designer',joined:'Jan 2024',status:'Active'},
+      {id:'ENV-009',name:'Rohan Verma',dept:'Marketing',role:'PPC Analyst',joined:'Jul 2023',status:'Active'},
+      {id:'ENV-010',name:'Lakshmi Reddy',dept:'Engineering',role:'React Developer',joined:'Mar 2022',status:'Active'},
+      {id:'ENV-011',name:'Vikas Mehta',dept:'Engineering',role:'DevOps Engineer',joined:'Sep 2022',status:'Active'},
+      {id:'ENV-012',name:'Nisha George',dept:'Marketing',role:'Social Media Mgr',joined:'Dec 2023',status:'Active'},
+    ];
+
+    function admGetEmployees() {
+      const stored = localStorage.getItem('enovexa_employees');
+      if (stored) return JSON.parse(stored);
+      localStorage.setItem('enovexa_employees', JSON.stringify(ADM_DEFAULT_EMPLOYEES));
+      return ADM_DEFAULT_EMPLOYEES;
+    }
+
+    function admSaveEmployees(list) {
+      localStorage.setItem('enovexa_employees', JSON.stringify(list));
+      localStorage.setItem('enovexa_employees_updated', Date.now().toString());
+    }
+
+    function admGetDaysWorked(empId) {
+      let count = 0;
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('attendance_')) {
+          try {
+            const recs = JSON.parse(localStorage.getItem(key) || '[]');
+            const rec = recs.find(r => r.id === empId);
+            if (rec && rec.status === 'Present') count++;
+          } catch(e) {}
+        }
+      }
+      return count;
+    }
+
+    function admGetPersonalDocs(empId) {
+      try { return JSON.parse(localStorage.getItem('emp_personal_docs_' + empId) || '[]'); } catch(e) { return []; }
+    }
+
+    const admStatusBadge = { Active: 'bg', Review: 'by', New: 'bb', Inactive: 'br' };
+
+    function renderAdminEmployeeTable() {
+      const emps = admGetEmployees();
+      const tbody = document.getElementById('adm-emp-tbody');
+      if (!tbody) return;
+      tbody.innerHTML = emps.map(emp => {
+        const initial = emp.name.charAt(0).toUpperCase();
+        const bc = admStatusBadge[emp.status] || 'bg';
+        const days = admGetDaysWorked(emp.id);
+        const pct = Math.min(100, Math.round((days / 365) * 100));
+        const docs = admGetPersonalDocs(emp.id);
+        return `<tr>
+          <td>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="av-sm" style="background:linear-gradient(135deg,var(--gold),var(--red));">${initial}</div>
+              <div>
+                <div style="font-weight:600;">${emp.name}</div>
+                <div style="font-size:.72rem;color:var(--muted);">${emp.joined || '—'} · <span class="badge ${bc}" style="font-size:.65rem;padding:2px 7px;">${emp.status}</span></div>
+              </div>
+            </div>
+          </td>
+          <td style="font-weight:600;color:var(--gold);">${emp.id}</td>
+          <td><span class="badge bgy">${emp.dept}</span></td>
+          <td>${emp.role}</td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+              <div style="min-width:100px;">
+                <div style="font-size:.72rem;color:var(--muted);margin-bottom:3px;">Days worked: <strong style="color:var(--dark2);">${days}</strong> / 365</div>
+                <div style="height:5px;background:#f0f0f0;border-radius:20px;overflow:hidden;width:100px;">
+                  <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,var(--gold),var(--accent));border-radius:20px;"></div>
+                </div>
+              </div>
+              <button class="act-btn" style="padding:5px 12px;font-size:.76rem;" onclick="openAdmPersonalData('${emp.id}','${emp.name}','${emp.dept}','${emp.role}')">
+                📄 Docs${docs.length > 0 ? ' <span style=\'background:rgba(193,18,18,.12);color:var(--gold);font-size:.65rem;padding:1px 6px;border-radius:10px;margin-left:2px;\'>' + docs.length + '</span>' : ''}
+              </button>
+            </div>
+          </td>
+          <td>
+            <button class="act-btn outline" style="padding:5px 12px;font-size:.75rem;" onclick="openEditEmpModal('${emp.id}')">✏️ Edit</button>
+          </td>
+        </tr>`;
+      }).join('');
+      const lbl = document.getElementById('adm-emp-count-lbl');
+      if (lbl) lbl.textContent = emps.length + ' employee' + (emps.length !== 1 ? 's' : '') + ' on record.';
+    }
+
+    // ── PERSONAL DATA (Admin view — read-only + docs) ──
+    let _admPdEmpId = null;
+
+    function openAdmPersonalData(empId, name, dept, role) {
+      _admPdEmpId = empId;
+      document.getElementById('adm-pd-name').textContent = name;
+      document.getElementById('adm-pd-meta').textContent = empId + ' · ' + dept + ' · ' + role;
+      const days = admGetDaysWorked(empId);
+      const pct  = Math.min(100, Math.round((days / 365) * 100));
+      document.getElementById('adm-pd-days').textContent = days;
+      document.getElementById('adm-pd-days-detail').textContent = 'out of 365 days target · ' + pct + '% of year';
+      document.getElementById('adm-pd-pct').textContent = pct + '%';
+      document.getElementById('adm-pd-bar').style.width = pct + '%';
+      renderAdmDocsList(empId);
+      document.getElementById('adm-personal-data-modal').style.display = 'flex';
+    }
+
+    function closeAdmPersonalData() {
+      document.getElementById('adm-personal-data-modal').style.display = 'none';
+      _admPdEmpId = null;
+    }
+
+    document.getElementById('adm-personal-data-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeAdmPersonalData();
+    });
+
+    function renderAdmDocsList(empId) {
+      const docs = admGetPersonalDocs(empId);
+      const container = document.getElementById('adm-pd-docs-list');
+      if (!container) return;
+      if (docs.length === 0) {
+        container.innerHTML = '<p style="color:var(--muted);font-size:.83rem;text-align:center;padding:12px 0;">No documents uploaded by HR yet.</p>';
+        return;
+      }
+      container.innerHTML = docs.map(doc => `
+        <div style="display:flex;align-items:center;gap:12px;padding:11px 14px;background:#fafafa;border:1px solid #ebebeb;border-radius:10px;margin-bottom:8px;">
+          <span style="font-size:1.4rem;flex-shrink:0;">📄</span>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:.85rem;font-weight:600;color:#1A1A1A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${doc.name}</div>
+            <div style="font-size:.72rem;color:var(--muted);">${doc.size} · Uploaded ${doc.uploadedAt}</div>
+          </div>
+          <button onclick="admDownloadDoc('${empId}',${doc.id})" style="background:none;border:1.5px solid rgba(193,18,18,.3);color:var(--gold);border-radius:8px;padding:5px 12px;font-size:.76rem;font-weight:700;cursor:pointer;">⬇ Download</button>
+        </div>`).join('');
+    }
+
+    function admDownloadDoc(empId, docId) {
+      const docs = admGetPersonalDocs(empId);
+      const doc = docs.find(d => String(d.id) === String(docId));
+      if (!doc) return;
+      const a = document.createElement('a');
+      a.href = doc.data;
+      a.download = doc.name;
+      a.click();
+    }
+
+    // ══════════════════════════════════════
+    // EMPLOYEE MODAL (Add/Edit/Delete)
     // ══════════════════════════════════════
     const statusBadge = { Active: 'bg', Review: 'by', New: 'bb', Inactive: 'br' };
 
@@ -2709,74 +2788,72 @@
       document.getElementById('emp-modal').style.display = 'flex';
     }
 
-    function editEmpRow(btn) {
-      const row = btn.closest('tr');
-      const cells = row.querySelectorAll('td');
+    function openEditEmpModal(empId) {
+      const emps = admGetEmployees();
+      const emp = emps.find(e => e.id === empId);
+      if (!emp) return;
       document.getElementById('emp-modal-title').textContent = 'Edit Employee';
-      document.getElementById('em-name').value = cells[0].textContent.trim();
-      document.getElementById('em-id').value = cells[1].textContent.trim();
+      document.getElementById('em-name').value = emp.name;
+      document.getElementById('em-id').value = emp.id;
       const deptSel = document.getElementById('em-dept');
-      const deptVal = cells[2].textContent.trim();
-      [...deptSel.options].forEach(o => { if (o.value === deptVal) o.selected = true; });
-      document.getElementById('em-role').value = cells[3].textContent.trim();
+      [...deptSel.options].forEach(o => { o.selected = o.value === emp.dept; });
+      document.getElementById('em-role').value = emp.role;
       document.getElementById('em-joined').value = '';
       const statusSel = document.getElementById('em-status');
-      const statusVal = cells[5].querySelector('.badge').textContent.trim();
-      [...statusSel.options].forEach(o => { if (o.value === statusVal) o.selected = true; });
+      [...statusSel.options].forEach(o => { o.selected = o.value === emp.status; });
       document.getElementById('em-email').value = '';
       document.getElementById('em-phone').value = '';
-      document.getElementById('emp-edit-row').value = 'yes';
+      document.getElementById('emp-edit-row').value = emp.id;
       document.getElementById('emp-delete-btn').style.display = 'inline-flex';
-      document.getElementById('emp-delete-btn').dataset.row = [...document.getElementById('emp-tbody').rows].indexOf(row);
       document.getElementById('emp-modal').style.display = 'flex';
+    }
+
+    // Keep legacy editEmpRow for any other callers
+    function editEmpRow(btn) {
+      const row = btn.closest('tr');
+      if (!row) return;
+      const id = row.cells[1] ? row.cells[1].textContent.trim() : '';
+      if (id) openEditEmpModal(id);
     }
 
     function saveEmployee() {
       const name = document.getElementById('em-name').value.trim();
-      const id = document.getElementById('em-id').value.trim();
+      const id = document.getElementById('em-id').value.trim().toUpperCase();
       const dept = document.getElementById('em-dept').value;
       const role = document.getElementById('em-role').value.trim();
       const status = document.getElementById('em-status').value;
       const joinedRaw = document.getElementById('em-joined').value;
       if (!name || !id || !dept || !role) { showToast('⚠️ Please fill in all required fields.'); return; }
       const joined = joinedRaw ? new Date(joinedRaw + '-01').toLocaleDateString('en-IN', { month: 'short', year: 'numeric' }) : '—';
-      const tbody = document.getElementById('emp-tbody');
-      const editRow = document.getElementById('emp-edit-row').value;
-      const badgeClass = statusBadge[status] || 'bg';
-      if (editRow === 'yes') {
-        // find row by id cell
-        const rows = tbody.querySelectorAll('tr');
-        for (const row of rows) {
-          if (row.cells[1].textContent.trim() === id) {
-            row.cells[0].textContent = name;
-            row.cells[2].textContent = dept;
-            row.cells[3].textContent = role;
-            if (joinedRaw) row.cells[4].textContent = joined;
-            row.cells[5].innerHTML = `<span class="badge ${badgeClass}">${status}</span>`;
-            break;
-          }
+      const editId = document.getElementById('emp-edit-row').value;
+      const emps = admGetEmployees();
+      if (editId) {
+        const idx = emps.findIndex(e => e.id === editId);
+        if (idx !== -1) {
+          emps[idx] = { ...emps[idx], name, id, dept, role, status, ...(joinedRaw ? { joined } : {}) };
         }
         showToast('✅ Employee ' + id + ' updated!');
+        addActivityEntry('<strong>Admin</strong> updated employee <em>' + name + ' (' + id + ')</em>', 'blue');
       } else {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${name}</td><td>${id}</td><td>${dept}</td><td>${role}</td><td>${joined}</td>
-          <td><span class="badge ${badgeClass}">${status}</span></td>
-          <td><button class="act-btn outline" style="padding:5px 12px;font-size:.75rem;" onclick="editEmpRow(this)">Edit</button></td>`;
-        tbody.appendChild(tr);
+        if (emps.find(e => e.id === id)) { showToast('⚠️ Employee ID ' + id + ' already exists.'); return; }
+        emps.push({ id, name, dept, role, joined, status });
         showToast('👤 ' + name + ' (' + id + ') added!');
+        addActivityEntry('<strong>Admin</strong> added employee <em>' + name + ' (' + id + ')</em>', 'green');
       }
+      admSaveEmployees(emps);
+      renderAdminEmployeeTable();
+      updateOverviewStats();
       closeEmpModal();
     }
 
     function deleteEmployee() {
-      const btn = document.getElementById('emp-delete-btn');
-      const id = document.getElementById('em-id').value.trim();
-      const tbody = document.getElementById('emp-tbody');
-      const rows = tbody.querySelectorAll('tr');
-      for (const row of rows) {
-        if (row.cells[1].textContent.trim() === id) { row.remove(); break; }
-      }
+      const id = document.getElementById('em-id').value.trim().toUpperCase();
+      const emps = admGetEmployees().filter(e => e.id !== id);
+      admSaveEmployees(emps);
+      renderAdminEmployeeTable();
+      updateOverviewStats();
       showToast('🗑️ Employee ' + id + ' removed.');
+      addActivityEntry('<strong>Admin</strong> removed employee <em>' + id + '</em>', 'red');
       closeEmpModal();
     }
 
@@ -2786,6 +2863,9 @@
 
     // close on backdrop click
     document.getElementById('emp-modal').addEventListener('click', function (e) { if (e.target === this) closeEmpModal(); });
+
+    // Initial render
+    renderAdminEmployeeTable();
 
     // ══════════════════════════════════════
     // HR ADMIN MODAL
@@ -3139,23 +3219,12 @@
       if (document.visibilityState === 'visible') refreshAdminTasksFromStorage();
     });
 
-    // ── ADMIN ATTENDANCE REPORTS ──
-    const ADM_ATT_EMPLOYEES = [
-      {id:'ENV-001',name:'Arjun Menon',dept:'Engineering'},
-      {id:'ENV-002',name:'Priya Nair',dept:'Marketing'},
-      {id:'ENV-003',name:'Rahul Das',dept:'Design'},
-      {id:'ENV-004',name:'Sneha Pillai',dept:'Engineering'},
-      {id:'ENV-005',name:'Karan Shah',dept:'Operations'},
-      {id:'ENV-006',name:'Divya Krishnan',dept:'Marketing'},
-      {id:'ENV-007',name:'Amal Thomas',dept:'Engineering'},
-      {id:'ENV-008',name:'Meera Iyer',dept:'Design'},
-      {id:'ENV-009',name:'Rohan Verma',dept:'Marketing'},
-      {id:'ENV-010',name:'Lakshmi Reddy',dept:'Engineering'},
-      {id:'ENV-011',name:'Vikas Mehta',dept:'Engineering'},
-      {id:'ENV-012',name:'Nisha George',dept:'Marketing'},
-    ];
+    // ADM_ATT_EMPLOYEES: dynamic from shared store
+    let ADM_ATT_EMPLOYEES = admGetEmployees().map(e => ({id: e.id, name: e.name, dept: e.dept}));
 
+    // ── ADMIN ATTENDANCE REPORTS ──
     function renderAdminAttendance() {
+      ADM_ATT_EMPLOYEES = admGetEmployees().map(e => ({id: e.id, name: e.name, dept: e.dept})); // refresh
       const today = new Date().toISOString().slice(0,10);
       const dateEl = document.getElementById('adm-att-date');
       if (!dateEl.value) dateEl.value = today;
