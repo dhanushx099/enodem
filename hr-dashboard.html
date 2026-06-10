@@ -66,6 +66,26 @@
       animation: badgePop .3s cubic-bezier(.22,1,.36,1);
     }
     @keyframes badgePop { from { transform: scale(0); } to { transform: scale(1); } }
+
+    /* ── BELL RING ANIMATION ── */
+    @keyframes bellRing {
+      0%   { transform: rotate(0deg);   }
+      10%  { transform: rotate(18deg);  }
+      20%  { transform: rotate(-16deg); }
+      30%  { transform: rotate(14deg);  }
+      40%  { transform: rotate(-12deg); }
+      50%  { transform: rotate(10deg);  }
+      60%  { transform: rotate(-8deg);  }
+      70%  { transform: rotate(6deg);   }
+      80%  { transform: rotate(-4deg);  }
+      90%  { transform: rotate(2deg);   }
+      100% { transform: rotate(0deg);   }
+    }
+    .notif-bell.ringing {
+      animation: bellRing 0.8s ease-in-out infinite;
+      transform-origin: top center;
+      color: #fff !important;
+    }
     .notif-dropdown {
       position: absolute; top: calc(100% + 10px); right: 0;
       width: 320px; background: #fff; border-radius: 14px;
@@ -311,8 +331,8 @@
       <div class="topbar-brand">Enovexa <span>HR Portal</span></div>
       <div class="topbar-divider"></div>
       <div class="hr-role-pill">HR Admin</div>
-      <div class="topbar-divider"></div>
-      <div class="topbar-welcome">Welcome, <strong id="t-name">—</strong></div>
+      
+      <div class="topbar-welcome"><strong id="t-name">—</strong></div>
     </div>
     <div class="topbar-right">
       <span class="topbar-empid" id="t-empid"></span>
@@ -324,7 +344,7 @@
         </button>
         <div class="notif-dropdown" id="notif-dropdown">
           <div class="notif-header">
-            <span class="notif-header-title">📢 Announcements</span>
+            <span class="notif-header-title"> Announcements</span>
             <button class="notif-mark-read" onclick="markAllNotifsRead()">Mark all read</button>
           </div>
           <div class="notif-list" id="notif-list">
@@ -341,17 +361,17 @@
     <!-- SIDEBAR -->
     <aside class="sidebar">
       <div class="sb-section-label">HR Overview</div>
-      <button class="sb-btn active" onclick="go(this,'p-overview')"><span class="icon">📊</span> Overview</button>
-      <button class="sb-btn" onclick="go(this,'p-employees')"><span class="icon">👥</span> All Employees</button>
+      <button class="sb-btn active" onclick="go(this,'p-overview')"><span class="icon"></span> Overview</button>
+      <button class="sb-btn" onclick="go(this,'p-employees')"><span class="icon"></span> All Employees</button>
       <div class="sb-section-label">Management</div>
-      <button class="sb-btn" onclick="go(this,'p-attendance');renderAttendance()"><span class="icon">🕐</span> Attendance</button>
-      <button class="sb-btn" onclick="go(this,'p-leaves')"><span class="icon">🗓️</span> Leave Requests <span class="sb-count">5</span></button>
-      <button class="sb-btn" onclick="go(this,'p-tasks')"><span class="icon">✅</span> Task Tracker</button>
-      <button class="sb-btn" onclick="go(this,'p-peer-report');renderPeerReport()"><span class="icon">🤝</span> Peer Task Report</button>
-      <button class="sb-btn" onclick="go(this,'p-my-salary')"><span class="icon">💰</span> My Salary</button>
+      <button class="sb-btn" onclick="go(this,'p-attendance');renderAttendance()"><span class="icon"></span> Attendance</button>
+      <button class="sb-btn" onclick="go(this,'p-leaves')"><span class="icon"></span> Leave Requests <span class="sb-count">5</span></button>
+      <button class="sb-btn" id="sb-tasks-btn" onclick="go(this,'p-tasks');markAllCompNotifsRead()"><span class="icon"></span> Task Tracker <span id="sb-tasks-comp-badge" class="sb-count" style="display:none;">0</span></button>
+      <button class="sb-btn" onclick="go(this,'p-peer-report');renderPeerReport()"><span class="icon"></span> Peer Task Report</button>
+      <button class="sb-btn" onclick="go(this,'p-my-salary')"><span class="icon"></span> My Salary</button>
       <div class="sb-section-label">Account</div>
-      <button class="sb-btn" onclick="go(this,'p-profile')"><span class="icon">👤</span> My Profile</button>
-      <button class="sb-btn" onclick="signOut()"><span class="icon">🚪</span> Sign Out</button>
+      <button class="sb-btn" onclick="go(this,'p-profile')"><span class="icon"></span> My Profile</button>
+      <button class="sb-btn" onclick="signOut()"><span class="icon"></span> Sign Out</button>
     </aside>
 
     <!-- MAIN CONTENT -->
@@ -386,10 +406,10 @@
           <!-- Department breakdown -->
           <div class="sec-card">
             <div class="sec-card-title">Department Headcount</div>
-            <div class="dept-row"><div class="dept-label">Engineering</div><div class="dept-bar-wrap"><div class="dept-bar" style="width:50%"></div></div><div class="dept-count">12</div></div>
-            <div class="dept-row"><div class="dept-label">Marketing</div><div class="dept-bar-wrap"><div class="dept-bar" style="width:25%"></div></div><div class="dept-count">6</div></div>
-            <div class="dept-row"><div class="dept-label">Design</div><div class="dept-bar-wrap"><div class="dept-bar" style="width:17%"></div></div><div class="dept-count">4</div></div>
-            <div class="dept-row"><div class="dept-label">Operations</div><div class="dept-bar-wrap"><div class="dept-bar" style="width:8%"></div></div><div class="dept-count">2</div></div>
+            <div class="dept-row"><div class="dept-label">Engineering</div><div class="dept-bar-wrap"><div class="dept-bar" id="dept-bar-engineering" style="width:0%"></div></div><div class="dept-count" id="dept-count-engineering">—</div></div>
+            <div class="dept-row"><div class="dept-label">Marketing</div><div class="dept-bar-wrap"><div class="dept-bar" id="dept-bar-marketing" style="width:0%"></div></div><div class="dept-count" id="dept-count-marketing">—</div></div>
+            <div class="dept-row"><div class="dept-label">Design</div><div class="dept-bar-wrap"><div class="dept-bar" id="dept-bar-design" style="width:0%"></div></div><div class="dept-count" id="dept-count-design">—</div></div>
+            <div class="dept-row"><div class="dept-label">Operations</div><div class="dept-bar-wrap"><div class="dept-bar" id="dept-bar-operations" style="width:0%"></div></div><div class="dept-count" id="dept-count-operations">—</div></div>
           </div>
 
           <!-- HR Alerts -->
@@ -1097,7 +1117,8 @@
       const desc     = document.getElementById('hrt-desc').value.trim();
       if (!title || !assign) { showToast('⚠️ Please fill in task title and assignee.'); return; }
       const assignedBy = sessionStorage.getItem('emp_id') || 'HR';
-      const task = { id: Date.now(), title, assign, due, priority, desc, status: 'Pending', assignedBy, assignedAt: new Date().toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'}) };
+      const now = new Date();
+      const task = { id: Date.now(), title, assign, due, priority, desc, status: 'Pending', assignedBy, assignedAt: now.toISOString(), completedAt: null };
       hrTasks.unshift(task);
       localStorage.setItem('hr_tasks', JSON.stringify(hrTasks));
       // Clear form
@@ -1143,12 +1164,32 @@
       list.innerHTML = hrTasks.map(t => {
         const statusClass = t.status === 'Completed' ? 'bg' : t.status === 'In Progress' ? 'bb' : 'by';
         const prioIcon = t.priority === 'Urgent' ? '🚨 ' : t.priority === 'High' ? '🔴 ' : '';
+        // Format assigned time
+        let assignedDisplay = '—';
+        if (t.assignedAt) {
+          try {
+            const d = new Date(t.assignedAt);
+            assignedDisplay = isNaN(d) ? t.assignedAt : d.toLocaleString('en-IN', {day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+          } catch(e) { assignedDisplay = t.assignedAt; }
+        }
+        // Format completed time
+        let completedDisplay = '';
+        if (t.status === 'Completed' && t.completedAt) {
+          try {
+            const d = new Date(t.completedAt);
+            completedDisplay = isNaN(d) ? t.completedAt : d.toLocaleString('en-IN', {day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+          } catch(e) { completedDisplay = t.completedAt; }
+        }
         return `<li style="flex-wrap:wrap;gap:8px;">
           <div style="flex:1;min-width:0;">
             <div><strong>${prioIcon}${t.title}</strong></div>
             <div style="font-size:.74rem;color:var(--muted);margin-top:3px;">
-              → ${t.assign}${t.due ? ' · Due ' + t.due : ''} · ${t.priority} Priority · Assigned ${t.assignedAt}
+              → ${t.assign}${t.due ? ' · Due ' + t.due : ''} · ${t.priority} Priority
               ${t.desc ? '<br><em style="color:#888;">' + t.desc.substring(0,80) + (t.desc.length>80?'…':'') + '</em>' : ''}
+            </div>
+            <div style="font-size:.72rem;color:#999;margin-top:4px;display:flex;flex-wrap:wrap;gap:10px;">
+              <span> <strong>Assigned:</strong> ${assignedDisplay}</span>
+              ${completedDisplay ? '<span style="color:#059669;">✅ <strong>Completed:</strong> ' + completedDisplay + '</span>' : ''}
             </div>
           </div>
           <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;flex-shrink:0;">
@@ -1409,6 +1450,7 @@
       if (overdue > 0) alerts.push(`<li>${overdue} overdue task${overdue > 1 ? 's' : ''} <span class="badge br">Overdue</span></li>`);
       const alertsList = document.getElementById('hr-alerts-list');
       if (alertsList) alertsList.innerHTML = alerts.length > 0 ? alerts.join('') : '<li style="color:var(--muted);font-size:.84rem;padding:8px 0;">No alerts at the moment.</li>';
+      updateDeptHeadcount();
     }
 
     // ── TASK TRACKER: completion + overdue (dynamic) ──
@@ -1449,6 +1491,22 @@
     }
 
     // ── ATTENDANCE ──
+    // Compute real dept counts from ATT_EMPLOYEES and update overview bars
+    function updateDeptHeadcount() {
+      if (typeof ATT_EMPLOYEES === 'undefined') return;
+      const counts = {};
+      ATT_EMPLOYEES.forEach(e => { counts[e.dept] = (counts[e.dept] || 0) + 1; });
+      const total = ATT_EMPLOYEES.length || 1;
+      const depts = { Engineering: 'engineering', Marketing: 'marketing', Design: 'design', Operations: 'operations' };
+      Object.entries(depts).forEach(([label, key]) => {
+        const n = counts[label] || 0;
+        const countEl = document.getElementById('dept-count-' + key);
+        const barEl   = document.getElementById('dept-bar-'   + key);
+        if (countEl) countEl.textContent = n;
+        if (barEl)   barEl.style.width   = Math.round((n / total) * 100) + '%';
+      });
+    }
+
     const ATT_EMPLOYEES = [
       {id:'ENV-001',name:'Arjun Menon',dept:'Engineering'},
       {id:'ENV-002',name:'Priya Nair',dept:'Marketing'},
@@ -1683,7 +1741,63 @@
         : rows.join('');
     }
 
-    // ── NOTIFICATION BELL SYSTEM ──
+    // ── HR TASK COMPLETION NOTIFICATIONS ──
+    const HR_COMP_KEY = 'hr_task_completions';
+    const HR_COMP_READ_KEY = 'hr_task_comp_read_ids';
+
+    function getCompletionNotifs() {
+      return JSON.parse(localStorage.getItem(HR_COMP_KEY) || '[]');
+    }
+    function getCompReadIds() {
+      return JSON.parse(localStorage.getItem(HR_COMP_READ_KEY) || '[]');
+    }
+    function markCompNotifRead(id) {
+      const readIds = getCompReadIds();
+      if (!readIds.includes(String(id))) {
+        readIds.push(String(id));
+        localStorage.setItem(HR_COMP_READ_KEY, JSON.stringify(readIds));
+      }
+      refreshHRCompletionBadge();
+    }
+    function markAllCompNotifsRead() {
+      const all = getCompletionNotifs();
+      localStorage.setItem(HR_COMP_READ_KEY, JSON.stringify(all.map(n => String(n.id))));
+      refreshHRCompletionBadge();
+      showToast('✅ All completion alerts cleared.');
+    }
+
+    function refreshHRCompletionBadge() {
+      const all = getCompletionNotifs();
+      const readIds = getCompReadIds();
+      const unreadCount = all.filter(n => !readIds.includes(String(n.id))).length;
+      const badge = document.getElementById('sb-tasks-comp-badge');
+      if (badge) {
+        badge.style.display = unreadCount > 0 ? 'inline-block' : 'none';
+        badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+      }
+    }
+
+    // Poll for new HR task completions
+    let _hrLastCompSig = localStorage.getItem('hr_task_completions_updated') || '';
+    setInterval(() => {
+      const sig = localStorage.getItem('hr_task_completions_updated') || '';
+      if (sig !== _hrLastCompSig) {
+        _hrLastCompSig = sig;
+        // Find newly added completion notif
+        const all = getCompletionNotifs();
+        const readIds = getCompReadIds();
+        const unread = all.filter(n => !readIds.includes(String(n.id)));
+        if (unread.length > 0) {
+          const latest = unread[unread.length - 1];
+          showToast('✅ ' + (latest.empName || latest.empId) + ' completed a task!');
+        }
+        refreshHRTasksFromStorage();
+        refreshHRCompletionBadge();
+        buildNotifList();
+      }
+    }, 3000);
+
+
     const NOTIF_READ_KEY = 'hr_ann_read_ids';
 
     function getReadIds() {
@@ -1703,12 +1817,21 @@
       if (relevant.length === 0) {
         list.innerHTML = '<div class="notif-empty">No announcements yet.</div>';
         badge.style.display = 'none';
+        const bellBtn = document.getElementById('notif-bell-btn');
+        if (bellBtn) bellBtn.classList.remove('ringing');
         return;
       }
 
       const unreadCount = relevant.filter(a => !readIds.includes(String(a.id))).length;
       badge.style.display = unreadCount > 0 ? 'flex' : 'none';
       badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+
+      // Bell rings while there are unread notifications, stops when all read
+      const bellBtn = document.getElementById('notif-bell-btn');
+      if (bellBtn) {
+        if (unreadCount > 0) bellBtn.classList.add('ringing');
+        else bellBtn.classList.remove('ringing');
+      }
 
       list.innerHTML = relevant.slice().reverse().map(a => {
         const isUnread = !readIds.includes(String(a.id));
@@ -1799,6 +1922,7 @@
     updateOverviewStats();
     updateTaskTrackerExtras();
     buildNotifList();
+    refreshHRCompletionBadge();
     setInterval(() => { updateOverviewStats(); updateTaskTrackerExtras(); }, 5000);
   </script>
 </body>
