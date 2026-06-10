@@ -2406,8 +2406,10 @@
       const prio = document.getElementById('ann-priority').value;
       if (!title || !body) { showToast('⚠️ Please fill title and message.'); return; }
       const annId = Date.now();
-      const today = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-      const newAnn = { id: annId, title, body, audience, prio, date: today };
+      const now = new Date();
+      const today = now.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+      const postedAt = now.toISOString();
+      const newAnn = { id: annId, title, body, audience, prio, date: today, postedAt };
       // Save to localStorage first
       const announcements = JSON.parse(localStorage.getItem('admin_announcements') || '[]');
       announcements.push(newAnn);
@@ -2430,9 +2432,12 @@
       card.dataset.annId = ann.id;
       const icon = ann.prio === 'Urgent' ? '🚨' : ann.prio === 'Important' ? '⚠️' : '📢';
       const audLabel = ann.audience === 'all' ? 'All Staff' : ann.audience === 'hr' ? 'HR Team' : 'Employees';
+      const postedStr = ann.postedAt
+        ? new Date(ann.postedAt).toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })
+        : ann.date || '—';
       card.innerHTML = `
         <div class="announce-title">${icon} ${ann.title}</div>
-        <div class="announce-meta">Posted by Admin · To: ${audLabel} · ${ann.date}</div>
+        <div class="announce-meta">Posted by Admin · To: ${audLabel} · ${postedStr}</div>
         <div class="announce-body">${ann.body}</div>
         <div class="announce-actions">
           <button class="act-btn danger" style="padding:5px 14px;font-size:.76rem;" onclick="deleteAnnouncement(${ann.id})">🗑️ Delete Everywhere</button>
